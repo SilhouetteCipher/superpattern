@@ -1,0 +1,5 @@
+# Reference images are third-party artwork (Pinterest pins, stock images) — kept local only.
+ref/
+# Local tooling
+.claude/
+.DS_Store

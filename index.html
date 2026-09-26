@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Pattern</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=33" />
+</head>
+<body>
+  <div id="app">
+    <aside id="library">
+      <div class="lib-head">
+        <span class="lib-title">Library</span>
+        <button id="btnLibToggle" class="icon" title="Hide library">⟨</button>
+      </div>
+      <nav id="libTabs" class="tabs"></nav>
+      <div id="libBody"></div>
+      <div class="lib-foot row-btns">
+        <button id="btnSavePreset">Save current</button>
+        <button id="btnExportJson">Export JSON</button>
+        <label class="file-btn">Import<input id="inJson" type="file" accept=".json,application/json" hidden /></label>
+      </div>
+    </aside>
+    <button id="btnLibShow" class="lib-show" title="Show library">Library ⟩</button>
+    <main id="stage">
+      <canvas id="view"></canvas>
+      <div class="hud top">
+        <div class="brand"><span class="logo"></span>Super Pattern</div>
+        <div class="tools">
+          <button id="btnRandom" class="primary" title="Randomize (R)">Randomize</button>
+          <button id="btnMutate" title="Mutate (M)">Mutate</button>
+          <span class="sep"></span>
+          <button id="btnUndo" title="Undo (⌘Z)">↶</button>
+          <button id="btnRedo" title="Redo (⇧⌘Z)">↷</button>
+          <span class="sep"></span>
+          <button id="btnFit" title="Fit view (F)">Fit</button>
+          <button id="btnNodes" class="toggle" title="Show Bézier nodes (N)">Nodes</button>
+          <button id="btnFieldViz" class="toggle" title="Show field (V)">Field</button>
+          <button id="btnRef" class="toggle" title="Reference underlay">Ref</button>
+        </div>
+      </div>
+      <div class="hud bottom">
+        <div id="hint">Double-click to drop a field point · drag to move · drag empty space to pan · scroll to zoom</div>
+        <div id="stats"></div>
+      </div>
+    </main>
+
+    <aside id="panel">
+      <details open>
+        <summary id="motifTitle">Motif</summary>
+        <div class="field-row">
+          <label>Generator</label>
+          <select id="genSelect"></select>
+        </div>
+        <div id="motifControls"></div>
+      </details>
+
+      <details open>
+        <summary>Layout &amp; board</summary>
+        <div class="field-row two">
+          <label>Board (mm)</label>
+          <div class="dual"><input id="boardW" type="number" min="10" step="1" /><span>×</span><input id="boardH" type="number" min="10" step="1" /></div>
+        </div>
+        <div id="layoutControls"></div>
+      </details>
+
+      <details open>
+        <summary>Field points</summary>
+        <div id="pointChips" class="chips"></div>
+        <div id="pointEditor"></div>
+        <div class="row-btns">
+          <button id="btnAddPoint">Add point</button>
+          <button id="btnClearPoints">Clear all</button>
+        </div>
+        <div id="fieldControls"></div>
+      </details>
+
+      <details open>
+        <summary>Tiling</summary>
+        <div id="tileControls"></div>
+        <div id="tileNote" class="muted"></div>
+        <div class="field-row"><label>Lampshade Ø × height (mm)</label>
+          <div class="dual"><input id="cylD" type="number" min="10" value="200" /><span>×</span><input id="cylH" type="number" min="10" value="180" /></div></div>
+        <div class="row-btns"><button id="btnCyl" class="wide">Set board to cylinder unwrap</button><button id="btnRepeats" class="toggle">Show repeats</button></div>
+      </details>
+
+      <details>
+        <summary>Render</summary>
+        <div id="renderControls"></div>
+      </details>
+
+      <details>
+        <summary>Reference image</summary>
+        <div class="row-btns">
+          <label class="file-btn">Load image<input id="inRef" type="file" accept="image/*" hidden /></label>
+          <button id="btnRefMove" class="toggle">Move image</button>
+        </div>
+        <div id="refControls"></div>
+      </details>
+
+      <details open>
+        <summary>Export</summary>
+        <div id="exportControls"></div>
+        <div class="row-btns">
+          <button id="btnExport" class="primary wide">Export SVG</button>
+          <button id="btnCopy">Copy SVG</button>
+        </div>
+        <div id="exportInfo" class="muted"></div>
+      </details>
+    </aside>
+  </div>
+
+  <script src="js/generators.js?v=33"></script>
+  <script src="js/turing.js?v=33"></script>
+  <script src="js/marble.js?v=33"></script>
+  <script src="js/leaf.js?v=33"></script>
+  <script src="js/dotgrid.js?v=33"></script>
+  <script src="js/carved.js?v=33"></script>
+  <script src="js/polyring.js?v=33"></script>
+  <script src="js/paths.js?v=33"></script>
+  <script src="js/glyphs.js?v=33"></script>
+  <script src="js/opart.js?v=33"></script>
+  <script src="js/rays.js?v=33"></script>
+  <script src="js/voronoi.js?v=33"></script>
+  <script src="js/truchet.js?v=33"></script>
+  <script src="js/halftone.js?v=33"></script>
+  <script src="js/tiles.js?v=33"></script>
+  <script src="js/pins.js?v=33"></script>
+  <script src="js/scene.js?v=33"></script>
+  <script src="js/field.js?v=33"></script>
+  <script src="js/contour.js?v=33"></script>
+  <script src="js/svg.js?v=33"></script>
+  <script src="js/ui.js?v=33"></script>
+  <script src="js/app.js?v=33"></script>
+</body>
+</html>

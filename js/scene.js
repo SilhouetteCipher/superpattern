@@ -180,7 +180,7 @@
         if (r * fade + gap * fade > 0) cutters.push([x, y, r + gap * fade]);
         if (r >= minR) dots.push([x, y, r]);
       }
-      // Carve strokes (e.g. leaf gaps) and post strokes (unioned after carving, e.g. a midrib).
+      // Carve strokes (e.g. gaps cut through a shape) and post strokes (unioned after carving, e.g. a midrib).
       const strokeItem = (st, rad) => {
         const w = st.pts.map((q) => tx(q[0], q[1]));
         const rr = w.map((q, i) => rad(st.r[i], q));

@@ -3,3 +3,5 @@ ref/
 # Local tooling
 .claude/
 .DS_Store
+# Comparison sheets embed the reference pins (third-party artwork)
+exports/pins/contact-sheet.png

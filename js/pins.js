@@ -32,7 +32,6 @@
     P(12, 'Chevron lines', 'paths', { path: 'chevron', size: 40, aspect: 1.2, lines: 6, spacing: 5, width: 3, corner: 2.5, fan: 0.6 }),
     P(13, 'Swirl sphere', 'opart', { angle: 60, spacing: 24, swirl: 260, warp: 25, warpScale: 110, duty: 0.62, lens: 0.4, seed: 13 }),
     P(14, 'Sun ring', 'rays', { count: 16, rIn: 34, len: 18, width: 5.5, splay: 18, pairLen: 0.85 }),
-    P(15, 'Palm leaf', 'leaf', {}),
     P(16, 'Metaball glyph', 'glyphs', { sub: 3, margin: 35, dotR: 0.36, bridge: 0.5, bridgeW: 0.62, fillet: 3, seed: 16 }),
     P(17, 'Dot squeeze', 'dotgrid', {}, { field: { points: [pt(145, 145, 80, 1)] } }),
     P(18, 'Truchet path', 'truchet', { seed: 234, flip: 0.1 }, { board: { w: 150, h: 200 }, refW: 150 }),

@@ -80,15 +80,6 @@
     { name: 'Marble vortex', state: { gen: 'marble', params: MA({ seed: 14, fieldWarp: 2.2, fieldThick: 0.2 }),
       field: { points: [{ x: 100, y: 100, radius: 70, strength: 1, falloff: 'smooth' }] }, board: { w: 200, h: 200 } } },
   );
-  const LF = (over) => Object.assign(SP.defaultsFor('leaf'), over);
-  const LAY = (over) => Object.assign(defaultsOf(SP.layoutSchema), over);
-  BUILTIN.push(
-    { name: 'Palm leaf', ref: { src: 'ref/leaf.webp', w: 178.8, x: 100.2, y: 106.3 },
-      state: { gen: 'leaf', params: LF({}), layout: LAY({}), field: { points: [] }, board: { w: 200, h: 200 } } },
-    { name: 'Leaf ring', state: { gen: 'leaf', params: LF({ stemLen: 18 }), layout: LAY({ type: 'radial', ringCount: 7, ringRadius: 58, ringCenter: false, scale: 0.36, rotation: 34 }), field: { points: [] }, board: { w: 200, h: 200 } } },
-    { name: 'Leaf field', state: { gen: 'leaf', params: LF({ stemLen: 16 }), layout: LAY({ type: 'hex', spacing: 44, scale: 0.3, alternate: true }),
-      field: { scaleAmt: 0.7, thickAmt: 0, dotAmt: 0, points: [{ x: 60, y: 60, radius: 120, strength: 0.8, falloff: 'smooth' }] }, board: { w: 200, h: 200 } } },
-  );
   const DT = (over) => Object.assign(SP.defaultsFor('dotgrid'), over);
   BUILTIN.push(
     { name: 'Dot grid', state: { gen: 'dotgrid', params: DT({}), field: { points: [{ x: 145, y: 145, radius: 80, strength: 1, falloff: 'smooth' }] }, board: { w: 200, h: 200 } } },
@@ -140,7 +131,6 @@
     TP('Rhythm wrap', 'tilegrid', { cols: 16, shape: 'bar', aspect: 0.12, size: 0.8, round: 0, rotGrad: 0, rotRandom: 180, rotStep: 45, seed: 31 }),
     TP('Glyph band', 'glyphs', { tilesX: 9, tilesY: 3, sub: 3, tileGap: 9, dotR: 0.4, bridge: 0.55, fillet: 1.5, seed: 8 }),
     TP('Molecule lattice', 'molecule', {}, { layout: { type: 'hex', spacing: 60, scale: 0.42 } }),
-    TP('Leaf lattice', 'leaf', { stemLen: 14 }, { layout: { type: 'square', spacing: 48, scale: 0.32, alternate: true } }),
   );
   if (SP.pinPresets) BUILTIN.push(...SP.pinPresets);
   const loadUserPresets = () => { try { return JSON.parse(localStorage.getItem('sp.presets') || '[]'); } catch { return []; } };
@@ -374,6 +364,7 @@
   }
   function restore(s) {
     const o = JSON.parse(s);
+    if (o.gen && !SP.generators[o.gen]) return;
     Object.assign(state, o);
     state.render = Object.assign(defaultsOf(SP.renderSchema), o.render || {});
     state.tile = Object.assign(defaultsOf(SP.tileSchema), o.tile || {});
@@ -562,7 +553,7 @@
 
   // ---------------- Library (tabs · generators · preset cards) ----------------
   const FAMILIES = [
-    { id: 'organic', name: 'Organic', gens: ['turing', 'marble', 'voronoi', 'leaf'] },
+    { id: 'organic', name: 'Organic', gens: ['turing', 'marble', 'voronoi'] },
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart'] },
@@ -571,7 +562,7 @@
     { id: 'saved', name: 'Saved' },
   ];
   const GEN_DESC = {
-    turing: 'Reaction–diffusion labyrinths', marble: 'Flowing warped bands', voronoi: 'Rounded cells', leaf: 'Palm leaf silhouettes',
+    turing: 'Reaction–diffusion labyrinths', marble: 'Flowing warped bands', voronoi: 'Rounded cells',
     molecule: 'Rosettes of blended arms and dots', carved: 'Shapes split by curved cuts', polyring: 'Rings of polygons', rays: 'Radial bars and fans',
     dotgrid: 'Dots squeezed by the field', halftone: 'Letters and images as diffusing dots', tilegrid: 'Tiles that rotate, squash and skew', shapetiles: 'Random rounded shape tiles', dashgrid: 'Dots that grow into dashes and crosses', glyphs: 'Dot-matrix glyphs with bridges',
     truchet: 'Smith tiles joined into paths and loops', paths: 'Parallel line bundles', opart: 'Stripes with lens, waves and swirl',
@@ -715,6 +706,7 @@
     $('motifTitle').textContent = SP.generators[state.gen] ? SP.generators[state.gen].name : 'Motif';
   }
   function applyPreset(pr) {
+    if (pr.state && pr.state.gen && !SP.generators[pr.state.gen]) { SP.toast('That preset uses a generator that has been removed'); return; }
     activePreset = pr.name;
     if (pr.ref) {
       if (!refImg.src.endsWith(pr.ref.src)) { refLoaded = false; refImg.src = pr.ref.src; }

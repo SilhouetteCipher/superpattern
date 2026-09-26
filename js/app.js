@@ -554,9 +554,9 @@
   // ---------------- Library (tabs · generators · preset cards) ----------------
   const FAMILIES = [
     { id: 'organic', name: 'Organic', gens: ['turing', 'marble', 'voronoi'] },
-    { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays'] },
-    { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'dashgrid', 'glyphs'] },
-    { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart'] },
+    { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
+    { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
+    { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -565,7 +565,10 @@
     turing: 'Reaction–diffusion labyrinths', marble: 'Flowing warped bands', voronoi: 'Rounded cells',
     molecule: 'Rosettes of blended arms and dots', carved: 'Shapes split by curved cuts', polyring: 'Rings of polygons', rays: 'Radial bars and fans',
     dotgrid: 'Dots squeezed by the field', halftone: 'Letters and images as diffusing dots', tilegrid: 'Tiles that rotate, squash and skew', shapetiles: 'Random rounded shape tiles', dashgrid: 'Dots that grow into dashes and crosses', glyphs: 'Dot-matrix glyphs with bridges',
-    truchet: 'Smith tiles joined into paths and loops', paths: 'Parallel line bundles', opart: 'Stripes with lens, waves and swirl',
+    truchet: 'Smith tiles joined into paths and loops', paths: 'Parallel line bundles', opart: 'Stripes with lens, waves, folds and insets',
+    spokes: 'Rings of wedge spokes, slotted and twisted', trigrid: 'Triangle-grid emblems with rotational symmetry', knots: 'Celtic knotwork with over/under weaving',
+    quadgrid: 'Squares that drop into wedges and triangles', capsules: 'Dashes that morph into bars and blobs',
+    hatch: 'Parallel dashes, breaks and swells in a shape',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

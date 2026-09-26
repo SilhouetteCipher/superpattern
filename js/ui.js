@@ -19,7 +19,11 @@
     container.innerHTML = '';
     const rows = [];
     for (const s of schema) {
-      if (s.group) { container.appendChild(el('div', 'group-label', s.group)); continue; }
+      if (s.group) {
+        const g = container.appendChild(el('div', 'group-label', s.group));
+        if (s.show) rows.push({ s, row: g, sync() {} });
+        continue;
+      }
       let row, sync;
       if (s.type === 'bool') {
         row = el('label', 'switch', `<span>${s.label}</span><input type="checkbox"><span class="knob"></span>`);

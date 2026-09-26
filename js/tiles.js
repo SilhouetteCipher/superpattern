@@ -16,18 +16,20 @@
     return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r;
   };
   // Grid geometry shared by both generators: cells fill the board inside the margin.
+  // `a` = cell height / width (tall cells for rows of bars).
   function grid(p, B, T) {
-    const C = Math.max(1, Math.round(p.cols));
+    const C = Math.max(1, Math.round(p.cols)), a = p.cellRatio || 1;
     let R = Math.max(1, Math.round(p.rows));
-    const pitch = Math.min((B.w - 2 * p.margin) / C, (B.h - 2 * p.margin) / R);
+    const pitch = Math.min((B.w - 2 * p.margin) / C, (B.h - 2 * p.margin) / (R * a));
     if (T) {
       // Seamless: cells span the tile exactly; px/py may differ very slightly so both axes repeat.
       const px = T.x ? B.w / C : pitch;
-      if (T.y) R = Math.max(1, Math.round(B.h / px));
-      const py = T.y ? B.h / R : px;
+      if (T.y) R = Math.max(1, Math.round(B.h / (px * a)));
+      const py = T.y ? B.h / R : px * a;
       return { C, R, pitch: Math.min(px, py), px, py, x0: T.x ? 0 : B.w / 2 - (C * px) / 2, y0: T.y ? 0 : B.h / 2 - (R * py) / 2 };
     }
-    return { C, R, pitch, px: pitch, py: pitch, x0: B.w / 2 - (C * pitch) / 2, y0: B.h / 2 - (R * pitch) / 2 };
+    const py = pitch * a;
+    return { C, R, pitch: Math.min(pitch, py), px: pitch, py, x0: B.w / 2 - (C * pitch) / 2, y0: B.h / 2 - (R * py) / 2 };
   }
   // Evaluate min over the tiles registered in the 3×3 cells around a point.
   function lookup(g, tiles, reachCells = 1) {
@@ -58,8 +60,15 @@
       { key: 'cols', label: 'Columns', min: 1, max: 60, step: 1, def: 12, int: true, rand: [5, 16] },
       { key: 'rows', label: 'Rows', min: 1, max: 60, step: 1, def: 12, int: true, rand: [5, 16] },
       { key: 'margin', label: 'Margin (mm)', min: 0, max: 60, step: 0.5, def: 14 },
+      { key: 'cellRatio', label: 'Cell height / width', min: 0.25, max: 4, step: 0.01, def: 1 },
       { group: 'Shape' },
-      { key: 'shape', label: 'Shape', type: 'select', def: 'box', options: [['box', 'Rounded box'], ['bar', 'Bar'], ['circle', 'Circle'], ['poly', 'Polygon']] },
+      { key: 'shape', label: 'Shape', type: 'select', def: 'box', options: [['box', 'Rounded box'], ['bar', 'Bar'], ['circle', 'Circle'], ['ring', 'Ring'], ['poly', 'Polygon']] },
+      { key: 'ringT', label: 'Ring thickness (× size)', min: 0.02, max: 0.5, step: 0.005, def: 0.15, show: (o) => o.shape === 'ring' },
+      { key: 'ringGrad', label: 'Thickness gradient', min: -1, max: 1, step: 0.01, def: 0.3, show: (o) => o.shape === 'ring' },
+      { key: 'ringAngle', label: 'Thickness gradient dir °', min: -180, max: 180, step: 1, def: -45, show: (o) => o.shape === 'ring' },
+      { key: 'ringMirror', label: 'Mirror gradient (thick at both ends)', type: 'bool', def: false, show: (o) => o.shape === 'ring' },
+      { key: 'ringDot', label: 'Centre dot (× thickness)', min: 0, max: 1.5, step: 0.01, def: 0, show: (o) => o.shape === 'ring' },
+      { key: 'fieldRing', label: 'Points → thickness', min: -1, max: 1, step: 0.01, def: 0, show: (o) => o.shape === 'ring' },
       { key: 'sides', label: 'Sides', min: 3, max: 10, step: 1, def: 6, int: true, show: (o) => o.shape === 'poly' },
       { key: 'size', label: 'Size (× cell)', min: 0.05, max: 1.4, step: 0.01, def: 0.72, rand: [0.5, 0.85] },
       { key: 'aspect', label: 'Aspect (w / h)', min: 0.05, max: 1, step: 0.01, def: 1, show: (o) => o.shape !== 'circle' },
@@ -75,6 +84,7 @@
       { key: 'scaleAngle', label: 'Scale gradient dir °', min: -180, max: 180, step: 1, def: 0 },
       { key: 'squash', label: 'Width gradient', min: -3, max: 3, step: 0.01, def: 0 },
       { key: 'squashAngle', label: 'Width gradient dir °', min: -180, max: 180, step: 1, def: 0 },
+      { key: 'skew0', label: 'Base skew', min: -3, max: 3, step: 0.01, def: 0 },
       { key: 'skew', label: 'Skew gradient', min: -4, max: 4, step: 0.01, def: 0 },
       { key: 'skewAngle', label: 'Skew gradient dir °', min: -180, max: 180, step: 1, def: 90 },
       { key: 'skewCross', label: 'Keep centre cross straight', type: 'bool', def: false },
@@ -101,10 +111,20 @@
           const sc = Math.max(0.02, 1 + p.scaleGrad * G(cx, cy, p.scaleAngle) + p.fieldScale * F);
           const wf = Math.min(1, Math.max(0.03, 1 + p.squash * G(cx, cy, p.squashAngle)));
           // Cross mode: skew vanishes along both centre lines (a clean "+" of square tiles).
-          const k = p.skew * G(cx, cy, p.skewAngle) * (p.skewCross ? Math.min(1, 2.2 * Math.abs(G(cx, cy, p.skewAngle + 90))) : 1);
-          const S = g.pitch * p.size * sc;
-          const hh = S / 2, hw = (S / 2) * (p.shape === 'circle' ? 1 : p.shape === 'bar' ? Math.min(1, p.aspect) : p.aspect) * wf;
-          const r = (p.shape === 'circle' ? 0.5 : p.round) * S;
+          const k = (p.skew0 || 0) + p.skew * G(cx, cy, p.skewAngle) * (p.skewCross ? Math.min(1, 2.2 * Math.abs(G(cx, cy, p.skewAngle + 90))) : 1);
+          const S = Math.min(g.px, g.py) * p.size * sc, Sy = g.py * p.size * sc, Sx = g.px * p.size * sc;
+          const round = p.shape === 'circle' || p.shape === 'ring';
+          // Round shapes use the smaller cell side; boxes and bars fill the cell's height and width.
+          const hh = round ? S / 2 : Sy / 2, hw = (round ? S / 2 : (Sx / 2) * (Sy / Sx)) * (round ? 1 : p.shape === 'bar' ? Math.min(1, p.aspect) : p.aspect) * wf;
+          const r = (round ? 0.5 : p.round) * S;
+          let ringW = 0, dotR = 0;
+          if (p.shape === 'ring') {
+            const gr = G(cx, cy, p.ringAngle);
+            const tau = Math.min(0.5, Math.max(0.02, p.ringT + p.ringGrad * (p.ringMirror ? 2 * Math.abs(gr) : gr + 0.5) + (p.fieldRing || 0) * F));
+            ringW = tau * S;
+            // Centre dot grows with thickness but always leaves a clear gap inside the hole.
+            dotR = Math.min(p.ringDot * ringW * Math.min(1, tau * 2.5), Math.max(0, S / 2 - ringW - Math.max(0.4, ringW * 0.35)));
+          }
           const ca = Math.cos(th), sa = Math.sin(th), lip = Math.sqrt(1 + k * k);
           const poly = p.shape === 'poly' ? SP.polySDF(Math.round(p.sides), hh, Math.PI / 2, r) : null;
           const sdf = (x, y) => {
@@ -114,6 +134,12 @@
             if (poly) return poly(u / (hw / hh || 1), -v) * Math.min(1, hw / hh) / lip;
             if (p.shape === 'bar') return box(u, v, hw, hh, Math.min(r, hw)) / lip;
             if (p.shape === 'circle') return (Math.hypot(u / (wf || 1), v) - hh) * Math.min(1, wf) / lip;
+            if (p.shape === 'ring') {
+              const d = Math.hypot(u / (wf || 1), v);
+              let f = Math.abs(d - (hh - ringW / 2)) - ringW / 2;
+              if (dotR > 0.15) f = Math.min(f, d - dotR);
+              return f * Math.min(1, wf) / lip;
+            }
             return box(u, v, hw, hh, r) / lip;
           };
           const reach = Math.ceil((Math.hypot(hw, hh) * (1 + Math.abs(k))) / g.pitch - 0.5);

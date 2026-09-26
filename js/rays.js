@@ -26,6 +26,7 @@
       { key: 'lenFreq', label: 'Wave cycles', min: 0, max: 12, step: 0.5, def: 1 },
       { key: 'notch', label: 'Inner V-notch (mm)', min: -60, max: 60, step: 0.5, def: 0 },
       { key: 'curve', label: 'Ray curve °', min: -90, max: 90, step: 0.5, def: 0, rand: [-30, 30] },
+      { key: 'curveAlt', label: 'Alternate curve direction', type: 'bool', def: false },
       { key: 'fillet', label: 'Merge', min: 0.02, max: 6, step: 0.01, def: 0.1 },
     ],
 
@@ -34,11 +35,11 @@
       const n = Math.max(1, Math.round(p.count));
       const full = Math.abs(p.a1 - p.a0) >= 359.9;
       let e = 0;
-      const ray = (a, len, r0) => {
+      const ray = (a, len, r0, sgn = 1) => {
         const pts = [], r = [];
-        const steps = p.curve ? 6 : 1;
+        const steps = p.curve ? 10 : 1;
         for (let k = 0; k <= steps; k++) {
-          const t = k / steps, rr = r0 + len * t, aa = a + p.curve * D2R * t * t;
+          const t = k / steps, rr = r0 + len * t, aa = a + sgn * p.curve * D2R * t * t;
           pts.push([rr * Math.cos(aa), -rr * Math.sin(aa)]);
           r.push((p.width / 2) * (1 + (p.taper - 1) * t));
           e = Math.max(e, rr + p.width);
@@ -64,14 +65,18 @@
             const L = len * p.pairLen;
             const base = [r0 * Math.cos(a), -r0 * Math.sin(a)];
             const lean = a + s * p.splay * D2R;
-            for (let k = 0; k <= 1; k++) {
-              pts.push([base[0] + Math.cos(lean) * L * k + Math.cos(a + (s * Math.PI) / 2) * p.width * 0.1, base[1] - Math.sin(lean) * L * k - Math.sin(a + (s * Math.PI) / 2) * p.width * 0.1]);
-              r.push((p.width / 2) * (1 + (p.taper - 1) * k) * 0.85);
+            const steps = p.curve ? 10 : 1;
+            let px = base[0] + Math.cos(a + (s * Math.PI) / 2) * p.width * 0.1, py = base[1] - Math.sin(a + (s * Math.PI) / 2) * p.width * 0.1;
+            for (let k = 0; k <= steps; k++) {
+              const t = k / steps;
+              if (k) { const aa = lean + (p.curveAlt ? s : 1) * p.curve * D2R * (t - 0.5 / steps) * 2; px += (Math.cos(aa) * L) / steps; py -= (Math.sin(aa) * L) / steps; }
+              pts.push([px, py]);
+              r.push((p.width / 2) * (1 + (p.taper - 1) * t) * 0.85);
             }
             out.strokes.push({ pts, r });
             e = Math.max(e, r0 + L + p.width);
           }
-        } else ray(a, len, r0);
+        } else ray(a, len, r0, p.curveAlt && i % 2 ? -1 : 1);
       }
       out.extent = e;
       return out;

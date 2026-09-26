@@ -14,7 +14,8 @@ Delete removes · drag empty space to pan · scroll to zoom · R randomize · M 
 Add new motifs in `js/generators.js` (registry: `SP.generators[id] = { schema, generate(p) }`); layout, field and export are shared.
 
 **Generators:** Molecule · Dash Grid · Turing · Marble · Dot Grid · Carved · Polygon Ring · Line Paths ·
-Glyph Grid · Op Art · Rays · Voronoi. Presets are grouped by generator; "Coasters board" holds one preset per pin
+Glyph Grid · Op Art · Rays · Voronoi · Truchet · Halftone · Tile Grid · Shape Tiles · Capsule Grid · Knotwork ·
+Spoke Ring · Line Hatch · Quad Grid · Tri Glyph. Presets are grouped by generator; "Coasters board" holds one preset per pin
 (underlays in `ref/pins/`, kept local — they're other people's artwork). Sample exports: `exports/pins/`.
 
 **Render** (any generator): *Outline* turns shapes into strokes of a set width; *Invert* cuts the pattern out of a

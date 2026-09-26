@@ -130,7 +130,16 @@
         if (segs.length) items.push(segs);
       }
       for (const b of out.blobs) if (b.r >= minR) items.push([[b.x, b.y, b.x, b.y, b.r, b.r]]);
-      return finishScene({ items, cutters, dots, k: p.fillet || 0.3, ks: 1, clip: out.clip || null, B, pad: 2 + 4 * (p.fillet || 0.3), instances: out.count });
+      // Optional carve strokes (e.g. over/under gaps) and post strokes (unioned after carving).
+      const segsOf = (st) => {
+        const segs = [];
+        for (let i = 0; i + 1 < st.pts.length; i++) segs.push([st.pts[i][0], st.pts[i][1], st.pts[i + 1][0], st.pts[i + 1][1], st.r[i], st.r[i + 1]]);
+        return segs;
+      };
+      for (const st of out.cuts || []) cutters.push(segsOf(st));
+      for (const st of out.post || []) dots.push(segsOf(st));
+      const k = out.k ?? (p.fillet || 0.3);
+      return finishScene({ items, cutters, dots, k, ks: out.ks ?? 1, kPost: out.kPost || 0, clip: out.clip || null, B, pad: 2 + 4 * k, instances: out.count });
     }
 
     const motif = gen.generate(p);

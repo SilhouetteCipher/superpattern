@@ -107,6 +107,12 @@
     { name: 'Hex rhythm', state: { gen: 'tilegrid', params: Object.assign(SP.defaultsFor('tilegrid'), { shape: 'poly', sides: 6, cols: 10, rows: 10, size: 0.8, rotGrad: 30, scaleGrad: -0.8, scaleAngle: 90 }) } },
     { name: 'Shape tiles fine', state: { gen: 'shapetiles', params: Object.assign(SP.defaultsFor('shapetiles'), { cols: 8, rows: 8, gap: 1.6, round: 1.2, seed: 7 }) } },
   );
+  const KW = (over) => Object.assign(SP.defaultsFor('knotwork'), over);
+  BUILTIN.push(
+    { name: 'Knotwork', state: { gen: 'knotwork', params: KW({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Knot panels', state: { gen: 'knotwork', params: KW({ pattern: 'panels', cols: 8, rows: 8, period: 2, doors: 0.3, width: 0.38, gap: 1.4, seed: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Knot rings', state: { gen: 'knotwork', params: KW({ pattern: 'rings', cols: 8, rows: 8, period: 2, doors: 0.15, width: 0.4, sharp: 0.55, gap: 1.8, seed: 41 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -557,6 +563,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -566,6 +573,7 @@
     molecule: 'Rosettes of blended arms and dots', carved: 'Shapes split by curved cuts', polyring: 'Rings of polygons', rays: 'Radial bars and fans',
     dotgrid: 'Dots squeezed by the field', halftone: 'Letters and images as diffusing dots', tilegrid: 'Tiles that rotate, squash and skew', shapetiles: 'Random rounded shape tiles', dashgrid: 'Dots that grow into dashes and crosses', glyphs: 'Dot-matrix glyphs with bridges',
     truchet: 'Smith tiles joined into paths and loops', paths: 'Parallel line bundles', opart: 'Stripes with lens, waves and swirl',
+    knotwork: 'Celtic plaits woven over and under, turned by breaks',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

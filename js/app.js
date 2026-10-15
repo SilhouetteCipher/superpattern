@@ -113,6 +113,12 @@
     { name: 'Knot panels', state: { gen: 'knotwork', params: KW({ pattern: 'panels', cols: 8, rows: 8, period: 2, doors: 0.3, width: 0.38, gap: 1.4, seed: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Knot rings', state: { gen: 'knotwork', params: KW({ pattern: 'rings', cols: 8, rows: 8, period: 2, doors: 0.15, width: 0.4, sharp: 0.55, gap: 1.8, seed: 41 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const HK = (over) => Object.assign(SP.defaultsFor('hankin'), over);
+  BUILTIN.push(
+    { name: 'Hankin stars', state: { gen: 'hankin', params: HK({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Rosette lattice', state: { gen: 'hankin', params: HK({ tiling: 'dodeca', size: 14, angle: 62, width: 2, fillet: 0.4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Star sweep', state: { gen: 'hankin', params: HK({ tiling: 'hex', size: 16, angle: 52, delta: 0.22, sweep: 32, sweepDir: 0, width: 1.8 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -563,7 +569,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -574,6 +580,7 @@
     dotgrid: 'Dots squeezed by the field', halftone: 'Letters and images as diffusing dots', tilegrid: 'Tiles that rotate, squash and skew', shapetiles: 'Random rounded shape tiles', dashgrid: 'Dots that grow into dashes and crosses', glyphs: 'Dot-matrix glyphs with bridges',
     truchet: 'Smith tiles joined into paths and loops', paths: 'Parallel line bundles', opart: 'Stripes with lens, waves and swirl',
     knotwork: 'Celtic plaits woven over and under, turned by breaks',
+    hankin: 'Islamic star strapwork grown from polygons in contact',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

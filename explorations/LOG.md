@@ -78,3 +78,43 @@ offset 0.22, θ sweeping 52° ± 16° left→right).
 - https://archive.bridgesmathart.org/2008/bridges2008-21.html (Hankin's polygons-in-contact grid method, Bridges 2008)
 - https://arxiv.org/pdf/1809.09270 (Next Generation of Star Patterns — limits of the method)
 - https://en.wikipedia.org/wiki/Islamic_geometric_patterns (girih and carved strapwork traditions)
+
+---
+
+## 2026-10-16 — `spacefill` · Space Fill
+
+**Territory:** Space-filling curves / Lindenmayer systems (fractal curve construction, not a tiling or knot).
+
+**Idea.** The classic space-filling curves (Hilbert, Moore, Peano, and Gosper's hexagonal "flowsnake"),
+each defined as an L-system rewrite rule and walked by a turtle on a unit grid, then drawn as one wide,
+winding band. The Moore curve is the closed-loop relative of Hilbert's, so its band is a single closed ring
+that splits the board into two interlocking combs. That gives the figure/ground ambiguity explored in Bridges
+papers on Peano tilings, and it works well as an inlay or a cut-out. Corners are rounded so the meander reads
+as one smooth groove, not a staircase. Optional parallel tracks double the band into a channel. Seeded
+breaks cut it into runs, which suits the flowsnake.
+
+**How the code realises it.** `generateBoard` rewrites the axiom `order` times (capped per curve: Hilbert 6,
+Moore 5, Peano 3, Gosper 4 so the pitch stays printable). A turtle turns 90° (60° for Gosper) and emits
+unit-step vertices. The path is rotated and scaled so the curve plus half a pitch fits the board minus the
+margin. Each corner is replaced by a quadratic blend whose control point is the corner, cut back
+`corner × ½ pitch` along both legs (G1 with the straight legs; corner = 1 turns every U-turn into a smooth
+arch). Repeated points are dropped so offsets stay defined. Closed curves wrap the first and last corner.
+Seeded breaks remove single steps; runs shorter than `minRun` are dropped, so there are no tiny islands.
+Tracks are miter-offset copies, with spacing limited so the outer tracks stay clear of the next run. When a
+track would come out under ~0.6 mm, the generator falls back to fewer tracks. Width is a fraction of the
+pitch, scaled by a linear gradient and by field points. Radius never drops below 0.3 mm (0.6 mm wide). Output
+is strokes only.
+
+**Params.** Curve: `curve` (hilbert / moore / peano / gosper), `order`, `rotate`, `margin` · Band: `width`
+(× pitch), `corner`, `tracks`, `trackGap`, `fillet` · Breaks: `breaks`, `minRun`, `seed` · Swell: `grad`,
+`gradAngle`, `fieldWidth`.
+
+**Presets.** Moore loop (order 4, one closed band) · Hilbert tracks (order 4, twin parallel tracks, fully
+rounded) · Flowsnake runs (Gosper order 3, broken into runs, width swelling upward).
+
+**Inspiration.**
+- https://archive.bridgesmathart.org/2008/bridges2008-123.html (Peano-curve tilings with Escher-like foreground/background ambiguity)
+- https://archive.bridgesmathart.org/2024/bridges2024-319.html (The Art of Space-Filling Domino Curves)
+- https://arxiv.org/pdf/1311.2868 (the complete set of homogeneous 2D Hilbert curves: variants and textures)
+- https://hackage-origin.haskell.org/package/spacefill (Hilbert / Moore / Peano / Gosper generators; Moore as the closed variant)
+- https://creators.vice.com/en/article/53wye5/machine-draws-famous-mathematicians-with-the-math-they-invented (Will Gallia's pen-plotted space-filling portraits)

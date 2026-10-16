@@ -119,6 +119,12 @@
     { name: 'Rosette lattice', state: { gen: 'hankin', params: HK({ tiling: 'dodeca', size: 14, angle: 62, width: 2, fillet: 0.4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Star sweep', state: { gen: 'hankin', params: HK({ tiling: 'hex', size: 16, angle: 52, delta: 0.22, sweep: 32, sweepDir: 0, width: 1.8 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const SF = (over) => Object.assign(SP.defaultsFor('spacefill'), over);
+  BUILTIN.push(
+    { name: 'Moore loop', state: { gen: 'spacefill', params: SF({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Hilbert tracks', state: { gen: 'spacefill', params: SF({ curve: 'hilbert', order: 4, width: 0.5, corner: 1, tracks: 2, trackGap: 0.34 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Flowsnake runs', state: { gen: 'spacefill', params: SF({ curve: 'gosper', order: 3, width: 0.5, corner: 0.7, breaks: 0.06, minRun: 5, seed: 412, grad: 0.4, gradAngle: 90 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -569,7 +575,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -581,6 +587,7 @@
     truchet: 'Smith tiles joined into paths and loops', paths: 'Parallel line bundles', opart: 'Stripes with lens, waves and swirl',
     knotwork: 'Celtic plaits woven over and under, turned by breaks',
     hankin: 'Islamic star strapwork grown from polygons in contact',
+    spacefill: 'Hilbert, Moore, Peano and Gosper curves as one winding band',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

@@ -125,6 +125,12 @@
     { name: 'Hilbert tracks', state: { gen: 'spacefill', params: SF({ curve: 'hilbert', order: 4, width: 0.5, corner: 1, tracks: 2, trackGap: 0.34 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Flowsnake runs', state: { gen: 'spacefill', params: SF({ curve: 'gosper', order: 3, width: 0.5, corner: 0.7, breaks: 0.06, minRun: 5, seed: 412, grad: 0.4, gradAngle: 90 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const MZ = (over) => Object.assign(SP.defaultsFor('maze'), over);
+  BUILTIN.push(
+    { name: 'Maze', state: { gen: 'maze', params: MZ({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Theta maze', state: { gen: 'maze', params: MZ({ grid: 'theta', rows: 10, branch: 0.1, straight: 0.5, width: 0.32, seed: 77 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Maze coral', state: { gen: 'maze', params: MZ({ draw: 'paths', cols: 18, rows: 18, branch: 0.7, straight: 0.1, braid: 0.15, width: 0.42, fillet: 0.8, seed: 9 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -575,7 +581,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -588,6 +594,7 @@
     knotwork: 'Celtic plaits woven over and under, turned by breaks',
     hankin: 'Islamic star strapwork grown from polygons in contact',
     spacefill: 'Hilbert, Moore, Peano and Gosper curves as one winding band',
+    maze: 'Perfect mazes on square or circular grids, as walls or passages',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

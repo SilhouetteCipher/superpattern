@@ -118,3 +118,46 @@ rounded) · Flowsnake runs (Gosper order 3, broken into runs, width swelling upw
 - https://arxiv.org/pdf/1311.2868 (the complete set of homogeneous 2D Hilbert curves: variants and textures)
 - https://hackage-origin.haskell.org/package/spacefill (Hilbert / Moore / Peano / Gosper generators; Moore as the closed variant)
 - https://creators.vice.com/en/article/53wye5/machine-draws-famous-mathematicians-with-the-math-they-invented (Will Gallia's pen-plotted space-filling portraits)
+
+---
+
+## 2026-10-17 — `maze` · Maze
+
+**Territory:** Mazes and labyrinths (graph-carving algorithms on square and polar grids, not a tiling, knot or curve).
+
+**Idea.** A perfect maze is a spanning tree of a grid of cells: there is exactly one route between any two
+cells. Jamis Buck's "growing tree" carver covers a family of algorithms with one rule. Keep a list of active
+cells, take one, carve into a random unvisited neighbour, and drop the cell when it has none. Always taking
+the newest cell gives the recursive backtracker (long, winding corridors). Taking a random one gives a
+Prim-like maze (short, bushy dead ends). The same carver runs on a circular *theta* grid: concentric rings
+whose cell counts double outward whenever the cells grow about twice as wide as they are tall, so cells
+stay roughly square. Braiding knocks dead ends through into loops. For relief work the useful property is
+that the walls of a perfect maze form one tree hanging off the frame, so the wall relief is one connected
+piece. Drawn the other way round, the passage tree itself becomes a branching, coral-like shape.
+
+**How the code realises it.** `generateBoard` builds a neighbour graph (square: E/S/W/N; theta: cw/out/ccw/in,
+with ring counts `n_i = n_{i-1}·round(2πi / n_{i-1})`) and runs the growing tree with a seeded RNG.
+`branch` is the chance of picking a random active cell instead of the newest. `straight` is the chance of
+carving on in the direction the cell was entered. `braid` links a fraction of dead ends to a neighbour,
+preferring another dead end. In *Walls* mode, square walls are merged into collinear runs along each grid
+line (with per-cell vertices so width can vary). Theta walls become arc runs on each ring radius (sampled at
+≤2 mm chords; a fully closed ring becomes one closed loop) plus radial walls on each cell's ccw side. The
+round stroke caps give rounded wall ends, and the field's smooth union fillets the T-junctions. *Passages*
+mode draws the carved links between cell centres; theta links run along ring midlines and drop radially to
+the parent ring. Doors open the left and right frame (square) or one outer cell (theta, with the centre as
+the goal). Wall radius is `width × cell / 2`, swelled by field points, clamped to 0.85 of the cell (so
+corridors never close) and to at least 0.3 mm. Output is strokes only.
+
+**Params.** Grid: `grid` (square / theta), `cols`, `rows` (rings for theta), `margin` · Carve: `branch`,
+`straight`, `braid`, `doors`, `seed` · Draw: `draw` (walls / passages), `width` (× cell), `fillet`,
+`fieldWidth`.
+
+**Presets.** Maze (15×15 square, backtracker-ish, walls with entrance and exit) · Theta maze (10 rings,
+straighter corridors) · Maze coral (18×18 passages, branchy, lightly braided, thick filleted tree).
+
+**Inspiration.**
+- https://educative.io/courses/mazes-for-programmers/understanding-polar-grids (Buck's polar/theta grid subdivision)
+- https://rubyevents.org/talks/twisty-little-passages (Jamis Buck, "Twisty Little Passages": hex, polar and other cell shapes)
+- https://pypi.org/project/the-maze-py/ (port of the Mazes for Programmers algorithms and grids)
+- https://history.siggraph.org/?p=115338 (Xu & Kaplan, Image-guided maze construction: mazes as tone and texture)
+- https://pzwiki.wdka.nl/mediadesign/User:Alessia/Pen_plot_this_maze!‧ (plottable maze generator, the mazes-as-artefacts angle)

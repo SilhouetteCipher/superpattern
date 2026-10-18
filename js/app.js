@@ -124,6 +124,7 @@
     { name: 'Moore loop', state: { gen: 'spacefill', params: SF({}), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Hilbert tracks', state: { gen: 'spacefill', params: SF({ curve: 'hilbert', order: 4, width: 0.5, corner: 1, tracks: 2, trackGap: 0.34 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Flowsnake runs', state: { gen: 'spacefill', params: SF({ curve: 'gosper', order: 3, width: 0.5, corner: 0.7, breaks: 0.06, minRun: 5, seed: 412, grad: 0.4, gradAngle: 90 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Rectangle loop', state: { gen: 'spacefill', params: SF({ curve: 'gilbertLoop', order: 4, width: 0.42, corner: 1 }), field: { points: [] }, board: { w: 300, h: 150 } } },
   );
   const MZ = (over) => Object.assign(SP.defaultsFor('maze'), over);
   BUILTIN.push(
@@ -599,7 +600,7 @@
     truchet: 'Smith tiles joined into paths and loops', paths: 'Parallel line bundles', opart: 'Stripes with lens, waves and swirl',
     knotwork: 'Celtic plaits woven over and under, turned by breaks',
     hankin: 'Islamic star strapwork grown from polygons in contact',
-    spacefill: 'Hilbert, Moore, Peano and Gosper curves as one winding band',
+    spacefill: 'Hilbert, Moore, Peano and Gosper curves as one winding band — the Rectangle curve fills any board aspect',
     maze: 'Perfect mazes on square or circular grids, as walls or passages',
     streamlines: 'Evenly spaced flow lines around vortices, sources and noise',
   };

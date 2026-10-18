@@ -44,6 +44,46 @@
     return pts;
   }
 
+  // Generalised Hilbert ("Gilbert", J. Červený) curve over an arbitrary w × h grid: a Hilbert-like
+  // path that fills a rectangle of any aspect. Recursive split along the longer side; odd splits are
+  // nudged so the sub-blocks stay even where possible.
+  function gilbert(w, h) {
+    const pts = [];
+    const sgn = (v) => (v < 0 ? -1 : v > 0 ? 1 : 0);
+    const gen = (x, y, ax, ay, bx, by) => {
+      const W = Math.abs(ax + ay), H = Math.abs(bx + by);
+      const dax = sgn(ax), day = sgn(ay), dbx = sgn(bx), dby = sgn(by);
+      if (H === 1) { for (let i = 0; i < W; i++) { pts.push([x, y]); x += dax; y += day; } return; }
+      if (W === 1) { for (let i = 0; i < H; i++) { pts.push([x, y]); x += dbx; y += dby; } return; }
+      let ax2 = Math.floor(ax / 2), ay2 = Math.floor(ay / 2), bx2 = Math.floor(bx / 2), by2 = Math.floor(by / 2);
+      const W2 = Math.abs(ax2 + ay2), H2 = Math.abs(bx2 + by2);
+      if (2 * W > 3 * H) {
+        if (W2 % 2 && W > 2) { ax2 += dax; ay2 += day; }
+        gen(x, y, ax2, ay2, bx, by);
+        gen(x + ax2, y + ay2, ax - ax2, ay - ay2, bx, by);
+      } else {
+        if (H2 % 2 && H > 2) { bx2 += dbx; by2 += dby; }
+        gen(x, y, bx2, by2, ax2, ay2);
+        gen(x + bx2, y + by2, ax, ay, bx - bx2, by - by2);
+        gen(x + (ax - dax) + (bx2 - dbx), y + (ay - day) + (by2 - dby), -bx2, -by2, -(ax - ax2), -(ay - ay2));
+      }
+    };
+    if (w >= h) gen(0, 0, w, 0, 0, h); else gen(0, 0, 0, h, w, 0);
+    return pts;
+  }
+
+  // Closed rectangle loop (Moore-style): two Gilbert halves mirrored across the board's midline. Each
+  // half's path starts and ends on its long edge, so facing that edge inward makes both joins unit steps.
+  // Needs the split side to be a multiple of 4 cells and the other side even.
+  function gilbertLoop(w, h) {
+    if (w >= h) {
+      const A = gilbert(w, h / 2);
+      return A.map(([x, y]) => [x, h / 2 - 1 - y]).concat(A.map(([x, y]) => [w - 1 - x, h / 2 + y]));
+    }
+    const A = gilbert(w / 2, h);
+    return A.map(([x, y]) => [w / 2 - 1 - x, y]).concat(A.map(([x, y]) => [w / 2 + x, h - 1 - y]));
+  }
+
   // Round every corner of a polyline: cut back c along both legs and blend with a quadratic whose control
   // point is the corner (G1 with the straight legs). `closed` wraps the first/last corner too.
   function roundCorners(P, c, closed) {
@@ -99,9 +139,10 @@
     board: true,
     schema: [
       { group: 'Curve' },
-      { key: 'curve', label: 'Curve', type: 'select', def: 'moore', options: [['hilbert', 'Hilbert'], ['moore', 'Moore (closed loop)'], ['peano', 'Peano'], ['gosper', 'Gosper flowsnake']] },
+      { key: 'curve', label: 'Curve', type: 'select', def: 'moore', options: [['hilbert', 'Hilbert'], ['moore', 'Moore (closed loop)'], ['peano', 'Peano'], ['gosper', 'Gosper flowsnake'], ['gilbert', 'Rectangle (Hilbert, any aspect)'], ['gilbertLoop', 'Rectangle loop (Moore, any aspect)']] },
       { key: 'order', label: 'Order', min: 1, max: 6, step: 1, def: 4, int: true, rand: [3, 5] },
       { key: 'rotate', label: 'Rotate °', min: -180, max: 180, step: 1, def: 0 },
+      { key: 'fit', label: 'Fit to board', type: 'select', def: 'uniform', options: [['uniform', 'Keep square (centre)'], ['stretch', 'Stretch to fill']], randomize: false },
       { key: 'margin', label: 'Margin (mm)', min: 0, max: 60, step: 0.5, def: 8 },
       { group: 'Band' },
       { key: 'width', label: 'Width (× pitch)', min: 0.1, max: 0.9, step: 0.01, def: 0.42, rand: [0.28, 0.6] },
@@ -121,22 +162,44 @@
 
     generateBoard(p, ctx) {
       const { board: B, fieldAt, points } = ctx;
-      const C = CURVES[p.curve] || CURVES.moore;
-      const order = Math.max(1, Math.min(C.maxOrder, Math.round(p.order)));
-      let P = walk(C, order);
-      const closed = !!C.closed; // the Moore curve ends one step from its start, so it wraps
-
+      const rc = Math.cos(p.rotate * D2R), rs = Math.sin(p.rotate * D2R);
+      const mg = Math.max(0, p.margin);
+      const W = Math.max(1, B.w - 2 * mg), H = Math.max(1, B.h - 2 * mg);
+      let P, closed = false;
+      if (p.curve === 'gilbert' || p.curve === 'gilbertLoop') {
+        // Rectangle: grid aspect follows the board (as seen in the curve's rotated frame); the shorter
+        // side gets 2^order cells, like a Hilbert curve of that order. Vertex count is capped.
+        const bw = Math.abs(rc) * W + Math.abs(rs) * H, bh = Math.abs(rs) * W + Math.abs(rc) * H;
+        const n = 1 << Math.max(1, Math.min(6, Math.round(p.order)));
+        // Both sides are kept even: the construction only guarantees unit steps (no diagonal) then.
+        // The loop splits the shorter side in two, so that side must be a multiple of 4.
+        const loop = p.curve === 'gilbertLoop';
+        const even = (v) => Math.max(2, 2 * Math.round(v / 2));
+        const quad = (v) => Math.max(4, 4 * Math.round(v / 4));
+        const rnd = loop ? quad : even;
+        let gw = bw >= bh ? even((n * bw) / bh) : rnd(n), gh = bw >= bh ? rnd(n) : even((n * bh) / bw);
+        const cap = 8192;
+        if (gw * gh > cap) { const k = Math.sqrt(cap / (gw * gh)); gw = bw >= bh ? even(gw * k) : rnd(gw * k); gh = bw >= bh ? rnd(gh * k) : even(gh * k); }
+        P = loop ? gilbertLoop(gw, gh) : gilbert(gw, gh);
+        closed = loop;
+      } else {
+        const C = CURVES[p.curve] || CURVES.moore;
+        const order = Math.max(1, Math.min(C.maxOrder, Math.round(p.order)));
+        P = walk(C, order);
+        closed = !!C.closed; // the Moore curve ends one step from its start, so it wraps
+      }
 
       // Rotate, then fit the unit-step path (plus half a step all round) into the board minus margin.
-      const rc = Math.cos(p.rotate * D2R), rs = Math.sin(p.rotate * D2R);
+      // "Stretch" scales x and y separately so any curve fills a rectangular board; the band width
+      // follows the smaller of the two pitches so neighbouring runs never touch.
       P = P.map(([x, y]) => [rc * x - rs * y, rs * x + rc * y]);
       let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
       for (const [x, y] of P) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); }
-      const mg = Math.max(0, p.margin);
-      const W = Math.max(1, B.w - 2 * mg), H = Math.max(1, B.h - 2 * mg);
-      const L = Math.min(W / (x1 - x0 + 1), H / (y1 - y0 + 1)); // pitch: mm per step
-      const ox = B.w / 2 - ((x0 + x1) / 2) * L, oy = B.h / 2 - ((y0 + y1) / 2) * L;
-      P = P.map(([x, y]) => [ox + x * L, oy + y * L]);
+      let Lx = W / (x1 - x0 + 1), Ly = H / (y1 - y0 + 1);
+      if (p.fit !== 'stretch') Lx = Ly = Math.min(Lx, Ly);
+      const L = Math.min(Lx, Ly); // pitch: mm per step (smaller axis)
+      const ox = B.w / 2 - ((x0 + x1) / 2) * Lx, oy = B.h / 2 - ((y0 + y1) / 2) * Ly;
+      P = P.map(([x, y]) => [ox + x * Lx, oy + y * Ly]);
 
       // Split into runs at seeded breaks (a break removes one step); runs shorter than minRun are dropped.
       const rand = rng(p.seed * 2654435761 + 3);

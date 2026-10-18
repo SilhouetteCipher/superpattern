@@ -75,6 +75,11 @@
         let v;
         const dx = x - c.x, dy = y - c.y;
         if (shape === 'circle') v = Math.hypot(dx, dy) - c.r;
+        else if (shape === 'diamond') {
+          // Rounded square turned 45°, corner radius 30% of its half-size.
+          const h = c.r * 0.72, rr = h * 0.3, qx = Math.abs((dx + dy) * Math.SQRT1_2) - h + rr, qy = Math.abs((dx - dy) * Math.SQRT1_2) - h + rr;
+          v = Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - rr;
+        }
         else if (shape === 'hex') {
           const qx = Math.abs(dx), qy = Math.abs(dy);
           v = Math.max(qx * 0.8660254 + qy * 0.5, qy) - c.r * 0.9;

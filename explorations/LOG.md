@@ -161,3 +161,46 @@ straighter corridors) · Maze coral (18×18 passages, branchy, lightly braided, 
 - https://pypi.org/project/the-maze-py/ (port of the Mazes for Programmers algorithms and grids)
 - https://history.siggraph.org/?p=115338 (Xu & Kaplan, Image-guided maze construction: mazes as tone and texture)
 - https://pzwiki.wdka.nl/mediadesign/User:Alessia/Pen_plot_this_maze!‧ (plottable maze generator, the mazes-as-artefacts angle)
+
+---
+
+## 2026-10-18 — `streamlines` · Streamlines
+
+**Territory:** Flow fields / scientific flow visualisation (evenly spaced streamline placement, not a tiling, knot, curve or maze).
+
+**Idea.** Tyler Hobbs-style flow fields drawn with Jobard & Lefer's 1997 evenly-spaced-streamlines algorithm,
+so the curves never overlap and are spaced evenly across the board. The vector field is designed, not
+random: a uniform drift plus a few seeded singularities. Each singularity is a source or sink rotated by a
+*spin* angle toward a vortex, so 0° gives magnet-style field lines, 90° gives whirlpools and anything in
+between gives spirals. A smooth noise field twists the direction on top. Lines start and stop where the flow
+converges or diverges, which gives the fingerprint and wood-grain look. Field points add extra vortices you
+can drag around. For relief work, each line is a band that thins wherever a neighbour comes close, so there
+is always a minimum gap between bands, and the free ends taper like brush strokes.
+
+**How the code realises it.** `generateBoard` builds `vel(x, y)` = drift + Σ singularities (radial unit
+vector rotated by spin, magnitude `s·L / (r + core) `) + field-point vortices, then rotates it by
+`noise·π·n(x, y)` (seeded quintic gradient noise). The greedy Jobard–Lefer loop goes like this. Trace a
+streamline both ways from a seed with midpoint RK2 (step ≤ 1 mm). Stop at the margin, near a singularity,
+within `test × spacing` of another line (uniform-grid lookup), or on self-approach. If a line returns to its
+own start with the same heading, it closes into a ring. New seeds are tried one spacing to either side of
+every finished line. When the queue drains, the board is scanned in seeded random order for holes to restart
+from. Lines shorter than 2.5 spacings are dropped. Band radius per point is
+`min(width·spacing/2, (d_nearest − gap)/2)`, lightly smoothed and never above that bound. Open ends get a
+sine taper over `taper` mm. Points thinner than 0.3 mm radius (0.6 mm wide) are trimmed, splitting the band
+there, and short leftovers are discarded, so there are no hairlines or specks. Centrelines stay inside
+margin + band radius, so nothing is clipped. Output is strokes only.
+
+**Params.** Flow: `field` (mixed / swirl / dipoles / noise), `count`, `spin`, `flow` (drift), `angle`,
+`noise`, `seed` · Lines: `spacing` (mm), `test` (stop distance × spacing), `margin` · Band: `width`
+(× spacing), `taper` (mm), `gap` (min mm), `fillet` · Field points: `fieldSpin` (points → vortex strength).
+
+**Presets.** Streamlines (three mixed singularities with spin 70°: fingerprint whorls in a drift) · Flow drift
+(noise only: Hobbs-style combed grain with long tapers) · Magnet lines (two dipole pairs, spin 0°: iron-filing
+field lines).
+
+**Inspiration.**
+- https://www.tylerxhobbs.com/words/flow-fields (Tyler Hobbs, Flow Fields: the generative-art technique)
+- https://www.cg.tuwien.ac.at/courses/Visualisierung1/2015W/exercises/Streamlines_Jobard&Lefer.pdf (Jobard & Lefer, evenly spaced streamlines)
+- https://github.com/The-Erebor-Foundry/lefer (library for non-overlapping, evenly spaced flow-field curves)
+- https://se.mathworks.com/matlabcentral/fileexchange/59476-evenly-spaced-streamlines (tapered evenly spaced streamline styles)
+- https://infiniteimages.toledomuseum.org/?p=431 (Fidenza: flow-field curves as finished artwork)

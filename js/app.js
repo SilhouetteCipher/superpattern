@@ -131,6 +131,12 @@
     { name: 'Theta maze', state: { gen: 'maze', params: MZ({ grid: 'theta', rows: 10, branch: 0.1, straight: 0.5, width: 0.32, seed: 77 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Maze coral', state: { gen: 'maze', params: MZ({ draw: 'paths', cols: 18, rows: 18, branch: 0.7, straight: 0.1, braid: 0.15, width: 0.42, fillet: 0.8, seed: 9 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const SL = (over) => Object.assign(SP.defaultsFor('streamlines'), over);
+  BUILTIN.push(
+    { name: 'Streamlines', state: { gen: 'streamlines', params: SL({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Flow drift', state: { gen: 'streamlines', params: SL({ field: 'noise', flow: 1, angle: 30, noise: 0.9, spacing: 5, width: 0.5, taper: 16, test: 0.45, seed: 23 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Magnet lines', state: { gen: 'streamlines', params: SL({ field: 'dipoles', count: 2, spin: 0, flow: 0.1, noise: 0.05, spacing: 5, width: 0.55, seed: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -581,7 +587,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -595,6 +601,7 @@
     hankin: 'Islamic star strapwork grown from polygons in contact',
     spacefill: 'Hilbert, Moore, Peano and Gosper curves as one winding band',
     maze: 'Perfect mazes on square or circular grids, as walls or passages',
+    streamlines: 'Evenly spaced flow lines around vortices, sources and noise',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

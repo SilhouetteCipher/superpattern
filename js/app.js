@@ -138,6 +138,13 @@
     { name: 'Flow drift', state: { gen: 'streamlines', params: SL({ field: 'noise', flow: 1, angle: 30, noise: 0.9, spacing: 5, width: 0.5, taper: 16, test: 0.45, seed: 23 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Magnet lines', state: { gen: 'streamlines', params: SL({ field: 'dipoles', count: 2, spin: 0, flow: 0.1, noise: 0.05, spacing: 5, width: 0.55, seed: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const MG = (over) => Object.assign(SP.defaultsFor('multigrid'), over);
+  BUILTIN.push(
+    { name: 'Penrose tiles', state: { gen: 'multigrid', params: MG({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Ammann stars', state: { gen: 'multigrid', params: MG({ fold: '8', size: 12, select: 'thin', gap: 1.4, round: 1.6, outline: 'circle', margin: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Twelvefold strapwork', state: { gen: 'multigrid', params: MG({ fold: '12', size: 15, shift: 0.5, draw: 'edges', width: 1.8, fillet: 0.3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Sevenfold scatter', state: { gen: 'multigrid', params: MG({ fold: '7', size: 10, shift: 0.3, scatter: 0.4, select: 'random', fill: 0.7, gap: 1.2, round: 2, seed: 23 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -588,7 +595,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -606,6 +613,7 @@
     spacefill: 'Hilbert, Moore, Peano and Gosper curves as one winding band — the Rectangle curve fills any board aspect',
     maze: 'Perfect mazes on square or circular grids, as walls or passages',
     streamlines: 'Evenly spaced flow lines around vortices, sources and noise',
+    multigrid: 'Penrose and other n-fold rhombus quasi-tilings from de Bruijn multigrids',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

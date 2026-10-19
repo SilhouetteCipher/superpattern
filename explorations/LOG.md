@@ -204,3 +204,52 @@ field lines).
 - https://github.com/The-Erebor-Foundry/lefer (library for non-overlapping, evenly spaced flow-field curves)
 - https://se.mathworks.com/matlabcentral/fileexchange/59476-evenly-spaced-streamlines (tapered evenly spaced streamline styles)
 - https://infiniteimages.toledomuseum.org/?p=431 (Fidenza: flow-field curves as finished artwork)
+
+---
+
+## 2026-10-19 — `multigrid` · Multigrid
+
+**Territory:** Quasicrystal / aperiodic rhombus tilings (de Bruijn's multigrid dual method; the quasi-periodic
+cousin of the periodic strapwork in Hankin Stars, built by a wholly different rule).
+
+**Idea.** N. G. de Bruijn showed that a Penrose rhombus tiling is the dual of a *pentagrid*: five families of
+equally spaced parallel lines at 72° to each other, each shifted by an offset γ. Every crossing of two lines is
+one rhombus, and the four cells round the crossing are its four corners. Because the construction only needs
+the star of line directions, the same rule gives the whole family of n-fold quasicrystal tilings: 4 families
+at 45° give the Ammann–Beenker squares and 45° rhombi, 6 at 30° the twelvefold tiling, 7 and 9 the odd-fold
+ones, and 3 at 60° the periodic rhombille as a sanity check. Equal offsets of ½ give an exact 2n-fold centre
+(the classic Penrose "cartwheel" look); other equal offsets give the generalised Penrose tilings, and a little
+seeded scatter breaks the symmetry into an irregular but still matched pattern. The angle class of each
+rhombus (which pair of families made it) is known, so fat-only, thin-only or alternate-class selections pick
+out the stars and rings that are hidden in the full tiling. For relief work every tile is inset by half a gap
+and its corners rounded, so the result is a field of closed convex pads; the edge mode draws the same tiling
+as one strapwork lattice.
+
+**How the code realises it.** `generateBoard` builds n unit vectors e_m at angles 2π·m/s (n = s for odd s,
+s/2 for even s), draws offsets γ_m = shift + scatter·(seeded ±½), and for every family pair (i, j) and every
+line pair (k_i, k_j) within reach solves the 2×2 system for the crossing z. The rhombus corners are
+Σ_{m≠i,j} ⌈z·e_m − γ_m⌉·e_m + (k_i + a)·e_i + (k_j + b)·e_j for a, b ∈ {0, 1}, scaled by the edge length and
+placed about the (movable) tiling centre. The reach uses f(z) ≈ (n/2)·z to cover the board's farthest corner.
+*Tiles* mode keeps the chosen classes (or a seeded fraction), insets each rhombus by gap/2 plus the field
+shrink, drops any whose remaining inradius is under 0.5 mm, and makes its SDF as an exact convex-polygon
+distance of the shrunk core minus the corner radius (a tile the radius swallows becomes a disc). Tiles are
+binned by edge length so the field evaluation looks at ≤ 9 bins, and the whole set is clipped to a rounded
+board rectangle or a circle with a soft max. *Edges* mode dedupes the rhombus edges by rounded endpoints and
+emits each as a band of constant radius, clipped by the shared margin rectangle or trimmed to the circle.
+
+**Params.** Grid: `fold` (5 Penrose / 6 rhombille / 7 / 8 Ammann–Beenker / 9 / 11 / 12 / 16), `size` (edge mm),
+`rotate`, `shift` (grid offset), `scatter`, `centreX`, `centreY`, `seed` · Tiles: `draw` (tiles / edges),
+`select` (all / fat / thin / alternate / random), `fill`, `gap`, `round`, `width` (band mm), `fillet` ·
+Board: `outline` (board / circle), `margin`, `edgeRound`, `fieldShrink`.
+
+**Presets.** Penrose tiles (5-fold, offset ½: tenfold cartwheel of rounded rhombi) · Ammann stars (8-fold,
+thin rhombi only in a circle: eight-point stars) · Twelvefold strapwork (12-fold edge lattice) · Sevenfold
+scatter (random offsets, 70 % of tiles kept, soft corners: a pebble mosaic).
+
+**Inspiration.**
+- https://ar5iv.labs.arxiv.org/html/2004.10128 (multigrid construction of n-fold rhombus tilings; offset conditions for regularity and global symmetry)
+- https://www.ams.org/featurecolumn/archive/ribbons.html (AMS feature column: Penrose tilings and de Bruijn's pentagrid duality)
+- https://physics.emory.edu/~weeks/software/exquasi.html (Eric Weeks' generalised dual method program and pictures)
+- https://physicsworld.com/a/islamic-quasicrystals-predate-penrose-tiles/ (Lu & Steinhardt: girih tiles and Penrose-like patterns at Darb-i Imam)
+- https://mathematicians.org.uk/projects/penrose-tiles/ (laser-cut Penrose tiles in oak and walnut: the relief/cut-out angle)
+- https://github.com/jesusfreke/pynrose (pynrose: Penrose tilings as SVG for laser and CNC)

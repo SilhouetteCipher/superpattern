@@ -253,3 +253,47 @@ scatter (random offsets, 70 % of tiles kept, soft corners: a pebble mosaic).
 - https://physicsworld.com/a/islamic-quasicrystals-predate-penrose-tiles/ (Lu & Steinhardt: girih tiles and Penrose-like patterns at Darb-i Imam)
 - https://mathematicians.org.uk/projects/penrose-tiles/ (laser-cut Penrose tiles in oak and walnut: the relief/cut-out angle)
 - https://github.com/jesusfreke/pynrose (pynrose: Penrose tilings as SVG for laser and CNC)
+
+---
+
+## 2026-10-20 — `guilloche` · Guilloché
+
+**Territory:** Guilloché / rose-engine "engine turning" (ornamental-turning craft rule; concentric but built by a
+phased-cam construction, unlike the radial Rays/Spokes/Polygon Ring motifs or the concentric Op Art stripes).
+
+**Idea.** A rose engine rocks the workpiece against a *rosette* cam while it turns, so the cutter traces a lobed
+circle r(θ) = R + A·cos(n·θ + φ). The pattern is cut one pass at a time: each pass steps the radius out by one
+*pitch* and the index plate shifts the rosette's phase by a fraction of a lobe. The whole look comes from how
+that phase is indexed. Advancing it by a fixed fraction every pass twists the lobes into spirals; alternating by
+half a lobe makes neighbouring passes bulge into each other so the space between them breaks into the lattice
+of grains called *barleycorn* (grain d'orge); cutting every pass twice, phased a little either side of the
+barleycorn phase, chains lenses along each ring for a *basketweave*. Deeper cams toward the rim are a linear
+amplitude ramp, and the eccentric offset-circle guilloché of watch dials is a centre that walks across the
+passes.
+
+**How the code realises it.** `generateBoard` counts the passes that fit (inscribed circle inside the margin,
+or out to the far corner with the margin rectangle as `clip` for board fill) and emits each pass as one closed
+polyline of constant radius `width / 2` (chords ≤ 0.7 mm, ≥ 16 samples per lobe). Lobe shaping is
+sign(c)·|c|^q with q = e^(1.2·sharp), which keeps the zero crossings and extrema in place while pointing or
+squaring the lobes. The amplitude of each pass is `amp × pitch` times the ramp, capped at 0.3 of the lobe's arc
+length so the innermost passes stay gently waved instead of folding into a spiky knot; field points scale it
+locally. Phases: phased = k·step·2π, barleycorn = (k mod 2)·π, crossed = barleycorn ± step·2π. The band is
+capped at 0.8 pitch so passes never weld into a disc, and the centre drift is capped so the bunched side keeps
+≥ 0.8 mm between bands. Output is strokes only, so the field's smooth union fillets every crossing and the
+G1 Bézier fit gives closed curves.
+
+**Params.** Rosette: `pattern` (phased / barleycorn / crossed), `lobes`, `amp` (× pitch), `sharp`,
+`phaseStep` (lobes per pass), `rotate` · Passes: `pitch` (mm), `rIn`, `fit` (circle / board), `margin`,
+`ampRamp`, `drift` (mm) · Band: `width` (mm), `fillet` · Field points: `fieldAmp`.
+
+**Presets.** Barleycorn (12 lobes, half-lobe alternation: the grain lattice) · Rose engine twist (8 pointed
+lobes phased 0.07 lobe per pass with the amplitude ramping outward) · Basketweave (16 lobes cut twice at
+±0.14 lobe, filling the board) · Eccentric dial (6 soft lobes alternating, centre drifting 14 mm).
+
+**Inspiration.**
+- https://en.wikipedia.org/wiki/Rose_engine_lathe (rosette cam + rocking headstock = Spirograph in metal)
+- https://barringtonwatchwinders.com/pages/guilloche (rosette count, amplitude, click-plate indexing between passes)
+- https://www.the-sot.org/Forum/Q.A._RoseEngine_Basketweave_Barleycorn.pdf (Society of Ornamental Turners: phase the rosette by a half, quarter or third of a bump between rows for basketweave and barleycorn)
+- https://MathWorld.Wolfram.com/GuillochePattern.html (guilloché as nested sinusoids between inner and outer envelopes)
+- https://www.creighton.edu/fileadmin/user/archives/docs/RiggeSJCuspidalRosettes.pdf (Rigge 1919, the rosette as the polar curve a + b·sin nθ with an initial phase)
+- https://community.carbide3d.com/t/guilloche-spirograph-vector-generator/20227 (CNC makers hunting for a vector guilloché generator: the cut-out/relief angle)

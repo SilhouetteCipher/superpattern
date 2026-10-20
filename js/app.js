@@ -145,6 +145,13 @@
     { name: 'Twelvefold strapwork', state: { gen: 'multigrid', params: MG({ fold: '12', size: 15, shift: 0.5, draw: 'edges', width: 1.8, fillet: 0.3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Sevenfold scatter', state: { gen: 'multigrid', params: MG({ fold: '7', size: 10, shift: 0.3, scatter: 0.4, select: 'random', fill: 0.7, gap: 1.2, round: 2, seed: 23 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const GU = (over) => Object.assign(SP.defaultsFor('guilloche'), over);
+  BUILTIN.push(
+    { name: 'Barleycorn', state: { gen: 'guilloche', params: GU({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Rose engine twist', state: { gen: 'guilloche', params: GU({ pattern: 'phased', lobes: 8, amp: 0.55, sharp: 0.5, phaseStep: 0.07, pitch: 4.5, rIn: 10, ampRamp: 0.5, width: 1.3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Basketweave', state: { gen: 'guilloche', params: GU({ pattern: 'crossed', lobes: 16, amp: 0.4, phaseStep: 0.14, pitch: 7, rIn: 14, fit: 'board', margin: 8, width: 1.2, fillet: 0.2 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Eccentric dial', state: { gen: 'guilloche', params: GU({ pattern: 'phased', lobes: 6, amp: 0.12, sharp: -0.3, phaseStep: 0.5, pitch: 4.5, rIn: 4, drift: 14, width: 1.4, fillet: 0.25 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -595,7 +602,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -614,6 +621,7 @@
     maze: 'Perfect mazes on square or circular grids, as walls or passages',
     streamlines: 'Evenly spaced flow lines around vortices, sources and noise',
     multigrid: 'Penrose and other n-fold rhombus quasi-tilings from de Bruijn multigrids',
+    guilloche: 'Rose-engine engine turning: phased rosette passes, barleycorn and basketweave',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

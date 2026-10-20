@@ -33,10 +33,14 @@
   ];
   const exportSchema = [
     { key: 'mode', label: 'Structure', type: 'select', def: 'shapes',
+      tip: 'How the loops are grouped into <path> elements. Same geometry and file size either way; this only changes what you get when you select or import.\n• One path per shape: each solid piece with its holes is one path (best for CAD).\n• Single compound path: the whole pattern is one path.\n• Every loop separate: each outline and each hole is its own path.',
       options: [['shapes', 'One path per shape'], ['compound', 'Single compound path'], ['separate', 'Every loop separate']] },
-    { key: 'tol', label: 'Curve tolerance (mm)', min: 0.001, max: 0.05, step: 0.001, def: 0.004 },
-    { key: 'res', label: 'Sampling step (mm)', min: 0.02, max: 0.4, step: 0.01, def: 0.08 },
-    { key: 'dp', label: 'Decimals', min: 2, max: 6, step: 1, def: 4, int: true },
+    { key: 'tol', label: 'Curve tolerance (mm)', min: 0.001, max: 0.05, step: 0.001, def: 0.004,
+      tip: 'How far the exported Bézier curves may stray from the true outline, in mm. This is the main control over file weight: a looser tolerance fits each loop with fewer, longer curves (lighter file, fewer nodes in CAD); a tighter one splits the loop into more curves to hug the shape. 0.004 mm is already far below anything you can print; 0.01–0.02 mm is usually fine and much lighter.' },
+    { key: 'res', label: 'Sampling step (mm)', min: 0.02, max: 0.4, step: 0.01, def: 0.08,
+      tip: 'Grid spacing used to trace the outline before curve fitting, in mm. It sets the smallest detail that can be captured and how smooth the trace is; it does not add curves by itself (the tolerance decides that). Smaller = finer detail but slower export and more memory; larger = faster but can smooth away tight corners, and features thinner than about 2× the step may vanish. 0.08 mm suits most patterns.' },
+    { key: 'dp', label: 'Decimals', min: 2, max: 6, step: 1, def: 4, int: true,
+      tip: 'Decimal places written for each coordinate in the SVG. More digits = bigger file for the same number of curves, with no visible difference past about 3 (0.001 mm). Dropping from 4 to 3 trims file size by roughly 15–20%; going below 3 can introduce tiny steps at curve joins.' },
   ];
 
   // ---------------- Presets ----------------

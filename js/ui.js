@@ -27,11 +27,13 @@
       let row, sync;
       if (s.type === 'bool') {
         row = el('label', 'switch', `<span>${s.label}</span><input type="checkbox"><span class="knob"></span>`);
+        if (s.tip) row.title = s.tip;
         const cb = row.querySelector('input');
         cb.addEventListener('change', () => onChange(s.key, cb.checked, true));
         sync = (o) => (cb.checked = !!o[s.key]);
       } else if (s.type === 'text') {
         row = el('div', 'field-row', `<label>${s.label}</label>`);
+        if (s.tip) row.firstChild.title = s.tip;
         const inp = el('input');
         inp.type = 'text';
         inp.maxLength = s.maxLength || 12;
@@ -43,6 +45,7 @@
         sync = (o) => { if (document.activeElement !== inp) inp.value = o[s.key] ?? ''; };
       } else if (s.type === 'select') {
         row = el('div', 'field-row', `<label>${s.label}</label>`);
+        if (s.tip) row.firstChild.title = s.tip;
         const sel = el('select');
         for (const [v, t] of s.options) sel.appendChild(Object.assign(el('option', null, t), { value: v }));
         sel.addEventListener('change', () => onChange(s.key, sel.value, true));
@@ -51,7 +54,7 @@
       } else {
         row = el('div', 'ctl');
         const lab = el('label', null, s.label);
-        lab.title = 'Double-click to reset';
+        lab.title = s.tip ? `${s.tip}\n\nDouble-click to reset.` : 'Double-click to reset';
         const num = el('input', 'num');
         num.type = 'text';
         const rng = el('input');

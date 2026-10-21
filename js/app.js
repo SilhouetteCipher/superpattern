@@ -156,6 +156,13 @@
     { name: 'Basketweave', state: { gen: 'guilloche', params: GU({ pattern: 'crossed', lobes: 16, amp: 0.4, phaseStep: 0.14, pitch: 7, rIn: 14, fit: 'board', margin: 8, width: 1.2, fillet: 0.2 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Eccentric dial', state: { gen: 'guilloche', params: GU({ pattern: 'phased', lobes: 6, amp: 0.12, sharp: -0.3, phaseStep: 0.5, pitch: 4.5, rIn: 4, drift: 14, width: 1.4, fillet: 0.25 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const CH = (over) => Object.assign(SP.defaultsFor('chladni'), over);
+  BUILTIN.push(
+    { name: 'Chladni plates', state: { gen: 'chladni', params: CH({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Sand lines', state: { gen: 'chladni', params: CH({ n: 7, m: 2, draw: 'lines', width: 2.4, fillet: 0.3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Drumhead', state: { gen: 'chladni', params: CH({ plate: 'circle', n: 6, m: 4, mix: 0, draw: 'alt', gap: 2.4, margin: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Pinned lattice', state: { gen: 'chladni', params: CH({ plate: 'pinned', n: 4, m: 6, mix: 1, draw: 'plates', gap: 3, fillet: 0.5, edgeRound: 12 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -606,7 +613,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -626,6 +633,7 @@
     streamlines: 'Evenly spaced flow lines around vortices, sources and noise',
     multigrid: 'Penrose and other n-fold rhombus quasi-tilings from de Bruijn multigrids',
     guilloche: 'Rose-engine engine turning: phased rosette passes, barleycorn and basketweave',
+    chladni: 'Chladni figures: plates and sand lines of a vibrating plate',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

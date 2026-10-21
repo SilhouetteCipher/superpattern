@@ -297,3 +297,47 @@ lobes phased 0.07 lobe per pass with the amplitude ramping outward) · Basketwea
 - https://MathWorld.Wolfram.com/GuillochePattern.html (guilloché as nested sinusoids between inner and outer envelopes)
 - https://www.creighton.edu/fileadmin/user/archives/docs/RiggeSJCuspidalRosettes.pdf (Rigge 1919, the rosette as the polar curve a + b·sin nθ with an initial phase)
 - https://community.carbide3d.com/t/guilloche-spirograph-vector-generator/20227 (CNC makers hunting for a vector guilloché generator: the cut-out/relief angle)
+
+---
+
+## 2026-10-21 — `chladni` · Chladni
+
+**Territory:** Acoustics / cymatics — the sand figures of a vibrating plate (a physics rule: nodal lines of
+standing-wave modes; not a tiling, knot, curve, maze, flow field or lathe construction).
+
+**Idea.** Bow a plate dusted with sand and the grains hop off the moving antinodes and settle along the nodal
+lines, the still curves of the standing wave. For a rectangular plate the (n, m) mode is a product of cosines
+(free edges) or sines (pinned edges), and the classic centre-driven Chladni figures are the *difference* of a
+mode and its transpose: cos(nπx/W)·cos(mπy/H) − cos(mπx/W)·cos(nπy/H) = 0. One `mix` knob slides from that
+difference (−1) through the single mode (0, a plain grid of cells) to the sum (+1). A circular plate clamped at
+its rim has modes J_n(z·r/R)·cos(nθ) with z the m-th zero of the Bessel function J_n — n nodal diameters and
+m − 1 nodal circles — mixed with the transposed (m, n) mode the same way. The figure is drawn three ways: the
+nodal *lines* as sand ridges of a set width, the *plates* between the lines inset by a set gap, or every other
+plate (one sign of the mode).
+
+**How the code realises it.** `generateBoard` returns an `evalFn` (implicit field) rather than primitives.
+The mode f(x, y) is evaluated on the plate inside the margin (so the plate's own edges are the board outline:
+a rounded rectangle or the inscribed circle). J_n is computed by Bessel's integral with a midpoint rule
+(spectrally convergent, sample count ∝ n + x), the zeros by scan-and-bisect, and the radial profile is
+tabulated on 1024 samples and interpolated so the marching grid stays cheap. Dividing f by its numerical
+gradient, f/|∇f| (central differences, 0.04 mm step, capped at ±60 mm), gives an approximate signed distance
+in mm to the nodal set; lines are |d| − w/2, plates are g/2 − |d|, alternate plates g/2 − d. Near a crossing
+f ≈ x·y so this pseudo-distance rounds every plate corner and band junction on its own; the outline is
+combined by smooth max with the `fillet`, and field points add to f (`fieldWarp`) to bend the nodal lines
+locally. Degenerate inputs are clamped: n = m drops the mix (the difference form would vanish everywhere),
+pinned edges force n, m ≥ 1, and the (0, 0) flat plate becomes (0, 1).
+
+**Params.** Plate: `plate` (free / pinned / circle), `n`, `m`, `mix`, `rotate` (circle) · Draw: `draw`
+(plates / lines / alt), `width` (mm), `gap` (mm), `fillet` · Board: `margin`, `edgeRound`, `fieldWarp`.
+
+**Presets.** Chladni plates (free 5 × 2 difference, plates with a 2.6 mm gap) · Sand lines (7 × 2 difference
+as 2.4 mm nodal ridges) · Drumhead (circle, 6 diameters and 4 rings, alternate plates: a dartboard of wedges)
+· Pinned lattice (sin modes 4 × 6 summed, plates with a 3 mm gap and 12 mm board corners).
+
+**Inspiration.**
+- https://paulbourke.net/geometry/chladni/ (square-plate difference equation, free-plate product form, circular plate J_n(Kr)·cos nθ with K = Z_nm/R)
+- https://barbegenerativediary.com/en/tutorials/how-to-create-a-chladni-figure-with-processing/ (the cos·cos − cos·cos nodal equation as a generative sketch)
+- https://en.wikipedia.org/wiki/Cymatics (sand settling on the nodal lines; plate shape and frequency set the figure)
+- https://www.raster.art/artwork/interference-by-phaust/about (Interference: a generative series built on the Chladni equations)
+- https://vbn.aau.dk/en/publications/the-chladni-wall (The Chladni Wall: 2D Chladni patterns turned into relief sculpture)
+- https://elysiatools.com/en/visualizations/chladni-cymatics-plate (interactive square/circular plate explorer)

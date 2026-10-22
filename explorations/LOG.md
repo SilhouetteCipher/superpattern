@@ -341,3 +341,50 @@ as 2.4 mm nodal ridges) · Drumhead (circle, 6 diameters and 4 rings, alternate 
 - https://www.raster.art/artwork/interference-by-phaust/about (Interference: a generative series built on the Chladni equations)
 - https://vbn.aau.dk/en/publications/the-chladni-wall (The Chladni Wall: 2D Chladni patterns turned into relief sculpture)
 - https://elysiatools.com/en/visualizations/chladni-cymatics-plate (interactive square/circular plate explorer)
+
+## 2026-10-22 — `hitomezashi` · Hitomezashi
+
+**Territory:** Japanese sashiko embroidery — hitomezashi, the "one-stitch" running-stitch rule (a textile
+construction rule with a recent mathematical literature; not a tiling, knot, curve, maze, flow field, lathe
+construction or plate mode).
+
+**Idea.** Every grid line carries a single bit. Along the line the running stitch covers every other unit
+segment, and the bit says which parity it starts on. Where lines cross, each lattice point ends up with exactly
+one stitch in every direction, so on the square grid the stitches chain into forced staircase strands (every
+lattice point is an L-turn, never a crossing) that close into loops or run off the board, and the regions they
+bound are 2-colourable — the classic two-tone embroidery read: colour(i, j) = i·j + Σv + Σh + i + j (mod 2) flips
+exactly where a stitch is crossed. On the triangular grid three line families meet at every lattice point, so the
+strands branch into nets and the regions become a crazy paving of triangles, trapezia and hexagonal cells. The
+bits come from a seeded coin with a chosen share of 1s, a mirrored coin (lines k and −k−1 share a bit, so the
+pattern is symmetric about both board axes), a word (vowels = 1, as in Ayliean MacDonald's Numberphile
+demonstration), or the digits of π (odd = 1).
+
+**How the code realises it.** `generateBoard` returns an `evalFn` (implicit field) like Chladni. The grid is
+centred on the board (square lines at (k + ½)·cell so the centre is a cell; triangular lines through the centre,
+spaced cell·√3/2) and may be rotated; bit arrays are built per line family over the index range that covers the
+board's corners, so rectangular boards work. The field is an exact distance to the stitch set: for a point only
+the two nearest lines of each family matter, and on a line only the unit segment under the point and its two
+neighbours (alternation guarantees one of them is a stitch). A polynomial smooth-min between the families
+(`round`, mm) rounds the convex corners of every region, while the inset gap rounds the concave ones; the result
+is clamped at zero so the two-colour read stays continuous across a stitch. Draw modes: regions of one colour
+(g/2 − colour·d, with `swap` picking the other class; triangular grids fall back to every region since odd-degree
+vertices can't be 2-coloured), every region inset (g/2 − d), or the strands themselves (d − w/2), optionally
+broken into individual stitches by pulling each stitch end back by (gap + w)/(2·sin θ/2) so the clear distance
+between round caps is exactly `stitchGap`. Field points widen the strands / gaps (`fieldGain`), and the plate's
+rounded-rectangle outline is combined by smooth max.
+
+**Params.** Grid: `grid` (square / triangle), `cell` (mm), `angle` · Stitch bits: `source` (random / mirror /
+word / pi), `word`, `ratio`, `shift`, `seed` · Draw: `draw` (regions / cells / strands), `swap`, `gap`, `width`,
+`stitchGap`, `round` · Board: `margin`, `edgeRound`, `fillet`, `fieldGain`.
+
+**Presets.** Hitomezashi (seeded coin, 9 mm stitches, two-colour regions) · Vowel regions (bits from the word
+HITOMEZASHI, 7.5 mm) · Running stitch (π digits, strands broken into 12 mm dashes with a 1.4 mm gap) · Mirrored
+sashiko (mirrored coin, every region inset, symmetric) · Triangle net (triangular grid, branching strands).
+
+**Inspiration.**
+- https://numberphile.com/videos/hitomezashi-stitch-patterns (Ayliean MacDonald: the rule, bits from vowels and digits of π, the triangular-grid extension)
+- https://arxiv.org/abs/2201.03461 (Defant & Kravitz, Loops and Regions in Hitomezashi Patterns: forced strands, 2-colourable regions, loop statistics)
+- https://arxiv.org/abs/2208.14428 (Extensions of Hitomezashi Patterns: triangular grid, long-stitch variants)
+- https://arxiv.org/abs/2208.12580 (Seaton & Hayes, Mathematical specification of hitomezashi designs: binary-word encoding and duality)
+- https://archive.bridgesmathart.org/2024/bridges2024-227.pdf (Attainable symmetry in generalized hitomezashi patterns — the mirrored-bit construction)
+- https://resources.wolframcloud.com/FunctionRepository/resources/HitomezashiStitchPattern/ (odd/even parity per line as a generator input)

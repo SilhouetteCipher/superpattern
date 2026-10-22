@@ -163,6 +163,14 @@
     { name: 'Drumhead', state: { gen: 'chladni', params: CH({ plate: 'circle', n: 6, m: 4, mix: 0, draw: 'alt', gap: 2.4, margin: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Pinned lattice', state: { gen: 'chladni', params: CH({ plate: 'pinned', n: 4, m: 6, mix: 1, draw: 'plates', gap: 3, fillet: 0.5, edgeRound: 12 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const HZ = (over) => Object.assign(SP.defaultsFor('hitomezashi'), over);
+  BUILTIN.push(
+    { name: 'Hitomezashi', state: { gen: 'hitomezashi', params: HZ({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Vowel regions', state: { gen: 'hitomezashi', params: HZ({ source: 'word', word: 'HITOMEZASHI', cell: 7.5, gap: 2, round: 1.2 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Running stitch', state: { gen: 'hitomezashi', params: HZ({ source: 'pi', cell: 12, draw: 'strands', width: 2.4, stitchGap: 1.4, round: 0.6 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Mirrored sashiko', state: { gen: 'hitomezashi', params: HZ({ source: 'mirror', seed: 21, cell: 10, draw: 'cells', gap: 2.6, round: 2.2 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Triangle net', state: { gen: 'hitomezashi', params: HZ({ grid: 'triangle', seed: 4, cell: 11, draw: 'strands', width: 2.4, round: 1.2 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -613,7 +621,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -634,6 +642,7 @@
     multigrid: 'Penrose and other n-fold rhombus quasi-tilings from de Bruijn multigrids',
     guilloche: 'Rose-engine engine turning: phased rosette passes, barleycorn and basketweave',
     chladni: 'Chladni figures: plates and sand lines of a vibrating plate',
+    hitomezashi: 'Hitomezashi stitch loops and two-colour regions',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

@@ -388,3 +388,54 @@ sashiko (mirrored coin, every region inset, symmetric) · Triangle net (triangul
 - https://arxiv.org/abs/2208.12580 (Seaton & Hayes, Mathematical specification of hitomezashi designs: binary-word encoding and duality)
 - https://archive.bridgesmathart.org/2024/bridges2024-227.pdf (Attainable symmetry in generalized hitomezashi patterns — the mirrored-bit construction)
 - https://resources.wolframcloud.com/FunctionRepository/resources/HitomezashiStitchPattern/ (odd/even parity per line as a generator input)
+
+---
+
+## 2026-10-23 — `hyperbolic` · Hyperbolic
+
+**Territory:** Hyperbolic geometry — regular {p, q} tilings of the Poincaré disc, the construction behind Escher's
+Circle Limit woodcuts (a reflection-group rule; not a Euclidean tiling, knot, curve, maze or flow).
+
+**Idea.** In the hyperbolic plane any regular polygon tiles with any vertex valence as long as (p − 2)(q − 2) > 4:
+heptagons three to a vertex, pentagons four to a vertex, squares five or six to a vertex. Drawn in the Poincaré
+disc, straight lines become circular arcs that meet the rim at right angles and congruent tiles shrink toward the
+rim, so infinitely many fit in one circle. The construction is the (2, p, q) triangle group: one right triangle
+with angles π/p (tile centre), π/q (tile vertex) and π/2 (edge midpoint) is reflected across its own sides, over
+and over, and the copies tile the disc without gaps. Its hypotenuses are the tile edges, the centre–midpoint legs
+are the dual tiling {q, p}, and all three sides together are the kaleidoscope. Triangles are 2-colourable by the
+parity of the reflections that made them (Circle Limit IV's angels and devils); {p, q} tiles are 2-colourable when
+q is even. A Möbius map moves the seed so the disc is centred on a tile, a vertex or an edge midpoint.
+
+**How the code realises it.** `generateBoard` places the seed triangle from the hyperbolic law of cosines
+(cosh OB = cot(π/p)·cot(π/q), cosh OC = cos(π/q)/sin(π/p), cosh BC = cos(π/p)/sin(π/q), Poincaré radius
+tanh(d/2)), optionally re-centres it with z ↦ (z − a)/(1 − āz), rotates it, then breadth-first reflects it across
+its sides (a circle inversion in the geodesic through two vertices, or a mirror when that geodesic is a diameter),
+deduplicating by centroid and tracking three parities. Generation stops at the Euclidean radius where a cell's
+inscribed circle would drop below `minEdge` mm (lengths scale by (1 − r²)/2), never below ~2 gaps, and one layer
+beyond; everything outside that radius becomes a solid rim, so there are no hairlines or specks. Triangle sides
+are deduplicated, then sides lying on the same geodesic are chained into one arc (keeping the parity per
+half-edge, since cells alternate along a mirror line) so the corner rounding only fires between arcs on different
+geodesics. The field is the exact distance to the arcs, found through a uniform grid of bins in which every arc
+is registered wherever it can be within the distance cap; a polynomial smooth-min between arcs rounds the convex
+corners of each cell and the inset gap or band width rounds the concave ones. The parity of the cell at a point
+is read from the nearest arc (which always bounds the containing cell) and the side of it the point is on. Styles:
+every cell inset by a gap, alternate cells (checkerboard; falls back to all cells when the colouring does not
+exist), or the edges as bands. The disc is `min(w, h)/2 − margin`, so rectangular boards get a centred disc.
+
+**Params.** Tiling: `p`, `q`, `draw` (tiles / dual / kaleidoscope), `centre` (tile / vertex / edge), `rotate` ·
+Detail: `minEdge` (smallest tile, mm), `rim` (mm) · Draw: `style` (cells / alt / lines), `gap`, `width`, `round`
+(mm) · Board: `margin`, `fillet`, `fieldGain` (points widen the gap or band).
+
+**Presets.** Heptagon disc ({7, 3}, inset cells) · Circle limit ({6, 4} kaleidoscope, alternate triangles, centred
+on a vertex) · Pentagon lattice ({5, 4} edges as bands, centred on an edge) · Square swarm ({4, 6} alternate
+tiles, rotated 45°).
+
+**Inspiration.**
+- https://en.wikipedia.org/wiki/Circle_Limit_III (Escher's hyperbolic woodcuts: the Poincaré disc as finished artwork)
+- https://www.d.umn.edu/~ddunham/dunbrid06.pdf (Douglas Dunham, families of Circle Limit III-style patterns from {p, q} tilings)
+- https://en.wikipedia.org/wiki/Triangle_group (the (2, p, q) reflection group that generates a regular tiling)
+- https://en.wikipedia.org/wiki/Uniform_tilings_in_hyperbolic_plane (Schläfli {p, q} and the (p − 2)(q − 2) > 4 condition)
+- https://openprocessing.org/sketch/429029 (reflect each pixel in the mirror circles and colour by parity of the reflection count)
+- https://dmitrybrant.com/?p=104 (hyperbolic tessellations by repeated circle inversion in the Poincaré disc)
+- https://archive.bridgesmathart.org/2001/bridges2001-247.html (Hyperbolic Islamic Patterns: ornament carried into the hyperbolic plane)
+- https://arxiv.org/pdf/2309.10844 (HyperTiling: {p, q} lattice generation and the first-shell radius formula)

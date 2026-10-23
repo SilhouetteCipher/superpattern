@@ -171,6 +171,13 @@
     { name: 'Mirrored sashiko', state: { gen: 'hitomezashi', params: HZ({ source: 'mirror', seed: 21, cell: 10, draw: 'cells', gap: 2.6, round: 2.2 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Triangle net', state: { gen: 'hitomezashi', params: HZ({ grid: 'triangle', seed: 4, cell: 11, draw: 'strands', width: 2.4, round: 1.2 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const HY = (over) => Object.assign(SP.defaultsFor('hyperbolic'), over);
+  BUILTIN.push(
+    { name: 'Heptagon disc', state: { gen: 'hyperbolic', params: HY({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Circle limit', state: { gen: 'hyperbolic', params: HY({ p: 6, q: 4, draw: 'kaleido', style: 'alt', centre: 'vertex', minEdge: 3, gap: 1.6, round: 0.8, rim: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Pentagon lattice', state: { gen: 'hyperbolic', params: HY({ p: 5, q: 4, draw: 'tiles', style: 'lines', centre: 'edge', rotate: 0, minEdge: 5, width: 1.8, round: 1.2, rim: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Square swarm', state: { gen: 'hyperbolic', params: HY({ p: 4, q: 6, draw: 'tiles', style: 'alt', rotate: 45, minEdge: 5, gap: 2, round: 2 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -621,7 +628,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -643,6 +650,7 @@
     guilloche: 'Rose-engine engine turning: phased rosette passes, barleycorn and basketweave',
     chladni: 'Chladni figures: plates and sand lines of a vibrating plate',
     hitomezashi: 'Hitomezashi stitch loops and two-colour regions',
+    hyperbolic: 'Escher-style {p, q} tilings of the Poincaré disc, shrinking toward the rim',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

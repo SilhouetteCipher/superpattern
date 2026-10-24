@@ -439,3 +439,55 @@ tiles, rotated 45°).
 - https://dmitrybrant.com/?p=104 (hyperbolic tessellations by repeated circle inversion in the Poincaré disc)
 - https://archive.bridgesmathart.org/2001/bridges2001-247.html (Hyperbolic Islamic Patterns: ornament carried into the hyperbolic plane)
 - https://arxiv.org/pdf/2309.10844 (HyperTiling: {p, q} lattice generation and the first-shell radius formula)
+
+---
+
+## 2026-10-24 — `phyllotaxis` · Phyllotaxis
+
+**Territory:** Botanical pattern formation — spiral phyllotaxis, the seed-head rule of sunflowers, daisies and pine
+cones (a growth rule from biology, not a tiling, knot, curve, maze, flow field, quasicrystal, engine-turning, plate
+mode, stitch rule or hyperbolic tiling).
+
+**Idea.** Vogel's model: seed n sits at radius c·n^spread and angle n·α. With spread ½ and α the golden angle
+(360°/φ² ≈ 137.508°) every seed owns the same area, the disc packs evenly, and the eye picks out two families of
+secondary spirals (parastichies) winding opposite ways whose counts are consecutive Fibonacci numbers; the
+visible pair changes with radius (8/13 → 13/21 → 21/34) exactly as it does on a real seed head. Other angles
+give other families (99.5° gives Lucas numbers), and a near-rational angle collapses the head into straight arms.
+Three numbers, the angle, the exponent and the count, are the whole genome; everything visible follows. The same
+lattice is drawn four ways: seeds (discs), scales (tapered capsules pointing outward, around, or along a spiral
+family, which gives pine cones and daisies), Voronoi cells (phyllotaxis is literally the Voronoi tiling of a
+spiral lattice), and parastichy bands.
+
+**How the code realises it.** `generateBoard` builds the lattice in unit scale, measures every seed's real
+nearest-neighbour distance with a bin grid, and scales the lattice so the outermost seed plus its own reach just
+fits the disc (or the board's half-diagonal when filling the whole board, so rectangular boards fill to the
+corners). Seeds are blobs of radius `size × d/2`, clamped so neighbours never touch. Scales are two-point strokes
+of length `elong × d` with radii `[half, half × taper]`, so the shared pipeline draws teardrops; orientation is
+radial, tangential, or toward seed n + k. Cells return an `evalFn`: the nearest seed is found through a 5×5 bin
+neighbourhood and the field is the soft-min of signed distances to the bisectors with every other nearby seed
+(`round` is the soft-min radius, so corners round themselves), inset by half the gap and closed by the disc or
+rectangle outline with a gap-wide margin. Parastichy bands connect seed n to n + k. In auto mode each seed's k is
+its one or two shortest steps to a later seed (second not a multiple of the first, and no step longer than 1.8
+neighbour distances, so the rim gets no chords), which follows the visible families as they change outward; a
+fixed step draws one Fibonacci family (plus the next number up as its partner). Band half-width follows the
+family's *lateral* spacing, (area of the seed's annular slice) / (step length), clamped to half that spacing, so
+bands of one family never merge and a family fades where it stops being visible instead of filling solid.
+Segments sharing an endpoint are chained into longer strokes. Nothing narrower than 0.6 mm is emitted; field
+points scale seed size, scale size, band width or cell gap through `fieldGain`.
+
+**Params.** Lattice: `angle` (divergence °), `count`, `spread` (growth exponent), `hole` (skip centre seeds),
+`rotate`, `mirror` · Draw: `draw` (seeds / scales / cells / spirals), `size`, `elong`, `taper`, `orient`,
+`gap`, `round`, `auto` (follow visible families), `step`, `both`, `width` · Board: `clip` (disc / whole board),
+`margin`, `fillet`, `fieldGain`.
+
+**Presets.** Sunflower (golden-angle seeds) · Pine cone (radial teardrop scales) · Seed cells (Voronoi tiling of
+the lattice) · Fibonacci bands (one 13-family, fingerprint whorl) · Parastichy lattice (both visible families as
+crossing bands) · Lucas daisy (99.5°, scales along the 18-family, filling the whole board).
+
+**Inspiration.**
+- https://en.wikipedia.org/wiki/Golden_angle (the golden angle and Vogel's planar model)
+- https://algorithmicbotany.org/papers/abop/abop-ch4.pdf (Prusinkiewicz & Lindenmayer, *The Algorithmic Beauty of Plants*, ch. 4: phyllotaxis models)
+- https://arxiv.org/pdf/1301.7568 (On geodesics of phyllotaxis: phyllotaxis as the Voronoi tiling of a spiral lattice; parastichy transitions)
+- https://arxiv.org/pdf/1608.05824 (Phyllotaxis, disk packing and Fibonacci numbers)
+- https://arxiv.org/pdf/1301.4190 (Pushed pattern-forming fronts and optimal packing: smooth parastichy transitions)
+- https://openprocessing.org/sketch/6898/ (Fermat-spiral sketches on OpenProcessing, the generative-art angle)

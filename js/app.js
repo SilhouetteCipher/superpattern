@@ -178,6 +178,15 @@
     { name: 'Pentagon lattice', state: { gen: 'hyperbolic', params: HY({ p: 5, q: 4, draw: 'tiles', style: 'lines', centre: 'edge', rotate: 0, minEdge: 5, width: 1.8, round: 1.2, rim: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Square swarm', state: { gen: 'hyperbolic', params: HY({ p: 4, q: 6, draw: 'tiles', style: 'alt', rotate: 45, minEdge: 5, gap: 2, round: 2 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const PX = (over) => Object.assign(SP.defaultsFor('phyllotaxis'), over);
+  BUILTIN.push(
+    { name: 'Sunflower', state: { gen: 'phyllotaxis', params: PX({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Pine cone', state: { gen: 'phyllotaxis', params: PX({ draw: 'scales', count: 260, size: 0.62, elong: 1.35, taper: 0.3, orient: 'radial', hole: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Seed cells', state: { gen: 'phyllotaxis', params: PX({ draw: 'cells', count: 300, gap: 2, round: 2, hole: 2, margin: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Fibonacci bands', state: { gen: 'phyllotaxis', params: PX({ draw: 'spirals', count: 400, auto: false, step: 13, both: false, width: 0.5, hole: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Parastichy lattice', state: { gen: 'phyllotaxis', params: PX({ draw: 'spirals', count: 700, width: 0.4, hole: 8 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Lucas daisy', state: { gen: 'phyllotaxis', params: PX({ angle: 99.5, count: 520, draw: 'scales', size: 0.6, elong: 1.5, taper: 0.5, orient: 'spiral', auto: false, step: 18, clip: 'board', margin: 8 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -628,7 +637,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -651,6 +660,7 @@
     chladni: 'Chladni figures: plates and sand lines of a vibrating plate',
     hitomezashi: 'Hitomezashi stitch loops and two-colour regions',
     hyperbolic: 'Escher-style {p, q} tilings of the Poincaré disc, shrinking toward the rim',
+    phyllotaxis: 'Sunflower seed heads: golden-angle seeds, scales, Voronoi cells and parastichy spirals',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

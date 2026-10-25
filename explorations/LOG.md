@@ -491,3 +491,53 @@ crossing bands) · Lucas daisy (99.5°, scales along the 18-family, filling the 
 - https://arxiv.org/pdf/1608.05824 (Phyllotaxis, disk packing and Fibonacci numbers)
 - https://arxiv.org/pdf/1301.4190 (Pushed pattern-forming fronts and optimal packing: smooth parastichy transitions)
 - https://openprocessing.org/sketch/6898/ (Fermat-spiral sketches on OpenProcessing, the generative-art angle)
+
+---
+
+## 2026-10-25 — `weave` · Weave
+
+**Territory:** Textile structure — the handloom draft (threading, tie-up, treadling) and the binary drawdown
+it produces. This is a cloth-construction rule, not a tiling, knot, curve, maze, flow field, quasicrystal,
+engine-turning pass, plate mode, stitch rule, hyperbolic tiling or growth pattern.
+
+**Idea.** A woven cloth is fully described by a draft. Warp thread i is drawn through shaft T(i), pick j presses
+treadle R(j), and the tie-up U says which shafts each treadle lifts, so warp i is on top at pick j exactly when
+U[R(j)][T(i)] is set (the matrix product F = R · Uᵀ · T). Some well-known structures fall out of small changes
+to the three tables. Plain weave is two shafts. Twill is a circulant m-up/n-down tie-up on a straight draw.
+Herringbone reverses the threading every few ends at a broken (offset) seam. Diamond / bird's-eye point-draws
+both threading and treadling. Satin lifts one shaft per pick, stepping by a number coprime to the shaft count.
+Basket groups the threads of plain weave in twos or threes. A random draft uses a seeded tie-up with
+random-walk threading and treadling, as handweavers' networked drafts do. In the relief, each *float* (a run
+where one thread stays on top) is a raised pillow, and the gaps where it dives under the crossing thread give
+woven cloth its look.
+
+**How the code realises it.** `generateBoard` builds the draft from `structure` and returns `up(i, j)`. The
+draft is centred on the board so point and broken draws mirror about the middle. The grid is
+floor(W / pitch) × floor(H / pitch) cells within the margin, so rectangular boards fill properly. Warp floats
+are runs of up-cells in each column, and weft floats are runs of down-cells in each row. Each float is one
+tapered stroke. Its round tips stop `gap` short of the edge of the crossing thread (or of an imagined one past
+the cloth edge), and its radius rises from `pinch` × half-width at the tips to the full half-width over about
+half a pitch (a smoothstep under a square root), which gives a pillow or lens. Thread half-width is capped at
+(pitch − gap) / 2, so parallel threads never touch. Every float is therefore its own closed island: on every
+test the shape count equalled the stroke count. Random drafts break floats longer than 6 cells. `ripple`
+displaces the whole cloth through one smooth sine field, and its amplitude is capped at 4 % of the wavelength
+so local strain stays ≤ 25 % and clearances stay ≥ 0.6 mm. Field points thicken or thin threads through
+`fieldGain`, still capped by the room between threads. Nothing narrower than 0.6 mm is emitted.
+
+**Params.** Draft: `structure` (plain / basket / twill / herringbone / diamond / satin / random draft), `up`,
+`down`, `block` (reverse every n ends), `group` (basket), `shafts` (satin / random), `flip` (Z twill), `seed` ·
+Threads: `pitch`, `width` (× room), `gap`, `pinch` (float end taper), `faces` (warp and weft / warp floats only
+/ weft floats only) · Ripple: `ripple`, `rippleLen` · Board: `margin`, `fillet`, `fieldGain`.
+
+**Presets.** 2/2 twill (the default diagonal cloth) · Herringbone (warp floats only, so the chevrons read
+clearly) · Bird's-eye diamond (point-drawn 2/2) · Rippled basket (2×2 hopsack bent by a gentle ripple) ·
+Satin floats (5-shaft satin, weft floats only: staggered long bars).
+
+**Inspiration.**
+- https://www.blackmountaincollege.org/journal/volume-15/blazejack/ (weaving drafts as notation: threading, tie-up, treadling and drawdown)
+- https://www2.cs.arizona.edu/patterns/weaving/webdocs/mo/D/FabricAnalysis.pdf (Fabric analysis, from drawdown to draft: the tie-up loop as an algorithm)
+- https://ulp.cs.arizona.edu/patterns/weaving/webdocs/gre_seqd.pdf (threading and treadling sequences as generative inputs)
+- https://archive.bridgesmathart.org/2024/bridges2024-235.pdf (Bridges 2024: weaves as binary grids, twills as circulant matrices)
+- https://pyweaving.readthedocs.io/en/latest/_modules/pyweaving/generators/twill.html (pyweaving's twill generator: rotating tie-up window)
+- https://observablehq.com/@galopin/the-art-of-weaving (the (i + j) mod N rule for twill drawdowns)
+- https://www.lumberjocks.com/posts/2025039 (hand-carved basket-weave relief, rounding the tops of the floats: the target look for a relief)

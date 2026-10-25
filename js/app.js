@@ -187,6 +187,14 @@
     { name: 'Parastichy lattice', state: { gen: 'phyllotaxis', params: PX({ draw: 'spirals', count: 700, width: 0.4, hole: 8 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Lucas daisy', state: { gen: 'phyllotaxis', params: PX({ angle: 99.5, count: 520, draw: 'scales', size: 0.6, elong: 1.5, taper: 0.5, orient: 'spiral', auto: false, step: 18, clip: 'board', margin: 8 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const WV = (over) => Object.assign(SP.defaultsFor('weave'), over);
+  BUILTIN.push(
+    { name: '2/2 twill', state: { gen: 'weave', params: WV({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Herringbone', state: { gen: 'weave', params: WV({ structure: 'herringbone', up: 2, down: 2, block: 8, pitch: 6.5, faces: 'warp' }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Bird\'s-eye diamond', state: { gen: 'weave', params: WV({ structure: 'diamond', up: 2, down: 2, block: 5, pitch: 7.5, width: 0.95, pinch: 0.55 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Rippled basket', state: { gen: 'weave', params: WV({ structure: 'basket', group: 2, pitch: 9, width: 0.85, gap: 1.4, pinch: 0.35, ripple: 3.5, rippleLen: 140 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Satin floats', state: { gen: 'weave', params: WV({ structure: 'satin', shafts: 5, faces: 'weft', pitch: 8, gap: 1.6, pinch: 0.6 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -637,7 +645,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -661,6 +669,7 @@
     hitomezashi: 'Hitomezashi stitch loops and two-colour regions',
     hyperbolic: 'Escher-style {p, q} tilings of the Poincaré disc, shrinking toward the rim',
     phyllotaxis: 'Sunflower seed heads: golden-angle seeds, scales, Voronoi cells and parastichy spirals',
+    weave: 'Loom drafts woven into floats: twill, herringbone, diamond, satin and basket',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

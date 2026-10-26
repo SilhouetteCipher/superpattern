@@ -195,6 +195,12 @@
     { name: 'Rippled basket', state: { gen: 'weave', params: WV({ structure: 'basket', group: 2, pitch: 9, width: 0.85, gap: 1.4, pinch: 0.35, ripple: 3.5, rippleLen: 140 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Satin floats', state: { gen: 'weave', params: WV({ structure: 'satin', shafts: 5, faces: 'weft', pitch: 8, gap: 1.6, pinch: 0.6 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const SG = (over) => Object.assign(SP.defaultsFor('seigaiha'), over);
+  BUILTIN.push(
+    { name: 'Seigaiha waves', state: { gen: 'seigaiha', params: SG({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Deco fans', state: { gen: 'seigaiha', params: SG({ fill: 'ribs', size: 18, rowStep: 0.6, ribs: 16 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Ogee scales', state: { gen: 'seigaiha', params: SG({ fill: 'rows', size: 16, rings: 4, aspect: 1.2, point: 0.3, rowStep: 0.55 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -645,7 +651,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -670,6 +676,7 @@
     hyperbolic: 'Escher-style {p, q} tilings of the Poincaré disc, shrinking toward the rim',
     phyllotaxis: 'Sunflower seed heads: golden-angle seeds, scales, Voronoi cells and parastichy spirals',
     weave: 'Loom drafts woven into floats: twill, herringbone, diamond, satin and basket',
+    seigaiha: 'Seigaiha waves and Deco fans: scales layered row over row',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

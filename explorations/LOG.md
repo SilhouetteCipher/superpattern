@@ -541,3 +541,46 @@ Satin floats (5-shaft satin, weft floats only: staggered long bars).
 - https://pyweaving.readthedocs.io/en/latest/_modules/pyweaving/generators/twill.html (pyweaving's twill generator: rotating tie-up window)
 - https://observablehq.com/@galopin/the-art-of-weaving (the (i + j) mod N rule for twill drawdowns)
 - https://www.lumberjocks.com/posts/2025039 (hand-carved basket-weave relief, rounding the tops of the floats: the target look for a relief)
+
+---
+
+## 2026-10-26 — `seigaiha` · Seigaiha
+
+**Territory:** Japanese seigaiha ("blue ocean wave") and the Art Deco fish-scale fan: a *layering* rule, where
+rows of identical scales overlap and each new row hides part of the one behind (not a tiling, knot, curve, maze,
+weave or radial construction).
+
+**Idea.** Identical scales sit on an offset grid. In the classic proportion the horizontal pitch is one diameter,
+alternate rows shift by half a pitch, and rows sit R/2 apart. They are laid down row by row with each row in front
+of the last, so every scale loses its lower part to the scales in front. What is left is a crest of nested arches
+whose feet tuck under the two scales below. Fill each scale with concentric rings and you get the wave. Fill it
+with radial ribs under a rim and you get the Deco fan. You can also mix the two by row, checkerboard or seeded
+coin flip. The outline can be made taller or flatter and drawn up to a pointed ogee top, which turns the waves
+into fish scales or roof tiles. A looser row step opens the overlap into separate scales.
+
+**How the code realises it.** The occlusion is computed, not painted on. `generateBoard` lays out every scale
+whose outline touches the margin rectangle, and gives each one a list of the scales in front of it (later rows
+within reach). Each ring is the outline scaled about the centre. Each rib is a straight run along one outline
+direction. Rings and ribs are sampled about every 1.2 mm. A sample survives only if it sits at least `gap` plus
+its own half-width outside every scale in front (measured as signed distance to a 120-gon of that scale's
+outline) and inside the margin. Run ends are refined by bisection, and each visible run is emitted as a
+round-capped stroke. So cut ends stand exactly `gap` off the scale in front, and the board edge never leaves a
+sliver. Runs shorter than a band width are dropped. Ring pitch and band half-width are linked so neighbouring
+rings keep at least 0.6 mm between them in the outline's narrowest direction, and bands are never thinner than
+0.6 mm. A solid centre is a circle of radius a/2 drawn with half-width a/2, so it gets cut like any ring. Ribs
+start at the radius where neighbours are one band plus one gap apart, with fewer ribs if that radius is too far
+out. Field points thicken or thin the bands, capped so the gaps still hold. "Fans open downward" mirrors the
+whole build.
+
+**Params.** Scales: `size` (radius mm), `pitch` (× diameter), `rowStep` (× radius), `aspect`, `point`, `flip` ·
+Fill: `fill` (rings / ribs / alternate rows / checkerboard / random), `rings`, `ribs`, `hub`, `seed` · Bands:
+`weight`, `gap` (tuck gap mm), `margin`, `fillet`, `fieldGain`.
+
+**Presets.** Seigaiha waves (classic 5-ring wave) · Deco fans (16 ribs under a rim, looser rows) · Ogee scales
+(tall pointed scales, rings and fans on alternate rows).
+
+**Inspiration.**
+- https://levelup.gitconnected.com/how-to-create-seigaiha-pattern-using-p5-js-code-b9061b28b81e (seigaiha as offset rows of concentric circles)
+- https://www.toptal.com/designers/subtlepatterns/seigaiha/ (the classic proportions)
+- https://inkscape.org/zh-hans/~Damry/%E2%98%85seamless-fish-scale-or-fan-pattern-in-inkscape (fish-scale/fan unit and its symmetry)
+- https://design.tutsplus.com/tutorials/how-to-create-an-art-deco-pattern-in-illustrator--cms-107702 (Art Deco fish-scale fan construction)

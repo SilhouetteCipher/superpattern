@@ -201,6 +201,12 @@
     { name: 'Deco fans', state: { gen: 'seigaiha', params: SG({ fill: 'ribs', size: 18, rowStep: 0.6, ribs: 16 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Ogee scales', state: { gen: 'seigaiha', params: SG({ fill: 'rows', size: 16, rings: 4, aspect: 1.2, point: 0.3, rowStep: 0.55 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const GR = (over) => Object.assign(SP.defaultsFor('growth'), over);
+  BUILTIN.push(
+    { name: 'Brain coral', state: { gen: 'growth', params: GR({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Buckled frame', state: { gen: 'growth', params: GR({ start: 'ring', bias: 0.8, swell: 0.5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Coral colonies', state: { gen: 'growth', params: GR({ start: 'scatter', bound: 'ellipse', spacing: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -651,7 +657,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -677,6 +683,7 @@
     phyllotaxis: 'Sunflower seed heads: golden-angle seeds, scales, Voronoi cells and parastichy spirals',
     weave: 'Loom drafts woven into floats: twill, herringbone, diamond, satin and basket',
     seigaiha: 'Seigaiha waves and Deco fans: scales layered row over row',
+    growth: 'Differential growth: a loop that buckles into coral meanders',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

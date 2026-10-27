@@ -584,3 +584,43 @@ Fill: `fill` (rings / ribs / alternate rows / checkerboard / random), `rings`, `
 - https://www.toptal.com/designers/subtlepatterns/seigaiha/ (the classic proportions)
 - https://inkscape.org/zh-hans/~Damry/%E2%98%85seamless-fish-scale-or-fan-pattern-in-inkscape (fish-scale/fan unit and its symmetry)
 - https://design.tutsplus.com/tutorials/how-to-create-an-art-deco-pattern-in-illustrator--cms-107702 (Art Deco fish-scale fan construction)
+
+---
+
+## 2026-10-27 — `growth` · Growth
+
+**Territory:** Generative simulation — differential line growth (a physical/biological growth rule, not a tiling,
+knot, curve construction, flow field or reaction–diffusion).
+
+**Idea.** Differential growth as described by Anders Hoff (inconvergent) and Jason Webb: a closed line of nodes
+is relaxed under three rules — each node is pulled toward the midpoint of its neighbours (smoothness), pushed
+away from every node within a set radius (folds keep their distance), and any edge that grows too long is split
+(new material). Material arrives faster than repulsion can spread it, so the loop buckles and folds into
+brain-coral meanders that pack whatever boundary it is grown in. Hoff's "shepherding" adds extra random splits
+weighted toward already-curved nodes, which pushes the growth into tighter lobes and fingers. Unlike Turing
+(a field that is thresholded), the result is always a single unbroken band per seed, so it exports as one closed
+ring of material with one hole per loop — ideal for a relief or a cut-out.
+
+**How the code realises it.** `generateBoard` seeds loops (one small centre ring, scattered seed rings plus one per
+field point, or one big ring just inside the boundary that can only buckle inward). Each step builds a
+counting-sort uniform grid (cell = spacing), computes smoothing + repulsion + seeded jitter for every node with a
+Jacobi update and a capped move, and pushes nodes back inside a signed-distance boundary (rounded rectangle or
+ellipse fitted to the board's actual width and height). Edges longer than half a spacing are split, plus ~0.6 %
+curvature-biased random splits per step. Growth stops when total line length reaches Fill × area ÷ spacing (or a
+9000-node / 2500-step cap), then 40 non-growing steps settle the spacing. Each loop becomes a closed stroke whose
+radius is limited by the nearest non-adjacent node minus the gap (so neighbouring folds never touch), optionally
+tapered from oldest to newest nodes ("Swell"), smoothed and floored at 0.3 mm (0.6 mm bands). The whole result is
+memoised on params + board + field points, so dragging render/export settings doesn't rerun the simulation
+(0.1–1.7 s per run in Node depending on spacing and board size).
+
+**Params.** Growth: Start from (centre / scattered seeds / boundary ring), Seeds, Fill, Spacing (mm), Curvature bias,
+Wiggle, Seed · Bounds: Shape (rounded rectangle / ellipse), Margin · Band: Width (× spacing), Swell, Min gap, Fillet.
+
+**Presets.** Brain coral (defaults) · Buckled frame (boundary ring, strong curvature bias, swell) · Coral colonies
+(scattered seeds in an ellipse, 5 mm spacing).
+
+**Inspiration.**
+- https://inconvergent.net/2016/shepherding-random-growth
+- https://medium.com/@jason.webb/exploring-2d-differential-growth-with-javascript-1843fd51b0ce
+- https://docs.cycling74.com/learn/articles/geom-differential.growth
+- https://www.raster.art/artwork/spaghetti-bones-by-joshua-bagley/about

@@ -207,6 +207,12 @@
     { name: 'Buckled frame', state: { gen: 'growth', params: GR({ start: 'ring', bias: 0.8, swell: 0.5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Coral colonies', state: { gen: 'growth', params: GR({ start: 'scatter', bound: 'ellipse', spacing: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const CP = (over) => Object.assign(SP.defaultsFor('packing'), over);
+  BUILTIN.push(
+    { name: 'Bubble froth', state: { gen: 'packing', params: CP({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Target pack', state: { gen: 'packing', params: CP({ draw: 'concentric', rMax: 34, count: 160, band: 1.4, pitch: 1.4, gap: 2, profile: 'centre', seed: 21 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Nested bubbles', state: { gen: 'packing', params: CP({ draw: 'nested', clip: 'disc', rMax: 40, rMin: 2.5, count: 90, band: 1.4, gap: 1.4, seed: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -657,7 +663,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -684,6 +690,7 @@
     weave: 'Loom drafts woven into floats: twill, herringbone, diamond, satin and basket',
     seigaiha: 'Seigaiha waves and Deco fans: scales layered row over row',
     growth: 'Differential growth: a loop that buckles into coral meanders',
+    packing: 'Circle packing: rings, targets, nests and tangency froth',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

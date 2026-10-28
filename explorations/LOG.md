@@ -624,3 +624,42 @@ Wiggle, Seed · Bounds: Shape (rounded rectangle / ellipse), Margin · Band: Wid
 - https://medium.com/@jason.webb/exploring-2d-differential-growth-with-javascript-1843fd51b0ce
 - https://docs.cycling74.com/learn/articles/geom-differential.growth
 - https://www.raster.art/artwork/spaghetti-bones-by-joshua-bagley/about
+
+## 2026-10-28 — `packing` · Circle Pack
+
+**Territory:** Packing problems — greedy circle packing, the generative-art staple (Tyler Hobbs' QQL, endless
+Processing sketches) and the Koebe–Thurston idea of a packing as a *tangency graph* (not a tiling, lattice, curve,
+flow field or growth simulation).
+
+**Idea.** Fill a region with non-overlapping circles by always taking the roomiest hole next: big circles claim the
+open space first and smaller ones fill what's left, so the board packs densely Apollonian-style with a guaranteed
+gap between every pair. The circles themselves are only the skeleton; the look comes from how they are read —
+discs, rings, concentric targets, rings packed again inside with smaller rings, or a tangency network where every
+ring is bridged to the neighbours it nearly touches, turning the packing into one connected froth (ideal for a
+cut-out: it exports as a single piece).
+
+**How the code realises it.** `generateBoard` runs a seeded best-of-24-candidates packer: each round samples points,
+computes each one's largest feasible radius (signed distance to the board rectangle or disc, minus the distance to
+every placed circle and the gap), caps it by a size profile (uniform, big centre, big edge, left→right or
+top→bottom ramp, blended by strength and scaled by field points), and accepts the best one ≥ the minimum radius;
+200 failed rounds in a row ends the packing. Rings are closed polylines of constant radius whose outer edge sits on
+the circle; a circle too small to keep a ≥ 0.6 mm hole becomes a disc instead. Concentric steps inward by band +
+spacing and finishes with a centre dot when one fits. Nested packs each ring's interior once more (up to 80
+children, radius ≤ half the free interior). Network bridges every pair within 1.6× the gap, centreline to
+centreline, then ties any circle left without a bridge to its nearest neighbour. Defaults pack 93 circles on a
+200 mm board in a few ms; the default network exports as one path with 122 loops.
+
+**Params.** Packing: Max circles, Largest radius, Smallest radius, Gap, Size profile, Profile strength, Seed ·
+Draw: Draw (discs / rings / concentric / nested / network), Band width, Ring spacing, Bridge width ·
+Board: Fill (whole board / disc), Margin, Merge, Points → grow.
+
+**Presets.** Bubble froth (defaults: tangency network) · Target pack (concentric rings, big in the centre) ·
+Nested bubbles (nested rings in a disc).
+
+**Inspiration.**
+- https://www.tylerxhobbs.com/words (Tyler Hobbs' essays; QQL's circle-packing algorithm)
+- https://www.holo.mg/?p=48083 (QQL: Analogs — paintings from Hobbs' circle-packing outputs)
+- https://talk.observablehq.com/t/packing-circles-into-polygons/5612 (packing circles into polygons, after Hobbs)
+- https://kxvin.pages.dev/experiments-in-circle-packing (generative variations: grow-until-touching, nested packings)
+- https://www.r-bloggers.com/2015/07/graph-based-circle-packing/ (packings as tangency graphs, Koebe–Thurston / Collins–Stephenson)
+- https://www.mpda.upc.edu/s/MPDA_Master_Thesis_-_Weston_Porter_-_Generation_and_Assembly_of_Polymorphic_Fixed_Radius_Circle_Pack.pdf (tangent connections realised as physical bridges)

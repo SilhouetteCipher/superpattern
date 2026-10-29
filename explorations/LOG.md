@@ -663,3 +663,46 @@ Nested bubbles (nested rings in a disc).
 - https://kxvin.pages.dev/experiments-in-circle-packing (generative variations: grow-until-touching, nested packings)
 - https://www.r-bloggers.com/2015/07/graph-based-circle-packing/ (packings as tangency graphs, Koebe–Thurston / Collins–Stephenson)
 - https://www.mpda.upc.edu/s/MPDA_Master_Thesis_-_Weston_Porter_-_Generation_and_Assembly_of_Polymorphic_Fixed_Radius_Circle_Pack.pdf (tangent connections realised as physical bridges)
+
+---
+
+## 2026-10-29 — `meander` · Meander
+
+**Territory:** Classical border ornament — the Greek key (meander fret) and the Aegean Bronze-Age running spiral /
+Vitruvian "running dog" scroll (a frieze construction rule, not a tiling, knot, maze or space-filling curve).
+
+**Idea.** A classic Greek key is a *double spiral*: the line winds in, turns back at the centre and winds out again
+between its own coils, so each unit is symmetric under a half-turn about its centre. That makes the square key and
+the round running spiral the same structure, one with square corners and one with round ones. Units chain along a
+band in two ways: *alternate* (every other unit mirrored, joined by short links along the top and bottom, as in
+the classic frieze) or *running* (all units the same way round, joined by a drop between keys or an S-wave between
+spirals, the "running dog"). Bands stack to fill the board, edged with rails if wanted.
+
+**How the code realises it.** On a unit grid the inward half of a key is a turtle walk with leg lengths n, n−1, …, 1,
+turning clockwise each time (n = Key legs). One more half step reaches the half-turn centre, and the outward half is
+the inward half rotated 180° about it. Every pair of parallel legs ends up exactly one unit apart, entering bottom-left
+and leaving top-right for any n ≥ 2. Corners are optionally replaced by quarter arcs (≤ ½ unit). The round unit uses two
+Archimedean arms, 2 units of radius per turn and interleaved half a turn apart, so neighbouring coils stay 1 unit
+apart. They join through a cubic S at the eye, and the outer ends always sit at top and bottom so links run
+horizontally. Alternate chains reverse every other spiral's handedness and join them with straight top or bottom
+links. Running chains join top-to-bottom with a cubic S-wave, pitch 2R + 1.5 units. `generateBoard` fits as many units
+as the band length allows (width is linear in the count), stacks rows top to bottom with a row gap (mixing key and
+spiral rows if chosen), centres everything, and can reverse or flip alternate rows or turn bands vertical for tall
+boards. Each band is one long round-capped stroke and each rail one more, so the export is a handful of long closed
+outlines: the default board exports as 12 paths. Half-width is clamped so lines are ≥ 0.6 mm wide with ≥ 0.6 mm between
+them. The harness measured a worst-case gap of 1.3 mm across 25 random sets and 27 targeted variants on square,
+wide and tall boards.
+
+**Params.** Key: Style (Greek key / running spiral / alternate rows), Key legs, Spiral turns, Chain (alternate /
+running), Spread, Corner round · Line: Grid unit, Line weight · Rows: Rails, Row gap, Alternate rows (same / run the
+other way / upside down), Vertical bands · Board: Margin, Merge, Points → weight.
+
+**Presets.** Greek key frieze (defaults: 4-leg alternate key with rails) · Running dog (running spiral wave) · Key
+and spiral courses (key rows alternating with spiral rows, every other row reversed).
+
+**Inspiration.**
+- https://theedkins.co.uk/jo/greekkey/turns.htm (Jo Edkins: Greek keys as double spirals; "turns" belong to the generator)
+- https://theedkins.co.uk/jo/greekkey/intro.htm (Greek key styles and generators)
+- https://homepages.math.uic.edu/~kauffman/Meander.pdf (Kappraff, Radović & Jablan: key patterns derived from a prototile and op-tile)
+- https://www.designingbuildings.co.uk/wiki/Vitruvian_scroll (the running dog / Vitruvian wave as a frieze motif)
+- https://www.britannica.com/art/running-dog-pattern (running-dog pattern)

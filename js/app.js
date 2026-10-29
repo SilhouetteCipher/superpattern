@@ -213,6 +213,12 @@
     { name: 'Target pack', state: { gen: 'packing', params: CP({ draw: 'concentric', rMax: 34, count: 160, band: 1.4, pitch: 1.4, gap: 2, profile: 'centre', seed: 21 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Nested bubbles', state: { gen: 'packing', params: CP({ draw: 'nested', clip: 'disc', rMax: 40, rMin: 2.5, count: 90, band: 1.4, gap: 1.4, seed: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const MD = (over) => Object.assign(SP.defaultsFor('meander'), over);
+  BUILTIN.push(
+    { name: 'Greek key frieze', state: { gen: 'meander', params: MD({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Running dog', state: { gen: 'meander', params: MD({ style: 'spiral', link: 'running', curl: 1.5, unit: 4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Key and spiral courses', state: { gen: 'meander', params: MD({ style: 'mix', rowMode: 'reverse' }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -663,7 +669,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -691,6 +697,7 @@
     seigaiha: 'Seigaiha waves and Deco fans: scales layered row over row',
     growth: 'Differential growth: a loop that buckles into coral meanders',
     packing: 'Circle packing: rings, targets, nests and tangency froth',
+    meander: 'Greek keys and running spirals chained into friezes',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

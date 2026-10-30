@@ -706,3 +706,52 @@ and spiral courses (key rows alternating with spiral rows, every other row rever
 - https://homepages.math.uic.edu/~kauffman/Meander.pdf (Kappraff, Radović & Jablan: key patterns derived from a prototile and op-tile)
 - https://www.designingbuildings.co.uk/wiki/Vitruvian_scroll (the running dog / Vitruvian wave as a frieze motif)
 - https://www.britannica.com/art/running-dog-pattern (running-dog pattern)
+
+---
+
+## 2026-10-30 — `tracery` · Tracery
+
+**Territory:** Gothic architecture — window tracery, the mason's compass-and-straightedge setting-out of the
+window head (a European medieval construction rule; not a tiling, knot, curve, maze, flow field, lathe, plate,
+stitch, growth, packing or frieze rule, and unlike Hankin Stars it is built from arcs struck off a springing line,
+not from polygons in contact).
+
+**Idea.** A Gothic window is a two-centred pointed arch over n lights: both arcs are struck with one radius from
+centres on the springing line (radius = span gives the equilateral arch), and the whole head is built from the same
+compass settings. Three historical heads are read as rules. *Intersecting / Y-tracery* (c. 1300): every mullion and
+jamb branches into two arcs of the same radius as a j-light arch, so the bars cross in lozenges and run on to the
+window edge — j = lights gives the classic intersecting head, j = 1 the Y-tracery lancets. *Reticulated* (early
+14th c.): the net of ogee-ended lozenges — a honeycomb of pointed hexagons one light wide whose vertical sides
+continue the mullions and whose upper sides are S-curves meeting in a point. *Perpendicular panel* tracery: mullions
+run straight up to the arch, transoms cross them, and every panel is capped with a small pointed head. Then the
+geometrical-tracery step: wherever a pocket in the head is large enough, a foiled roundel is set into it, tangent to
+its neighbours.
+
+**How the code realises it.** `generateBoard` divides the board into `windows` arches of span W. The arch radius is
+`arch`·W (clamped so the rise fits the board; a square head keeps the same springing height and is cut flat by the
+lintel). `sdWin` is the window's signed distance (rectangle below the springing, the two arch discs above) and
+every bar is a polyline clipped against it, with run ends bisected onto the exact boundary. Intersecting bars are
+24-point arcs of radius j·s (s = light width) from each mullion foot, drawn for 60° so partner arcs meet in a point
+or leave the window. The reticulated net stacks rows of height `vert`·s + 0.29·s, every other row offset half a
+light; each upper side is one cubic from the vertical's top (vertical tangent) to the apex (arriving 17° off
+vertical), which gives the reverse curve. Panels get transoms at `transom`·s pitch and equilateral heads under each
+transom. Roundels are found by a largest-empty-circle search: distance to the frame and every bar segment is
+sampled on a grid, strict local maxima are refined by pattern search, plateaus (tall lights, oblong panels) and
+circles that would sit below the springing are rejected, and overlapping finds are deduped. Each surviving pocket
+gets a ring plus 3–6 lobes tangent inside it; the lobes are 12% larger than the tangent-lobe radius so neighbours
+overlap and the cusps are sharp, and each lobe's outer arc runs cusp to cusp so the foil is one closed stroke.
+Field points scale bar weight. Bars are round-capped strokes ≥ 0.6 mm; the default board exports as 31 closed paths.
+
+**Params.** Window: Windows across, Lights, Arch radius (× span), Head (pointed / square), Margin · Tracery: Style
+(intersecting / reticulated / panels), Branch span (lights), Lozenge height, Panel height · Foils: Roundels (none,
+ring, trefoil … sexfoil), Smallest pocket (mm) · Bars: Bar width, Mullion width, Merge, Points → weight.
+
+**Presets.** Intersecting tracery (3 lights, full intersecting head, quatrefoils) · Reticulated net (4 lights,
+trefoil-foiled lozenges) · Perpendicular panels (4 lights, cinquefoil panels under a low arch).
+
+**Inspiration.**
+- https://en.wikipedia.org/wiki/Tracery (plate, bar, geometrical, intersecting, reticulated, curvilinear and panel tracery)
+- https://en.wikipedia.org/wiki/Reticulated_tracery (the touching-circle grid and ogee lozenges)
+- https://www.lookingatbuildings.org.uk/styles/medieval/walls-and-windows/gothic-windows-and-tracery/decorated-tracery.html (intersecting mullions: same radius, different centres)
+- https://makezine.com/article/craft/fine-art/follow-this-process-to-create-the-perfect-gothic-arch-or-reuleaux-triangle/ (two-centred arch construction)
+- https://fridlington.co.uk/how-to-draw-a-trefoil (trefoil in a circle: three lobe circles on an equilateral triangle)

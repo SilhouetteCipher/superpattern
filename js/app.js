@@ -225,6 +225,13 @@
     { name: 'Reticulated net', state: { gen: 'tracery', params: TY({ style: 'reticulated', lights: 4, arch: 1.15, foils: '3', minR: 5.5, barW: 1.8 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Perpendicular panels', state: { gen: 'tracery', params: TY({ style: 'panel', lights: 4, arch: 0.75, transom: 1.25, foils: '5', minR: 6, mullionW: 2.6 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const JG = (over) => Object.assign(SP.defaultsFor('jigsaw'), over);
+  BUILTIN.push(
+    { name: 'Jigsaw puzzle', state: { gen: 'jigsaw', params: JG({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Wandering cuts', state: { gen: 'jigsaw', params: JG({ cols: 7, warp: 0.22, jitter: 6, tab: 17, gap: 1.6, round: 2.5, seed: 21 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Concentric puzzle', state: { gen: 'jigsaw', params: JG({ style: 'rings', rings: 4, outline: 'circle', margin: 6, gap: 1.8, round: 2, seed: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Crazed glass', state: { gen: 'jigsaw', params: JG({ edge: 'wave', cols: 8, warp: 0.3, tab: 12, jitter: 8, gap: 1.4, round: 3, outerRound: 14, seed: 11 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -675,7 +682,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -705,6 +712,7 @@
     packing: 'Circle packing: rings, targets, nests and tangency froth',
     meander: 'Greek keys and running spirals chained into friezes',
     tracery: 'Gothic window tracery: intersecting bars, reticulated nets, panels and foiled roundels',
+    jigsaw: 'Jigsaw pieces cut by Bézier tabs, on a grid or in concentric rings',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

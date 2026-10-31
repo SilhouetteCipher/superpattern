@@ -755,3 +755,35 @@ trefoil-foiled lozenges) · Perpendicular panels (4 lights, cinquefoil panels un
 - https://www.lookingatbuildings.org.uk/styles/medieval/walls-and-windows/gothic-windows-and-tracery/decorated-tracery.html (intersecting mullions: same radius, different centres)
 - https://makezine.com/article/craft/fine-art/follow-this-process-to-create-the-perfect-gothic-arch-or-reuleaux-triangle/ (two-centred arch construction)
 - https://fridlington.co.uk/how-to-draw-a-trefoil (trefoil in a circle: three lobe circles on an equilateral triangle)
+
+## 2026-10-31 — `jigsaw` · Jigsaw
+
+**Territory:** Die-cutting / puzzle manufacture — the jigsaw tab rule (a cutting construction, not a tiling, knot,
+curve, maze or growth process).
+
+**Idea.** A jigsaw puzzle is a grid whose every interior edge has been replaced by a tab: in the edge's own frame
+(u along, v across) the cut is three cubic Béziers — shoulder, bulb, shoulder — with the neck at ±t of the centre
+and the bulb reaching 3t across, the construction used by the classic browser puzzle generators (Draradech's
+`gen_d()`, and jigsawR after it). Five small jitters per tab (shoulder lifts a/e, shift b, lift c, skew d) make
+every piece unique, and each tab flips to one side or the other so pieces get a mix of knobs and slots. The code
+builds a vertex lattice over the board frame (any aspect; rows default to match the columns), optionally *warps*
+the interior vertices so the cut lines wander, and emits one polyline per interior edge; a *rings* layout instead
+builds the concentric puzzle — a centre disc and rings of sector pieces, each arc split at the spoke angles of both
+rings it separates so a tab only lands in a gap long enough for it. The pieces are then the field: gap/2 minus the
+distance to the nearest cut line (binned segments), with a soft-min across the two nearest lines so each piece's
+corners round off, smooth-clipped to a rounded-rectangle or circular frame. Tab size is clamped so the neck always
+survives the gap and corner rounding. The export is one closed outline per piece — a cuttable puzzle, or a
+pebbled relief with the *wave* and *straight* cuts.
+
+**Params.** Layout: `style` (grid / concentric rings), `cols`, `rows` (0 = match board aspect), `rings`, `warp`,
+`outline` (rectangle / circle), `margin`, `outerRound`. Tabs: `edge` (tab and slot / wave / straight), `tab` (%),
+`jitter` (%), `pattern` (random / alternate / all one way), `seed`. Finish: `gap`, `round`.
+
+**Presets.** Jigsaw puzzle · Wandering cuts · Concentric puzzle · Crazed glass.
+
+**Inspiration.**
+- https://gist.github.com/Draradech/35d36347312ca6d0887aa7d55f366e30 — the three-Bézier tab with a/b/c/d/e jitter
+- https://community.glowforge.com/t/jigsaw-puzzle-generator/9284 — how the tab curve is read and laser-cut
+- https://pjt222-jigsawr.hf.space/ — jigsawR: rectangular, hexagonal and concentric puzzles, tab size / jitter / separation ranges
+- https://docs.rs/jigsaw_puzzle_generator — the same edge as three cubic segments
+- https://github.com/proceduraljigsaw/CircleGridPuzzle — circle-grid puzzle cutting

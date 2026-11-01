@@ -232,6 +232,13 @@
     { name: 'Concentric puzzle', state: { gen: 'jigsaw', params: JG({ style: 'rings', rings: 4, outline: 'circle', margin: 6, gap: 1.8, round: 2, seed: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Crazed glass', state: { gen: 'jigsaw', params: JG({ edge: 'wave', cols: 8, warp: 0.3, tab: 12, jitter: 8, gap: 1.4, round: 3, outerRound: 14, seed: 11 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const VN = (over) => Object.assign(SP.defaultsFor('venation'), over);
+  BUILTIN.push(
+    { name: 'Leaf skeleton', state: { gen: 'venation', params: VN({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Willow herringbone', state: { gen: 'venation', params: VN({ leafW: 0.45, sweep: 1.1, spacing: 5.5, join: false, seed: 42 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Radial veins', state: { gen: 'venation', params: VN({ bound: 'ellipse', root: 'centre', midrib: false, spacing: 6, maxW: 6 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Kelp forest', state: { gen: 'venation', params: VN({ bound: 'rect', root: 'edge', roots: 6, rim: 0, sweep: 0.4, join: false, seed: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -682,7 +689,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -713,6 +720,7 @@
     meander: 'Greek keys and running spirals chained into friezes',
     tracery: 'Gothic window tracery: intersecting bars, reticulated nets, panels and foiled roundels',
     jigsaw: 'Jigsaw pieces cut by Bézier tabs, on a grid or in concentric rings',
+    venation: 'Leaf veins grown by space colonization, tapering by the pipe model',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

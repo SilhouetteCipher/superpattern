@@ -787,3 +787,37 @@ pebbled relief with the *wave* and *straight* cuts.
 - https://pjt222-jigsawr.hf.space/ — jigsawR: rectangular, hexagonal and concentric puzzles, tab size / jitter / separation ranges
 - https://docs.rs/jigsaw_puzzle_generator — the same edge as three cubic segments
 - https://github.com/proceduraljigsaw/CircleGridPuzzle — circle-grid puzzle cutting
+
+---
+
+## 2026-11-01 — `venation` · Venation
+
+**Territory:** Algorithmic botany — leaf venation by space colonization (a biological pattern-formation rule, not a
+tiling, knot, curve, maze, packing or line-growth process).
+
+**Idea.** Runions et al.'s model of how veins pattern a leaf: free space is represented by scattered auxin sources;
+every source attracts the closest vein node within its reach, every attracted node grows one short step toward the
+average direction of its sources, and sources are consumed once a vein gets within the kill distance. Veins race into
+empty space, fork where sources pull two ways and stop when the space is used up, so the gaps between veins stay even.
+The code dart-throws seeded sources at least one *spacing* apart inside the bounds (leaf, ellipse or rounded
+rectangle; the leaf is a pointed ovate outline laid along the longer board axis), seeds roots (the leaf base with an
+optional pre-grown midrib, several along the bottom edge, the centre, or spread round the rim growing inward; field
+points add roots), and runs the colonization loop with an incremental nearest-node grid. A *sweep* bias leans growth
+toward the tip (or outward/inward for centre/rim roots) so side veins angle like a real leaf instead of leaving the
+midrib square-on; *wiggle* adds seeded jitter. Twigs shorter than 0.9 spacing are pruned, then widths follow the pipe
+model (Murray's law, exponent 2.6): tips get the tip width and every junction r = (Σ rᵢⁿ)^(1/n), capped at the max
+width. The tree is split into chains (each follows its thickest child; side branches start at their junction),
+smoothed, and emitted as tapered strokes. *Join tips* bridges each vein end to the nearest unrelated vein (or the
+rim) ahead of it, turning the open tree into the looped areoles of a leaf skeleton, so the cut-out is one connected
+piece. An optional rim band traces the outline.
+
+**Params.** Bounds: `bound` (leaf / ellipse / rounded rectangle), `leafW`, `margin`, `rim`. Roots: `root` (base /
+bottom edge / centre / around the rim), `roots`, `midrib`. Growth: `spacing`, `sweep`, `wiggle`, `join`, `seed`.
+Veins: `tipW`, `maxW`, `fillet`.
+
+**Presets.** Leaf skeleton · Willow herringbone · Radial veins · Kelp forest.
+
+**Inspiration.**
+- https://algorithmicbotany.org/papers/runionsa.th2008.html — Adam Runions' thesis: space colonization for venation and trees
+- https://www.algorithmicbotany.org/papers/colonization.egwnp2007.html — Runions, Lane & Prusinkiewicz, the 3D tree extension (kill / influence radii)
+- https://generative-art-site.pages.dev/space_colonization — open vs closed venation, and links to JS/Processing implementations

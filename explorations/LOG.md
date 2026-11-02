@@ -821,3 +821,36 @@ Veins: `tipW`, `maxW`, `fillet`.
 - https://algorithmicbotany.org/papers/runionsa.th2008.html — Adam Runions' thesis: space colonization for venation and trees
 - https://www.algorithmicbotany.org/papers/colonization.egwnp2007.html — Runions, Lane & Prusinkiewicz, the 3D tree extension (kill / influence radii)
 - https://generative-art-site.pages.dev/space_colonization — open vs closed venation, and links to JS/Processing implementations
+
+---
+
+## 2026-11-02 — `automaton` · Automaton
+
+**Territory:** Complexity science / computation — Wolfram's one-dimensional elementary cellular automata (a
+discrete update rule run in time, not a tiling, knot, curve, maze, packing or growth simulation).
+
+**Idea.** A row of cells evolves one generation per row: each cell's next state is read from the 8-bit rule
+number, indexed by its own state and its two neighbours'. The space-time diagram is the pattern — Rule 30's
+chaotic triangles (the Conus textile shell, and the cladding panels of Cambridge North station), Rule 90's
+Sierpinski gasket, Rule 110's gliders. The code evolves the rule on a grid of square cells centred within the
+margin (columns and rows follow the board's real width and height), top to bottom or out from the middle row in
+both directions for a mirrored read, then draws the live cells as one exact signed-distance field: separate
+rounded tiles (inset so gaps stay ≥ 0.6 mm), joined tiles (bridges to orthogonal neighbours, full 2×2 blocks filled
+solid so no pinholes, diagonal neighbours never pinch at a corner), horizontal runs as rounded bars, or a lineage
+network where each live cell links to the live cell above it — or, if that one is dead, to both live diagonal
+parents, a choice that makes crossing links impossible so there are no slivers. Field points grow the cells,
+capped so gaps never close.
+
+**Params.** Rule (22 curated rules + custom 0–255), row ends (wrap / dead), first row (one centre cell, a few
+cells, seeded random, mirrored random), live cells, density, skip generations, seed, cell size, generations run
+(down / out from the middle), margin, draw (tiles / joined / runs / lineage), tile size, link width, node size,
+corner round, merge, points → grow.
+
+**Presets.** Rule 30 cladding · Sierpinski lineage · Rule 110 barcode · Mirrored rule 150.
+
+**Inspiration.**
+- https://stemgeeks.net/@femdev/learn-creative-coding-47-cellular-automata-wolframs-elementary-rules
+- https://kindatechnical.com/cellular-automata/generative-art-with-cellular-automata.html
+- https://cavac.at/cavacopedia/Rule%2030 (Conus textile shell; Cambridge North station panels)
+- https://forum.drawbot.com/post/172 (1D CA patterns from a random seed, rules 106 and 73)
+- https://www.openprocessing.org/sketch/59527

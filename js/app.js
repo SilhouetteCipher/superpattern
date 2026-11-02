@@ -239,6 +239,13 @@
     { name: 'Radial veins', state: { gen: 'venation', params: VN({ bound: 'ellipse', root: 'centre', midrib: false, spacing: 6, maxW: 6 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Kelp forest', state: { gen: 'venation', params: VN({ bound: 'rect', root: 'edge', roots: 6, rim: 0, sweep: 0.4, join: false, seed: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const CA = (over) => Object.assign(SP.defaultsFor('automaton'), over);
+  BUILTIN.push(
+    { name: 'Rule 30 cladding', state: { gen: 'automaton', params: CA({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Sierpinski lineage', state: { gen: 'automaton', params: CA({ rule: '90', draw: 'lineage', cell: 6.5, width: 2.2, node: 1.5, flow: 'centre' }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Rule 110 barcode', state: { gen: 'automaton', params: CA({ rule: '110', start: 'random', density: 0.45, draw: 'runs', cell: 5, fill: 0.7, round: 1, seed: 19 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Mirrored rule 150', state: { gen: 'automaton', params: CA({ rule: '150', start: 'mirror', density: 0.4, draw: 'tiles', flow: 'centre', cell: 7, fill: 0.82, round: 0.6, seed: 4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -689,7 +696,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -721,6 +728,7 @@
     tracery: 'Gothic window tracery: intersecting bars, reticulated nets, panels and foiled roundels',
     jigsaw: 'Jigsaw pieces cut by Bézier tabs, on a grid or in concentric rings',
     venation: 'Leaf veins grown by space colonization, tapering by the pipe model',
+    automaton: 'Elementary cellular automata: Wolfram rules as tiles, bars or lineage networks',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

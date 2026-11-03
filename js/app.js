@@ -246,6 +246,13 @@
     { name: 'Rule 110 barcode', state: { gen: 'automaton', params: CA({ rule: '110', start: 'random', density: 0.45, draw: 'runs', cell: 5, fill: 0.7, round: 1, seed: 19 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Mirrored rule 150', state: { gen: 'automaton', params: CA({ rule: '150', start: 'mirror', density: 0.4, draw: 'tiles', flow: 'centre', cell: 7, fill: 0.82, round: 0.6, seed: 4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const IR = (over) => Object.assign(SP.defaultsFor('iceray'), over);
+  BUILTIN.push(
+    { name: 'Cracked ice window', state: { gen: 'iceray', params: IR({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Ice-ray screen', state: { gen: 'iceray', params: IR({ draw: 'sticks', shape: 'circle', symmetry: 'quad', frame: 4, cell: 26, gap: 2.2, round: 1.5, corner: 0.15, seed: 21 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Frost at the centre', state: { gen: 'iceray', params: IR({ centre: 0.65, cell: 42, spread: 0.35, balance: 0.2, corner: 0.4, maxSides: 6, gap: 2, round: 4, frame: 0, seed: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Mirrored pane', state: { gen: 'iceray', params: IR({ symmetry: 'mirror', cell: 34, spread: 0.12, balance: 0.35, corner: 0, maxSides: 4, gap: 3, round: 1, frame: 5, outerRound: 0, seed: 11 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -696,7 +703,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -729,6 +736,7 @@
     jigsaw: 'Jigsaw pieces cut by Bézier tabs, on a grid or in concentric rings',
     venation: 'Leaf veins grown by space colonization, tapering by the pipe model',
     automaton: 'Elementary cellular automata: Wolfram rules as tiles, bars or lineage networks',
+    iceray: 'Chinese ice-ray lattice: a window cracked into pieces by Stiny\'s divide-a-polygon rule',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

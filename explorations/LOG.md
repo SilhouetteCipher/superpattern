@@ -854,3 +854,39 @@ corner round, merge, points → grow.
 - https://cavac.at/cavacopedia/Rule%2030 (Conus textile shell; Cambridge North station panels)
 - https://forum.drawbot.com/post/172 (1D CA patterns from a random seed, rules 106 and 73)
 - https://www.openprocessing.org/sketch/59527
+
+## 2026-11-03 — `iceray` · Ice Ray
+
+**Territory:** Chinese architectural lattice — the "cracked ice" (bingliè) window grilles catalogued by Daniel
+Sheets Dye and formalised as a shape grammar by George Stiny (a recursive division rule, not a tiling, knot,
+curve, Voronoi diagram or packing).
+
+**Idea.** Stiny's ice-ray grammar has one rule, x → div(x): take any polygon of the window and lay a stick
+between two of its sides, dividing it into two polygons. Applied again and again from the window frame it
+yields the irregular triangles, quadrilaterals and pentagons of ice cracking on still water. The code keeps a
+list of convex pieces and always divides the one most over its target size: it groups the piece's edges into
+sides (so an arc of a circular frame counts as one side), picks two sides — non-adjacent for a proper split,
+adjacent for an occasional corner cut, or an arc with itself for a disc's first near-diameter stick — places the
+stick's ends near the middles of those sides, and accepts the division only if both children keep a fair share
+of the area, stay chunky (minimum width over diameter), are at least a stick width plus 1.2 mm wide, carry no
+angle sharper than the limit and no more than the allowed number of sides. A piece that can't be split after
+60 tries is finished. Target size shrinks toward the centre and near field points. Mirror symmetry builds a
+half or quarter frame with the seams as sticks and reflects the result, as most catalogued windows are
+symmetric. The field is the jigsaw rule: half the stick width minus the distance to the nearest stick, soft-min
+over the two nearest so every corner rounds, clipped to the frame inset by the frame bar — drawn either as the
+pieces (rounded cells) or as the lattice itself (sticks and frame bar, filleted at junctions).
+
+**Params.** Outline (rounded square / circle), margin, outline corner, frame bar, symmetry (none / mirror /
+both ways); piece size, smaller at centre, stick spread, balance, corner cuts, chunkiness, most sides
+(quads / pentagons / hexagons / any), sharpest angle, keep off corners, seed; draw (pieces / lattice), stick
+width, corner round, field points → finer.
+
+**Presets.** Cracked ice window · Ice-ray screen · Frost at the centre · Mirrored pane.
+
+**Inspiration.**
+- https://history.siggraph.org/artwork/george-stiny-ice-rays (Stiny's x → div(x) rule; CNC-milled ice-rays)
+- https://journals.sagepub.com/doi/10.1068/b040089 (Stiny 1977, "Ice-Ray: A Note on the Generation of Chinese Lattice Designs")
+- https://web.mit.edu/haldane/www/icerays/index.html (Haldane's classification of ice-ray grammars)
+- https://shape.design.gatech.edu/Research/Projects/2018_Tilings/index.html (Shape Computation Lab, Chengtu window exercise)
+- https://diogocosta738.github.io/chineselattice.html (Diogo Costa's generators from Dye's book)
+- https://journal.hep.com.cn/foar/EN/abstract/article/2095-2635/31534 (Rian 2022, fractal ice-ray lattices)

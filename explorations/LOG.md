@@ -890,3 +890,41 @@ width, corner round, field points → finer.
 - https://shape.design.gatech.edu/Research/Projects/2018_Tilings/index.html (Shape Computation Lab, Chengtu window exercise)
 - https://diogocosta738.github.io/chineselattice.html (Diogo Costa's generators from Dye's book)
 - https://journal.hep.com.cn/foar/EN/abstract/article/2095-2635/31534 (Rian 2022, fractal ice-ray lattices)
+
+---
+
+## 2026-11-04 — `spirolateral` · Spirolateral
+
+**Territory:** Recreational mathematics / turtle geometry — Frank Odds' spirolaterals (a drawing *rule*, not a
+tiling, knot, curve-fill, maze, lattice or growth process).
+
+**Idea.** A turtle walks segments of length 1, 2, 3 … n, turning by a fixed angle after each; the cycle of n moves
+repeats until the turtle is home, facing its first heading. Reversing some turns (turning the other way) gives a
+second family of figures from the same order and angle. Square spirolaterals sit on graph paper, 60°/120° ones on
+isometric paper, and 72°/144°/45°/135° give pentagonal, star and octagonal figures. Closure is not guaranteed: the
+net turn per cycle must be a non-zero whole fraction of 360°, and even then (Krawczyk) some figures drift away.
+
+**How the code realises it.** `generateBoard` lays out a cols × rows grid of cells (any board aspect, inside a
+margin). `walk()` turns in exact integer degrees, repeats the cycle 360 / gcd(net turn, 360) times, and only accepts
+the figure if the position has returned to the origin; `figure()` otherwise nudges to the nearest closing order
+(±1, ±2, ±3), re-draws random reversal sets, and finally drops reversals. Layouts: the same figure in every cell; a
+table in the spirit of Odds' charts (order steps along each row, row r reverses turn r); a seeded random figure per
+cell; or one large figure. Each figure is rotated, optionally mirrored or quarter-turned on a checker, fitted to the
+cell, its corners replaced by quadratic arcs (Krawczyk's "vertices as control points for arcs"), and emitted as one
+closed stroke. Band width is clamped to 70 % of a unit step so lattice-parallel runs keep a gap, never under 0.6 mm;
+field points can grow the band.
+
+**Params.** Rule: turn angle (90/60/120/72/144/45/135), order, max order, reversed turns (none / last / every
+other / seeded random), seed. Layout: layout mode, columns, rows, fill cell, rotation, alternate cells (none /
+mirror / quarter-turn), margin. Band: width (mm), corner round, merge, points → grow.
+
+**Presets.** Spirolateral grid (3 × 3 order-5 squares) · Odds' chart (4 × 4 table, orders 3–6) · Hexagonal rosette
+(one order-7 60° figure) · Pentagonal sampler (random 72° figures, mirrored on a checker).
+
+**Inspiration.**
+- https://en.wikipedia.org/wiki/Spirolateral
+- https://www.mi.sanu.ac.rs/vismath/krawczyk/spdesc01.htm (Krawczyk — Introduction to Spirolaterals)
+- https://www.mi.sanu.ac.rs/vismath/krawczyk/spdesc02.htm (Properties: closure, the 360° test and its failures)
+- https://www.mi.sanu.ac.rs/vismath/krawczyk/spdesc03.htm (Reversing turns)
+- https://www.mi.sanu.ac.rs/vismath/krawczyk/spdesc05.htm (Spirolaterals as artwork — arcs from vertices)
+- https://blog.doublehelix.csiro.au/spirolaterals

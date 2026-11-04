@@ -253,6 +253,13 @@
     { name: 'Frost at the centre', state: { gen: 'iceray', params: IR({ centre: 0.65, cell: 42, spread: 0.35, balance: 0.2, corner: 0.4, maxSides: 6, gap: 2, round: 4, frame: 0, seed: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Mirrored pane', state: { gen: 'iceray', params: IR({ symmetry: 'mirror', cell: 34, spread: 0.12, balance: 0.35, corner: 0, maxSides: 4, gap: 3, round: 1, frame: 5, outerRound: 0, seed: 11 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const SPR = (over) => Object.assign(SP.defaultsFor('spirolateral'), over);
+  BUILTIN.push(
+    { name: 'Spirolateral grid', state: { gen: 'spirolateral', params: SPR({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Odds\' chart', state: { gen: 'spirolateral', params: SPR({ layout: 'table', angle: '90', order: 3, orderMax: 6, cols: 4, rows: 4, width: 1.6, round: 0.25, margin: 6 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Hexagonal rosette', state: { gen: 'spirolateral', params: SPR({ layout: 'single', angle: '60', order: 7, reverse: 'none', width: 3, round: 0.6, margin: 10 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Pentagonal sampler', state: { gen: 'spirolateral', params: SPR({ layout: 'random', angle: '72', order: 3, orderMax: 6, reverse: 'none', cols: 3, rows: 3, flip: 'mirror', width: 1.5, round: 0.5, fit: 0.9, seed: 42 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -703,7 +710,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -737,6 +744,7 @@
     venation: 'Leaf veins grown by space colonization, tapering by the pipe model',
     automaton: 'Elementary cellular automata: Wolfram rules as tiles, bars or lineage networks',
     iceray: 'Chinese ice-ray lattice: a window cracked into pieces by Stiny\'s divide-a-polygon rule',
+    spirolateral: 'Odds\' spirolaterals: turtle walks of 1, 2, 3 … n steps that turn until they close',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

@@ -928,3 +928,36 @@ mirror / quarter-turn), margin. Band: width (mm), corner round, merge, points �
 - https://www.mi.sanu.ac.rs/vismath/krawczyk/spdesc03.htm (Reversing turns)
 - https://www.mi.sanu.ac.rs/vismath/krawczyk/spdesc05.htm (Spirolaterals as artwork — arcs from vertices)
 - https://blog.doublehelix.csiro.au/spirolaterals
+
+---
+
+## 2026-11-05 — `wallpaper` · Wallpaper
+
+**Territory:** Mathematics of symmetry — the 17 plane crystallographic ("wallpaper") groups, used as a kaleidoscope
+(a symmetry rule, not a tiling, knot, curve, growth process or traditional ornament).
+
+**Idea.** Every repeating flat pattern belongs to one of exactly 17 symmetry groups (Fedorov 1891, Pólya 1924),
+made of translations, rotations of order 2, 3, 4 or 6, mirrors and glide reflections. The generator draws a small
+seeded motif once in a single lattice cell (spline strands, closed loops, or sprigs with a bulb at the tip, plus
+optional beads). It then copies the motif with every operation of the chosen group and repeats the result over the
+lattice to fill the board. Each operation is the group's general position from the International Tables, written in
+fractional lattice coordinates as x′ = M·x + t (the centred groups add the (½, ½) centring). The motif is converted
+into the cell's basis, transformed and converted back, so every copy is an exact isometry. Where a strand crosses a
+mirror or rotation centre it meets its own copy, and the smooth union fuses them into one symmetric shape. This is
+where the kaleidoscope effect comes from. The lattice type follows the group (oblique, rectangular, centred, square,
+hexagonal), is centred on the board, can be rotated, and is clipped to the board margin, so rectangular boards fill
+fully. The harness checks that all 17 operation sets are closed under composition, modulo lattice translations.
+
+**Params.** Symmetry: group (all 17, labelled with IUC and Conway orbifold names), cell size, cell aspect
+(rectangular/oblique groups), cell angle (p1/p2), rotate. Motif: style (strands/loops/sprigs), strands, bends per
+strand, reach (× cell), beads, bead radius, seed. Finish: band width (≥ 0.6 mm), taper, fillet/fuse, margin,
+field points → thicker.
+
+**Presets.** Square kaleidoscope (p4m strands), Hex loops (p6m loops), Glide sprigs (pgg sprigs with beads).
+
+**Inspiration.**
+- https://en.wikipedia.org/wiki/Wallpaper_group
+- https://www.d.umn.edu/~ddunham/bridges15.pdf (Dunham & Shier: random motifs in a fundamental region, extended by the group)
+- https://www.d.umn.edu/~ddunham/dunicgg16.pdf
+- https://hackage.haskell.org/package/wallpaper/docs/Recipes-Wallpaper.html (Rosenbluth's wallpaper recipes)
+- https://arxiv.org/pdf/1704.00676 (one parametric function rendering all 17 groups)

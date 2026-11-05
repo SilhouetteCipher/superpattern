@@ -260,6 +260,12 @@
     { name: 'Hexagonal rosette', state: { gen: 'spirolateral', params: SPR({ layout: 'single', angle: '60', order: 7, reverse: 'none', width: 3, round: 0.6, margin: 10 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Pentagonal sampler', state: { gen: 'spirolateral', params: SPR({ layout: 'random', angle: '72', order: 3, orderMax: 6, reverse: 'none', cols: 3, rows: 3, flip: 'mirror', width: 1.5, round: 0.5, fit: 0.9, seed: 42 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const WP = (over) => Object.assign(SP.defaultsFor('wallpaper'), over);
+  BUILTIN.push(
+    { name: 'Square kaleidoscope', state: { gen: 'wallpaper', params: WP({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Hex loops', state: { gen: 'wallpaper', params: WP({ group: 'p6m', style: 'loops', cell: 70, strands: 1, nodes: 3, reach: 0.3, width: 2.4, taper: 0, fillet: 1.6, seed: 31 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Glide sprigs', state: { gen: 'wallpaper', params: WP({ group: 'pgg', style: 'sprigs', cell: 50, aspect: 1.2, strands: 2, nodes: 2, reach: 0.35, width: 2.6, taper: 0.5, beads: 1, beadR: 2.4, seed: 208 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -710,7 +716,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -745,6 +751,7 @@
     automaton: 'Elementary cellular automata: Wolfram rules as tiles, bars or lineage networks',
     iceray: 'Chinese ice-ray lattice: a window cracked into pieces by Stiny\'s divide-a-polygon rule',
     spirolateral: 'Odds\' spirolaterals: turtle walks of 1, 2, 3 … n steps that turn until they close',
+    wallpaper: 'The 17 wallpaper groups as a kaleidoscope: one seeded motif copied by rotations, mirrors and glides',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

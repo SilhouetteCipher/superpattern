@@ -266,6 +266,12 @@
     { name: 'Hex loops', state: { gen: 'wallpaper', params: WP({ group: 'p6m', style: 'loops', cell: 70, strands: 1, nodes: 3, reach: 0.3, width: 2.4, taper: 0, fillet: 1.6, seed: 31 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Glide sprigs', state: { gen: 'wallpaper', params: WP({ group: 'pgg', style: 'sprigs', cell: 50, aspect: 1.2, strands: 2, nodes: 2, reach: 0.35, width: 2.6, taper: 0.5, beads: 1, beadR: 2.4, seed: 208 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const GE = (over) => Object.assign(SP.defaultsFor('gears'), over);
+  BUILTIN.push(
+    { name: 'Clockwork', state: { gen: 'gears', params: GE({ module: 3, teethMin: 10, teethMax: 34, seed: 11 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Fine train', state: { gen: 'gears', params: GE({ module: 1.8, teethMin: 8, teethMax: 40, count: 150, sprawl: 0.9, gap: 0.8, body: 'solid', axle: 1.2, edges: 'crop', margin: 0, fillet: 0.3, seed: 4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Gear chain', state: { gen: 'gears', params: GE({ module: 4, teethMin: 12, teethMax: 22, sprawl: 0, spokes: 4, rim: 3.5, axle: 3, gap: 1.2, seed: 37 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -716,7 +722,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -752,6 +758,7 @@
     iceray: 'Chinese ice-ray lattice: a window cracked into pieces by Stiny\'s divide-a-polygon rule',
     spirolateral: 'Odds\' spirolaterals: turtle walks of 1, 2, 3 … n steps that turn until they close',
     wallpaper: 'The 17 wallpaper groups as a kaleidoscope: one seeded motif copied by rotations, mirrors and glides',
+    gears: 'A train of involute spur gears grown gear by gear, every pair phased to mesh with a clear gap',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

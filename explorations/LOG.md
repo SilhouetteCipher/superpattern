@@ -961,3 +961,37 @@ field points → thicker.
 - https://www.d.umn.edu/~ddunham/dunicgg16.pdf
 - https://hackage.haskell.org/package/wallpaper/docs/Recipes-Wallpaper.html (Rosenbluth's wallpaper recipes)
 - https://arxiv.org/pdf/1704.00676 (one parametric function rendering all 17 groups)
+
+## 2026-11-06 — `gears` · Gear Train
+
+**Idea.** Mechanical drawing instead of ornament: a board of spur gears that actually mesh. Every gear shares one
+module m (pitch diameter ÷ teeth), so any two can run together. The train grows one gear at a time. A new gear of
+n teeth (pitch radius m·n/2) is set tangent to a parent's pitch circle at a seeded random bearing, and is kept only
+if its tip circle stays clear of every other gear and of the board. As placements start failing, the tooth-count
+pick narrows toward the small end so late gears fill the gaps. Its rotation is then solved for mesh. The parent's
+tooth phase φ at the contact bearing is mirrored (ccw on one pitch circle is cw on the other) and shifted half a
+pitch, so a parent tooth always lands in a gap. "Turn" rotates the first gear and the whole train follows in step.
+Teeth use standard proportions (20° pressure angle, dedendum 1.25 m). Each tooth is a chain of capsules whose
+widths follow the exact involute tooth thickness 2r·(s/2R + inv αp − inv αr). That width is held constant below the
+base circle, and the tip is trimmed so meshing gears keep the gap under each tip too. Bodies are solid discs or
+rim-hub-spoke wheels, with an optional axle bore carved out. The field's exponential smooth union sums every nearby
+stroke and can bridge a narrow mesh, so Merge is capped at gap/4. The harness checks this through the full
+pipeline: with solid bodies and no bore, every gear contours to exactly one island. That held over 60 seed and
+setting combinations, including extreme module, gap and merge values. "Sprawl" picks a winding chain (grow from the
+newest gear) or a bushy cluster (grow from any gear). "Crop at the board" lets gears run off the edge, clipped to
+the margin.
+
+**Params.** Train: module (mm), fewest/most teeth, max gears, chain ↔ cluster, turn (teeth), seed. Teeth: mesh gap,
+gear spacing (between gears that don't mesh). Body: solid / rim-hub-spokes, spokes, rim/spoke width, axle bore.
+Board: edges (whole gears / crop), margin, merge, field points → bigger gears.
+
+**Presets.** Clockwork (spoked wheels, m 3), Fine train (150-gear cap, m 1.8, solid discs with small bores, cropped
+at the board edge), Gear chain (m 4, four-spoke wheels grown as a single winding chain).
+
+**Inspiration.**
+- https://arxiv.org/pdf/2212.14409 (a mathematical overview of gear design: involute, base circle, meshing)
+- https://www.engineering.iastate.edu/~gkstarns/me325/gears_1.pdf (pitch/base radius, module, addendum 1 m and dedendum 1.25 m)
+- https://gist.github.com/Sphinxxxx/a0718cfd9c0d182695c6870ed7b94116 (involute gear meshing demo with tooth-count sliders)
+- https://chris0jeky.github.io/CV_and_Portfolio/Portfolio/projects/gear-train-problem.html (meshing constraint: centre distance = sum of pitch radii)
+- https://www.instructables.com/25D-Laser-Cut-Gears (laser-cut gears as decorative relief)
+- https://github.com/ankit8697/Generative-Gears (gears as a generative-art motif)

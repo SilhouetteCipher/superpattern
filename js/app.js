@@ -272,6 +272,12 @@
     { name: 'Fine train', state: { gen: 'gears', params: GE({ module: 1.8, teethMin: 8, teethMax: 40, count: 150, sprawl: 0.9, gap: 0.8, body: 'solid', axle: 1.2, edges: 'crop', margin: 0, fillet: 0.3, seed: 4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Gear chain', state: { gen: 'gears', params: GE({ module: 4, teethMin: 12, teethMax: 22, sprawl: 0, spokes: 4, rim: 3.5, axle: 3, gap: 1.2, seed: 37 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const KU = (over) => Object.assign(SP.defaultsFor('kumiko'), over);
+  BUILTIN.push(
+    { name: 'Asanoha shoji', state: { gen: 'kumiko', params: KU({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Tortoise to hemp', state: { gen: 'kumiko', params: KU({ insA: 'kikko', insB: 'asanoha', arrange: 'fade', mix: 0.5, cell: 26 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Pinwheel rose', state: { gen: 'kumiko', params: KU({ shape: 'circle', insA: 'pinwheel', insB: 'asanoha', arrange: 'radial', mix: 0.35, cell: 36, inner: 0.65, frame: 6, jigumi: 2.4, bar: 1.4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -722,7 +728,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -759,6 +765,7 @@
     spirolateral: 'Odds\' spirolaterals: turtle walks of 1, 2, 3 … n steps that turn until they close',
     wallpaper: 'The 17 wallpaper groups as a kaleidoscope: one seeded motif copied by rotations, mirrors and glides',
     gears: 'A train of involute spur gears grown gear by gear, every pair phased to mesh with a clear gap',
+    kumiko: 'Japanese kumiko lattice: a triangle jigumi grid with asanoha, kikkō and pinwheel inserts',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

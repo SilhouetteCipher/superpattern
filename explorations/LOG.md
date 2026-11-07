@@ -995,3 +995,62 @@ at the board edge), Gear chain (m 4, four-spoke wheels grown as a single winding
 - https://chris0jeky.github.io/CV_and_Portfolio/Portfolio/projects/gear-train-problem.html (meshing constraint: centre distance = sum of pitch radii)
 - https://www.instructables.com/25D-Laser-Cut-Gears (laser-cut gears as decorative relief)
 - https://github.com/ankit8697/Generative-Gears (gears as a generative-art motif)
+
+---
+
+## 2026-11-07 — `kumiko` · Kumiko
+
+**Territory:** Japanese woodworking — kumiko, the shoji-screen lattice of fitted strips (a joinery construction rule,
+not the hitomezashi stitch rule, Hankin's star strapwork, the ice-ray cracking grammar or a symmetry-group kaleidoscope).
+
+**Idea.** The joiner builds a kumiko panel in two stages. First the *jigumi*, a base grid of strips half-lapped into
+equilateral triangles. Then an insert is pressed into every triangle cell, and the insert decides the motif. Three
+arms from the corners to the centre give *asanoha* (hemp leaf). Arms from the centre to the side midpoints give
+*kikkō* (tortoise-shell hexagons). Panels often mix two inserts, or fade from one to another across the screen. The
+generator takes the rule, not any particular panel: a triangle lattice, a library of cell inserts, and a mixing rule.
+
+**How the code realises it.** `generateBoard` lays lattice vertices a·e1 + b·e2 around the board centre, which
+is a hexagon centre. The grid can be turned 90°. Each up triangle lays its three jigumi edges, and every edge
+belongs to exactly one up triangle, so none is doubled. Every cell (up and down) then lays its insert:
+- asanoha (corners → centroid)
+- kikkō (centroid → side midpoints)
+- asanoha with a ring (plus a small inner triangle scaled about the centroid)
+- pinwheel (three cevians from each corner to the next side at fraction t, each running to its farther crossing,
+  which forms Routh's inner triangle)
+- nested medial triangle
+- plain
+
+The mix rule picks the first or second insert per cell:
+- up/down alternation
+- hexagon flowers: the six cells around every third lattice vertex, since (a − b) ≡ 0 mod 3 hits exactly one
+  corner of every triangle
+- hashed random cells
+- a dithered linear fade or a fade out from the centre
+- field points, which pull cells to the second insert
+
+The field follows the ice-ray rule. It is the signed distance to the nearest strip, minus that strip's half-width
+(jigumi and insert strips have separate widths), soft-min'd across the two nearest strips to round every opening.
+It is unioned with an optional frame band and clipped to a rounded-rectangle or circular panel that follows the
+board's real width and height. Strip segments are binned on a half-cell grid.
+
+**Verification.** The harness ran the defaults plus 25 random parameter sets, on square and 260×140 boards, with
+the first 8 random sets run through the full contour → SVG pipeline. Every run produced finite output, and every
+subpath was closed.
+
+**Params.** Panel: outline (rounded rectangle / circle), margin, frame bar. Jigumi: triangle side, grid turn, grid
+strip width. Tsukeko: insert, second insert, mix (single / up-down / hexagon flowers / random cells / fade across /
+fade from centre), second-insert share, ring/pinwheel size, insert strip width, seed. Finish: opening round, field
+points → second insert.
+
+**Presets.**
+- Asanoha shoji: hemp-leaf flowers among plain hexagons.
+- Tortoise to hemp: kikkō fading to asanoha across the panel.
+- Pinwheel rose: a circular panel, asanoha at the centre and pinwheel cells outward.
+
+**Inspiration.**
+- https://www.instructables.com/How-to-Make-Asanoha-Kumiko-Japanese-Woodworking (asanoha on a triangular jigumi)
+- https://www.bigsandwoodworking.com/kuruma-kikko/ (kikkō variants built from two repeated pieces)
+- https://www.bigsandwoodworking.com/asa-no-ha-coffee-table/ (asanoha panels in furniture)
+- https://www.finewoodworking.com/2019/02/05/how-to-create-kumiko-at-the-tablesaw (cutting 60° triangular gridwork)
+- https://musubikiln.com/blogs/glossary/kumiko (pattern names: asanoha, kikkō, goma, sakura)
+- https://www.tanihata.co.jp/english/products/category/auspicious-omens-motifs/ (traditional kumiko motif catalogue)

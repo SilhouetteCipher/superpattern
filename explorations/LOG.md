@@ -1054,3 +1054,60 @@ points → second insert.
 - https://www.finewoodworking.com/2019/02/05/how-to-create-kumiko-at-the-tablesaw (cutting 60° triangular gridwork)
 - https://musubikiln.com/blogs/glossary/kumiko (pattern names: asanoha, kikkō, goma, sakura)
 - https://www.tanihata.co.jp/english/products/category/auspicious-omens-motifs/ (traditional kumiko motif catalogue)
+
+---
+
+## 2026-11-08 — `circuit` · Circuit
+
+**Territory:** Electronics / PCB layout — the octilinear routing rules of printed-circuit-board design (a
+manufacturing design rule, not a maze carver, flow field, space-filling curve or lattice).
+
+**Idea.** Circuit-board "trace art" looks the way it does because of a few routing rules. Copper runs only at
+0°, 45° and 90°. Bends are 45° mitres, never right angles. Traces keep a clearance from each other and never
+cross on one layer. Parallel nets travel as buses that bend together. Every free end lands on a round pad or
+a drilled via, and chips fan their pins out into the board. The generator takes those rules, not any particular
+board or artwork, and routes seeded random nets with them. The result reads as electronics, and it suits a relief
+or cut-out: uniform-width bands, round pads, a ring around every hole, and no hairlines.
+
+**How the code realises it.** `generateBoard` lays a square node grid at `pitch`, fitted to the board's real width
+and height inside the margin. It keeps two occupancy maps: one for nodes, and one for grid squares a diagonal has
+crossed. A step is legal only if its target node is free and, when it is diagonal, its square hasn't already
+been crossed by another diagonal, so copper can never touch or cross.
+
+Chips go down first. Each is a rectangle of nodes, at least two nodes clear of other chips, drawn as a closed
+rounded-rectangle stroke with a pin-1 dot inside. Every node along its long sides becomes a pinned trace start
+heading outward.
+
+Nets are random walks. A walk keeps straight with probability `straight` and otherwise turns 45° left or right,
+but only after two straight steps, so each bend has room to be mitred. When the straight step is blocked it tries
+to bend round. It stops when it is boxed in or reaches a length drawn from [`minLen`, `maxLen`]. Walks are marked
+tentatively and ripped up if they come out shorter than `minLen`. A bus lead can spawn up to `bus` lanes,
+alternating either side of it. Each lane replays the lead's move sequence from a translated start, so the lanes
+stay parallel through every bend, and each lane stops at its first blocked step.
+
+Bends are replaced by a quadratic blend cut back `corner × pitch/2` along both legs (G1 with the straight runs).
+Free ends get pads. In via mode a pad also gets a hole carved with a `cuts` stroke, with radius limited to
+`pad − 0.6 mm` so the copper ring stays at least 0.6 mm wide. Field points scale the pads.
+
+Sizes are clamped against the pitch for the tightest case. Parallel diagonals one node apart sit pitch/√2 apart,
+and a pad can sit beside a diagonal at the same distance. Every gap is therefore at least 0.6 mm and every trace
+is at least 0.6 mm wide. Output is strokes, blobs and cuts, so the shared field, contour and Bézier pipeline
+produces clean closed outlines.
+
+**Verification.** The Node harness ran the defaults plus 25 random parameter sets (a third of them on a 260×140
+board). All outputs were finite, inside the board, and gave the same result on a repeat run. The defaults and
+five random sets went through the full field → contour → SVG pipeline, and every subpath closed (M count = Z
+count). The page loaded in headless Chrome with no JS errors.
+
+**Params.** Grid: `pitch`, `margin`, `seed` · Routing: `density`, `straight`, `minLen`, `maxLen`, `bus`
+(lanes), `chips` · Copper: `trace` (width mm), `pad` (diameter mm), `ends` (pads / vias / mixed / round),
+`hole` (via drill mm), `corner` (bend rounding) · Field points: `fieldPad`.
+
+**Presets.** Circuit board (mixed pads and vias, buses, two chips) · Data bus (wide 6-lane buses, long straight
+runs, no chips) · Via field (coarse pitch, short wiggly nets, all drilled vias, three chips).
+
+**Inspiration.**
+- https://www.framer.com/marketplace/components/circuit-traces/ (8-direction lattice walk with occupancy rules: the trace-art look)
+- https://www.raster.art/artwork/bright-circuits-by-adriz/about (Bright Circuits: generative boards following real routing rules — 45°/90° turns, track spacing, no overlaps, vias between layers)
+- https://blog.quilter.ai/octilinear-trace-routing (why designers prefer octilinear 45°/135° routing)
+- https://globals.ieice.org/en_transactions/fundamentals/10.1587/transfun.E94.A.2510/_p (single-layer trunk routing with minimal 45° segments)

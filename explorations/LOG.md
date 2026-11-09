@@ -1111,3 +1111,56 @@ runs, no chips) · Via field (coarse pitch, short wiggly nets, all drilled vias,
 - https://www.raster.art/artwork/bright-circuits-by-adriz/about (Bright Circuits: generative boards following real routing rules — 45°/90° turns, track spacing, no overlaps, vias between layers)
 - https://blog.quilter.ai/octilinear-trace-routing (why designers prefer octilinear 45°/135° routing)
 - https://globals.ieice.org/en_transactions/fundamentals/10.1587/transfun.E94.A.2510/_p (single-layer trunk routing with minimal 45° segments)
+
+---
+
+## 2026-11-09 — `chainmail` · Chainmail
+
+**Territory:** Armour and jewellery craft — maille (chainmail) weaves. This is a linking rule for closed rings,
+not a tiling, a knot strand, a textile draft or a packing.
+
+**Idea.** Maille is made entirely of closed rings, and each weave is a rule for which rings pass through which.
+Japanese weaves lie flat. Large rings sit on a lattice and small connector rings join neighbouring large rings.
+That gives 4-in-1 on a square lattice and 6-in-1 on a triangular one, and a 3-link "hex lace" is the honeycomb
+variant. A connector stands on edge, so from above it reads as an ellipse across the link. In European 4-in-1,
+alternate rows of rings lean opposite ways, and each ring passes through two rings in the row above and two in
+the row below. Two linked rings cross twice: one wire passes over at the first crossing and under at the second.
+In a relief, that over/under is what makes a pattern of loops read as mail, so the generator cuts the under-wire
+back around each crossing, as Knotwork does. Every piece stays a smooth round-ended band, which is good for
+cutting or printing. The look is drawn from the weave rules, not from any particular artwork.
+
+**How the code realises it.** `generateBoard` builds a list of rings, each a closed elliptical polyline with arc
+lengths. Japanese weaves place large rings (Ø `size`) on the lattice at a pitch of `spacing` × diameter, never
+closer than wire + gap. The lattice can be rotated, and only rings whose whole outline fits inside the margin are
+kept. Each lattice edge between two kept rings gets a connector ellipse along the link. Its half-length reaches
+`link` × R past each large ring's wire, and its width is `flat` × length, never less than wire + 0.6 mm so the
+hole stays open. European rows use ellipses (`flat` = minor/major) leaning ±`lean`. The in-row pitch keeps
+neighbours clear by wire + gap, and the row pitch shrinks as `link` grows so diagonal neighbours overlap deeply.
+
+Next it intersects every nearby pair of rings, segment against segment. For each pair it ranks the crossings by
+their signed side of the line joining the two centres and alternates over/under down that ranking, so a linked
+pair always gets one crossing each way. `chirality` flips the ranking, or alternates it by link direction. Where
+a ring is under, its arc is removed for `wire/2 / sin θ + wire/2 + gap` either side of the crossing, which keeps
+the round end `gap` clear of the over-wire even at shallow angles. Overlapping cut intervals are merged cyclically.
+The pieces left are resampled with exact end points, and pieces shorter than 1.5 × wire are dropped so no crumbs
+are left. Uncut rings stay closed loops. Missing rings (`holes`, seeded) and field points (`fieldHoles`) remove
+large rings, and their connectors go with them. Output is plain strokes at constant radius, with a small fillet.
+
+**Verification.** The Node harness ran the defaults, each weave, and 25 random parameter sets (a third of them on
+a 260×140 board). All outputs were non-empty, finite, inside the board, and the same on a repeat run. Each weave,
+the three presets and a field-point case went through the full field → contour → SVG pipeline, and every subpath
+closed (M count = Z count). Rendered previews were checked by eye. The first European rule (sign of the side) left
+some pairs unlinked, which is why the ranked rule replaced it. The page loaded in headless Chrome with no JS errors.
+
+**Params.** Weave: `weave` (Japanese 6-in-1 / Japanese 4-in-1 / Hex lace / European 4-in-1), `size` (ring Ø mm),
+`spacing`, `link` (reach / overlap), `flat` (roundness), `lean` (European), `rotate` · Wire: `wire` (mm), `gap`
+(crossing gap mm), `chirality` · Layout: `margin`, `holes`, `seed` · Field points: `fieldHoles`.
+
+**Presets.** Japanese mail (6-in-1 defaults) · Moth-eaten links (Japanese 4-in-1 with seeded missing rings) ·
+Hauberk (European 4-in-1, rounder rings, light lean).
+
+**Inspiration.**
+- https://www.mailleartisans.org/articles/articledisplay.php?key=645 (M.A.I.L. on Japanese weaves and minimum aspect ratios)
+- https://moaatt2.github.io/test-blog/chainmail_posts/japanese_6_in_1.html (Japanese 6-in-1: large and small ring sizes)
+- https://www.chainmaillers.com/resources/european-4-in-1.44 (European 4-in-1: each ring through four others, alternating rows)
+- https://www.instructables.com/How-to-make-Japanese-6-1-Maille-Armor (how the flat Japanese mesh goes together)

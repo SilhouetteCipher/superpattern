@@ -123,6 +123,36 @@
     { name: 'Rosette lattice', state: { gen: 'hankin', params: HK({ tiling: 'dodeca', size: 14, angle: 62, width: 2, fillet: 0.4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Star sweep', state: { gen: 'hankin', params: HK({ tiling: 'hex', size: 16, angle: 52, delta: 0.22, sweep: 32, sweepDir: 0, width: 1.8 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const PN = (over) => Object.assign(SP.defaultsFor('panels'), over);
+  BUILTIN.push(
+    { name: 'Hull panels', state: { gen: 'panels', params: PN({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Fine plating', state: { gen: 'panels', params: PN({ splits: 7, minSize: 10, stop: 0.1, gap: 1.4, chamfer: 0.25, insetChance: 0.15, ventChance: 0.3, slotPitch: 3, rivetChance: 0.6, rivetR: 0.7, seed: 19 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Framed bays', state: { gen: 'panels', params: PN({ splits: 4, minSize: 30, stop: 0.05, gap: 3, chamfer: 0.5, chamferChance: 0.8, insetChance: 0.8, rim: 4, insetGap: 2, ventChance: 0.1, rivetChance: 0.2, seed: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
+  const CD = (over) => Object.assign(SP.defaultsFor('conduits'), over);
+  BUILTIN.push(
+    { name: 'Conduits', state: { gen: 'conduits', params: CD({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Single pipes', state: { gen: 'conduits', params: CD({ pitch: 9, runs: 30, pipes: 1, vary: false, pipeW: 3.2, turn: 0.4, collarEvery: 1.5, collarOut: 1.2, boxSize: 7, seed: 8 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Cable bundles', state: { gen: 'conduits', params: CD({ pitch: 16, runs: 10, pipes: 4, vary: false, pipeW: 1.6, pipeGap: 1, elbow: 0.5, collars: true, collarEvery: 3, collarW: 2.6, collarOut: 1.5, boxes: false, seed: 33 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
+  const HD = (over) => Object.assign(SP.defaultsFor('hud'), over);
+  BUILTIN.push(
+    { name: 'HUD reticle', state: { gen: 'hud', params: HD({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Dense dial', state: { gen: 'hud', params: HD({ rings: 14, inner: 8, pitch: 4.5, wMin: 0.9, wMax: 2.4, segMax: 10, gapDeg: 5, drop: 0.15, tickChance: 0.4, tickDeg: 3, tickLen: 2, centreDot: 2, cross: false, seed: 27 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Sweep gauges', state: { gen: 'hud', params: HD({ rings: 5, inner: 24, pitch: 11, wMin: 3, wMax: 7, segMax: 4, gapDeg: 14, drop: 0.4, tickChance: 0.2, tickLen: 4, brackets: false, cross: false, centreDot: 10, seed: 4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
+  const HX = (over) => Object.assign(SP.defaultsFor('hexplate'), over);
+  BUILTIN.push(
+    { name: 'Hex plating', state: { gen: 'hexplate', params: HX({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Damaged armour', state: { gen: 'hexplate', params: HX({ cell: 12, gap: 1.4, missing: 0.05, missGrad: 0.7, missAngle: 35, insetChance: 0.15, splitChance: 0.35, splitN: 'mix', holeChance: 0.1, seed: 12 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Framed hexes', state: { gen: 'hexplate', params: HX({ cell: 24, gap: 2.4, orient: 'flat', edge: 'whole', round: 1.5, missing: 0, insetChance: 0.9, rim: 3.5, insetGap: 1.8, splitChance: 0, holeChance: 0.1, holeR: 0.4, seed: 2 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
+  const RO = (over) => Object.assign(SP.defaultsFor('readout'), over);
+  BUILTIN.push(
+    { name: 'Readout', state: { gen: 'readout', params: RO({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Data columns', state: { gen: 'readout', params: RO({ columns: 2, rowH: 4.5, rowGap: 2, vary: 0.2, mix: 'text', density: 0.85, gapX: 2.5, seed: 7 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Gauge wall', state: { gen: 'readout', params: RO({ rowH: 9, rowGap: 3, vary: 0.5, mix: 'gauges', density: 0.9, gapX: 4, round: 0.6, seed: 101 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   const SF = (over) => Object.assign(SP.defaultsFor('spacefill'), over);
   BUILTIN.push(
     { name: 'Moore loop', state: { gen: 'spacefill', params: SF({}), field: { points: [] }, board: { w: 200, h: 200 } } },
@@ -746,6 +776,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
+    { id: 'scifi', name: 'Sci-Fi', gens: ['panels', 'conduits', 'hud', 'hexplate', 'readout'] },
     { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
@@ -759,6 +790,11 @@
     spokes: 'Rings of wedge spokes, slotted and twisted', trigrid: 'Triangle-grid emblems with rotational symmetry', knots: 'Celtic knotwork with over/under weaving',
     quadgrid: 'Squares that drop into wedges and triangles', capsules: 'Dashes that morph into bars and blobs',
     hatch: 'Parallel dashes, breaks and swells in a shape',
+    panels: 'Hull plating: split panels with chamfers, inset frames, vents and rivets',
+    conduits: 'Pipe bundles routed with elbows, collars and junction boxes',
+    hud: 'Heads-up reticles: segmented rings, tick rings, crosshair and brackets',
+    hexplate: 'Hex armour with missing, framed, split and pierced plates',
+    readout: 'Console strips of block glyphs, bars, gauges and frames',
     knotwork: 'Celtic plaits woven over and under, turned by breaks',
     hankin: 'Islamic star strapwork grown from polygons in contact',
     spacefill: 'Hilbert, Moore, Peano and Gosper curves as one winding band — the Rectangle curve fills any board aspect',

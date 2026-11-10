@@ -1164,3 +1164,63 @@ Hauberk (European 4-in-1, rounder rings, light lean).
 - https://moaatt2.github.io/test-blog/chainmail_posts/japanese_6_in_1.html (Japanese 6-in-1: large and small ring sizes)
 - https://www.chainmaillers.com/resources/european-4-in-1.44 (European 4-in-1: each ring through four others, alternating rows)
 - https://www.instructables.com/How-to-make-Japanese-6-1-Maille-Armor (how the flat Japanese mesh goes together)
+
+---
+
+## 2026-11-10 — `scroll` · Scrollwork
+
+**Territory:** Scroll ornament: the Māori kōwhaiwhai koru (pītau), the classical acanthus rinceau and the fern
+crozier, built with a curve-*drawing* rule from computational aesthetics (Xu & Mould's magnetic curves). It is not
+a tiling, a knot, a flow field, a growth simulation or a turtle walk.
+
+**Idea.** A charged particle moving at constant speed through a magnetic field turns at a rate set by the field
+strength. If the field strengthens as the particle travels, the curvature rises steadily and the path winds into a
+spiral. Ruskin called this kind of curve the most beautiful, because its curvature always changes. When curvature
+only ever increases, each osculating circle sits inside the previous one (the Tait–Kneser theorem), so a scroll can
+never cross itself. Kōwhaiwhai uses one stencil element, the koru: a stem that curls into a round bulb. Koiri are
+koru that branch off one another, turning back and forth. The traditional rule is that a bulb never touches a stem.
+The generator takes those rules (spiral, bulb, branch, alternate sense, keep clear), not any particular painting.
+
+**How the code realises it.** `trace` integrates κ(s) = e^(Curl·s/R)/R with a midpoint step of 0.4 mm. The scroll
+stops when its radius of curvature reaches the eye (bulb + gap/2), when it hits the margin, or when it comes within
+`gap` of anything already placed or of its own earlier coils. Clearance is checked against a uniform disc grid that
+stores each point's stroke radius. The stroke tapers from `width` to half of it. The end gets a bulb blob as large
+as the clearance allows, up to `bulb`. Each finished scroll buds children at arc steps of `buds` × R from its convex
+side. A child leaves at `angle` with radius `child` × R and 80% of the parent's local width. It curls the opposite
+way (an S, the koiri), the same way (nested hooks) or at random, down to `depth` levels, grown breadth-first. Buds
+too short to read (under ½R or 4 widths) are thrown away so nothing reads as a bump. There are three root modes:
+
+- **Free:** dart-thrown seeds, each grown both ways into an S-scroll, so no blunt stub ends. Field points add seeds.
+- **Fronds:** roots rise from the bottom edge. A "pre" stretch of near-zero curvature (curvature falls off five
+  times faster before the spiral starts) gives a tall stem, which then rolls over into a crozier.
+- **Vine:** sine stems in rows. Every crest gets a bud on its convex side, so scrolls alternate above and below,
+  as in a rinceau. All stems are placed before any scroll grows, so no row gets crowded out.
+
+Results are memoised on the params, board size and field points. Rectangular boards are respected throughout.
+
+**Verification.** The Node harness ran the defaults in all three modes, a 300×120 board and 25 random parameter
+sets drawn from the `rand` ranges. All outputs were non-empty and finite, stayed inside the board, and never went
+below a 0.3 mm half-width. Free, Fronds and Vine went through field → contour → SVG with every subpath closed and
+no NaNs. Previews were rendered to PNG and checked by eye. Tuning came from those previews:
+
+- The curl rate was lowered so scrolls wind about 1.5–2 turns.
+- Free roots became S-scrolls.
+- Frond stems were straightened and stopped leaning into each other.
+- The minimum bud length was raised.
+
+The page served with 200s and loaded in headless Chrome with no console errors.
+
+**Params.** Roots: `layout` (Free S-scrolls / Fronds / Vine stems), `count` (roots or rows), `size` (scroll radius mm),
+`margin`, `seed` · Scrolls: `curl` (curl rate), `depth`, `child` (child scale), `buds` (bud spacing × radius),
+`angle` (branch angle), `sense` (child curl: opposite / same / mixed) · Stroke: `width`, `bulb`, `gap`, `fillet`.
+
+**Presets.** Koru scrolls (Free, defaults) · Rinceau vine (three vine rows of S-scrolls) · Fern fronds (six croziers
+budding koru along their stems).
+
+**Inspiration.**
+- https://diglib.eg.org/items/5da6061c-e7e8-4967-a2e1-f9c23978a92a (Xu & Mould, "Magnetic Curves: Curvature-Controlled Aesthetic Curves Using Magnetic Fields", CAe 2009)
+- https://gigl.scs.carleton.ca/papers/artn-cae.pdf (the paper's PDF: particle tracing, rising curvature, branching)
+- https://www.gwern.net/docs/www/medium.com/7bd8bde613014cbb3fa8aabed5733ebbb8709c50.html (Lopyrev, "Computer-generated Floral Ornament Based on Magnetic Curves")
+- https://anzaae.nz/wp-content/uploads/2024/02/Kowhaiwhaiforbeginners.pdf (kōwhaiwhai for beginners: koru/pītau, stencil and symmetry)
+- https://te-kete-ako.pages.dev/handouts/kowhaiwhai-pattern-template-level3.html (koiri, rauru and the bulb-never-touches-the-stem convention)
+- https://github.com/annayudovin/PDN-ScrollGeneratorPlugin (a different approach to scroll ornament: a tree of packed circles)

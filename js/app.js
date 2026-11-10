@@ -290,6 +290,12 @@
     { name: 'Moth-eaten links', state: { gen: 'chainmail', params: CM({ weave: 'jp4', size: 20, spacing: 1.1, link: 0.42, flat: 0.45, wire: 1.7, holes: 0.1, seed: 61 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Hauberk', state: { gen: 'chainmail', params: CM({ weave: 'euro', size: 20, spacing: 1, link: 0.6, flat: 0.7, lean: 10, wire: 1.6, gap: 0.9 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const SC = (over) => Object.assign(SP.defaultsFor('scroll'), over);
+  BUILTIN.push(
+    { name: 'Koru scrolls', state: { gen: 'scroll', params: SC({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Rinceau vine', state: { gen: 'scroll', params: SC({ layout: 'vine', count: 3, size: 24, curl: 0.5, depth: 2, child: 0.5, buds: 1, angle: 30, width: 3.2, bulb: 2.4, seed: 8 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Fern fronds', state: { gen: 'scroll', params: SC({ layout: 'fronds', count: 6, size: 22, curl: 0.55, depth: 2, child: 0.45, buds: 1.1, angle: 40, width: 3, bulb: 2.2, gap: 1.4, seed: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   // Seamless tiles for lampshades and repeats (board = unwrapped cylinder: circumference × height).
   const TILE = { on: true, wrapX: true, wrapY: true };
   const SHADE = { w: 377, h: 160 }; // Ø120 mm × 160 mm drum
@@ -740,7 +746,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -780,6 +786,7 @@
     kumiko: 'Japanese kumiko lattice: a triangle jigumi grid with asanoha, kikkō and pinwheel inserts',
     circuit: 'Circuit-board traces: octilinear routing with pads, vias, buses and chip footprints',
     chainmail: 'Interlinked maille rings: Japanese and European weaves with over/under gaps',
+    scroll: 'Koru and rinceau scrollwork: magnetic-curve spirals that bud smaller scrolls',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

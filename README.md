@@ -15,7 +15,7 @@ Add new motifs in `js/generators.js` (registry: `SP.generators[id] = { schema, g
 
 **Generators:** Molecule · Dash Grid · Turing · Marble · Dot Grid · Carved · Polygon Ring · Line Paths ·
 Glyph Grid · Op Art · Rays · Voronoi · Truchet · Halftone · Tile Grid · Shape Tiles · Capsule Grid · Knotwork ·
-Spoke Ring · Line Hatch · Quad Grid · Tri Glyph · **Sci-Fi:** Hull Panels · Conduits · HUD Rings · Hex Plating · Readout
+Spoke Ring · Line Hatch · Quad Grid · Tri Glyph · **Sci-Fi:** Hull Panels · Panel Lines · Hull Seams · Stepped Lines · Greebles · Hull Markings · Conduits · HUD Rings · Hex Plating · Readout
 (plus the nightly Explorations tab). Presets are grouped by generator; "Coasters board" holds one preset per pin
 (underlays in `ref/pins/`, kept local — they're other people's artwork). Sample exports: `exports/pins/`.
 

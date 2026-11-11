@@ -153,6 +153,28 @@
     { name: 'Data columns', state: { gen: 'readout', params: RO({ columns: 2, rowH: 4.5, rowGap: 2, vary: 0.2, mix: 'text', density: 0.85, gapX: 2.5, seed: 7 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Gauge wall', state: { gen: 'readout', params: RO({ rowH: 9, rowGap: 3, vary: 0.5, mix: 'gauges', density: 0.9, gapX: 4, round: 0.6, seed: 101 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const PL = (over) => Object.assign(SP.defaultsFor('panellines'), over);
+  const SM = (over) => Object.assign(SP.defaultsFor('seams'), over);
+  const STL = (over) => Object.assign(SP.defaultsFor('steplines'), over);
+  const GB = (over) => Object.assign(SP.defaultsFor('greebles'), over);
+  const MK = (over) => Object.assign(SP.defaultsFor('markings'), over);
+  BUILTIN.push(
+    { name: 'Panel lines', state: { gen: 'panellines', params: PL({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Fine scribing', state: { gen: 'panellines', params: PL({ splits: 8, minSize: 9, stop: 0.08, wMajor: 1.2, wMinor: 0.6, jog: 0.4, jogSize: 3, stub: 0.2, double: 0.15, outlineChance: 0.1, hatchChance: 0.1, dotChance: 0.15, seed: 21 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Big plates', state: { gen: 'panellines', params: PL({ splits: 4, minSize: 30, stop: 0.2, wMajor: 2.4, wMinor: 1.2, jog: 0.5, jogSize: 7, double: 0.5, doubleGap: 3.5, outlineChance: 0.4, outlineInset: 5, hatchChance: 0.2, hatchRound: 3, dotChance: 0.5, dotR: 1, seed: 9 }), field: { points: [] }, board: { w: 300, h: 150 } } },
+    { name: 'Hull seams', state: { gen: 'seams', params: SM({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Raked plating', state: { gen: 'seams', params: SM({ angle: -12, hMin: 9, hMax: 16, lMin: 25, lMax: 80, bond: 'half', courseW: 1.1, jointW: 0.7, double: 0.3, rivetChance: 0.7, rivetR: 0.5, rivetPitch: 4, rivetInset: 1.8, seed: 3 }), field: { points: [] }, board: { w: 300, h: 150 } } },
+    { name: 'Heavy courses', state: { gen: 'seams', params: SM({ hMin: 24, hMax: 44, lMin: 40, lMax: 120, courseW: 2.4, jointW: 1.4, double: 0.4, doubleGap: 3, partial: 0.25, rivetChance: 0.3, rivetR: 0.9, rivetPitch: 7, insetChance: 0.35, insetBy: 4, seed: 14 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Stepped lines', state: { gen: 'steplines', params: STL({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Raceways', state: { gen: 'steplines', params: STL({ pitch: 3.5, fill: 0.55, colW: 10, style: '90', stepChance: 0.35, stepMax: 3, endChance: 0.04, startChance: 0.04, wMin: 0.7, wMax: 1.4, thick: 0.15, pads: false, seed: 17 }), field: { points: [] }, board: { w: 300, h: 150 } } },
+    { name: 'Sparse traces', state: { gen: 'steplines', params: STL({ angle: 90, pitch: 8, fill: 0.25, colW: 20, stepChance: 0.3, stepMax: 1, endChance: 0.1, startChance: 0.08, wMin: 1, wMax: 2.6, thick: 0.35, padR: 2.2, seed: 8 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Greebles', state: { gen: 'greebles', params: GB({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Access hatches', state: { gen: 'greebles', params: GB({ cover: 0.18, sizeMin: 12, sizeMax: 40, aspect: 2, gap: 6, cluster: 0.3, mix: 'hatches', lineW: 1.2, dotR: 0.9, round: 2.5, seed: 4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Vent clusters', state: { gen: 'greebles', params: GB({ cover: 0.3, sizeMin: 6, sizeMax: 24, aspect: 4, grid: 2, gap: 3, cluster: 0.8, mix: 'vents', slotW: 1, slotPitch: 2.4, lineW: 0.8, seed: 27 }), field: { points: [] }, board: { w: 300, h: 150 } } },
+    { name: 'Hull markings', state: { gen: 'markings', params: MK({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Warning stripes', state: { gen: 'markings', params: MK({ count: 12, hMin: 5, hMax: 14, lMin: 40, lMax: 160, orient: 'h', mix: 'stripes', lineW: 1.2, dash: 9, seed: 11 }), field: { points: [] }, board: { w: 300, h: 150 } } },
+    { name: 'Code blocks', state: { gen: 'markings', params: MK({ count: 30, hMin: 2.5, hMax: 6, lMin: 12, lMax: 50, gap: 4, mix: 'codes', lineW: 0.8, dash: 4, seed: 2 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   const SF = (over) => Object.assign(SP.defaultsFor('spacefill'), over);
   BUILTIN.push(
     { name: 'Moore loop', state: { gen: 'spacefill', params: SF({}), field: { points: [] }, board: { w: 200, h: 200 } } },
@@ -782,7 +804,7 @@
     { id: 'geometric', name: 'Geometric', gens: ['molecule', 'carved', 'polyring', 'rays', 'spokes', 'trigrid', 'knots'] },
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
-    { id: 'scifi', name: 'Sci-Fi', gens: ['panels', 'conduits', 'hud', 'hexplate', 'readout'] },
+    { id: 'scifi', name: 'Sci-Fi', gens: ['panels', 'panellines', 'seams', 'steplines', 'greebles', 'markings', 'conduits', 'hud', 'hexplate', 'readout'] },
     { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
@@ -801,6 +823,11 @@
     hud: 'Heads-up reticles: segmented rings, tick rings, crosshair and brackets',
     hexplate: 'Hex armour with missing, framed, split and pierced plates',
     readout: 'Console strips of block glyphs, bars, gauges and frames',
+    panellines: 'Scribed panel lines with jogs, stubs, double seams, hatches and corner dots',
+    seams: 'Staggered plate courses as scribed seams, with rivet rows, at any angle',
+    steplines: 'Parallel lines that jog between lanes, end on pads and never cross',
+    greebles: 'Sparse detail islands: hatches, slot banks, bolt grids, stripes and ladders',
+    markings: 'Bands, dashes, chevrons, code blocks, hazard bars, rulers and corner marks',
     knotwork: 'Celtic plaits woven over and under, turned by breaks',
     hankin: 'Islamic star strapwork grown from polygons in contact',
     spacefill: 'Hilbert, Moore, Peano and Gosper curves as one winding band — the Rectangle curve fills any board aspect',

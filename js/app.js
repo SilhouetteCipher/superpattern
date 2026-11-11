@@ -320,6 +320,12 @@
     { name: 'Moth-eaten links', state: { gen: 'chainmail', params: CM({ weave: 'jp4', size: 20, spacing: 1.1, link: 0.42, flat: 0.45, wire: 1.7, holes: 0.1, seed: 61 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Hauberk', state: { gen: 'chainmail', params: CM({ weave: 'euro', size: 20, spacing: 1, link: 0.6, flat: 0.7, lean: 10, wire: 1.6, gap: 0.9 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const CF = (over) => Object.assign(SP.defaultsFor('conformal'), over);
+  BUILTIN.push(
+    { name: 'Apollonian checker', state: { gen: 'conformal', params: CF({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Log spiral checker', state: { gen: 'conformal', params: CF({ map: 'spiral', divs: 32, spiral: 8, gap: 1.2, round: 0.5, cap: 6 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Cassini paving', state: { gen: 'conformal', params: CF({ map: 'cassini', order: 3, spread: 0.6, divs: 28, pattern: 'tiles', gap: 1, round: 0.35, cap: 4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   const SC = (over) => Object.assign(SP.defaultsFor('scroll'), over);
   BUILTIN.push(
     { name: 'Koru scrolls', state: { gen: 'scroll', params: SC({}), field: { points: [] }, board: { w: 200, h: 200 } } },
@@ -777,7 +783,7 @@
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
     { id: 'scifi', name: 'Sci-Fi', gens: ['panels', 'conduits', 'hud', 'hexplate', 'readout'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -823,6 +829,7 @@
     circuit: 'Circuit-board traces: octilinear routing with pads, vias, buses and chip footprints',
     chainmail: 'Interlinked maille rings: Japanese and European weaves with over/under gaps',
     scroll: 'Koru and rinceau scrollwork: magnetic-curve spirals that bud smaller scrolls',
+    conformal: 'A tile lattice bent through complex functions: spirals, Apollonian circles, Cassini ovals',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

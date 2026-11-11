@@ -1224,3 +1224,52 @@ budding koru along their stems).
 - https://anzaae.nz/wp-content/uploads/2024/02/Kowhaiwhaiforbeginners.pdf (kōwhaiwhai for beginners: koru/pītau, stencil and symmetry)
 - https://te-kete-ako.pages.dev/handouts/kowhaiwhai-pattern-template-level3.html (koiri, rauru and the bulb-never-touches-the-stem convention)
 - https://github.com/annayudovin/PDN-ScrollGeneratorPlugin (a different approach to scroll ornament: a tree of packed circles)
+
+## 2026-11-11 — `conformal` · Conformal
+
+**Territory:** Complex analysis — conformal maps of a square lattice, the transform behind conformal grid plots and
+the twisted Droste effect (a map rule; not a Euclidean tiling, knot, curve, maze or flow, and unlike Hyperbolic it
+is not a reflection group).
+
+**Idea.** A conformal map preserves angles, so a small square stays a small square however much it is bent: tiles
+change size and swing round the poles, but never shear. The generator runs the map from the board into lattice
+space, W(z) says which lattice cell every board point lands in. Six functions give six families of curve nets:
+log z (rings and spokes, or a spiral), alternating pole pairs (the Apollonian circle net of bipolar coordinates at
+order 1), Cassini ovals, confocal ellipses and hyperbolae, the inversion 1/z (circles tangent at a point) and zⁿ
+(hyperbola nets). The logarithm is multivalued, so a seam-free lattice needs one circuit of a pole to be a lattice
+vector: W = κ·log ζ with κ = (B − iA)/2π sends the 2πi of a circuit to the vector (A, B). `divs` and `spiral` are
+therefore integers. A + B is forced even for the checkerboard and A even for bands, so the colours close too.
+
+**How the code realises it.** `generateBoard` returns an implicit field. At each sample it evaluates W and the
+local scale |W′|, measures a rounded tile (or diamond, or band) in lattice units and converts to mm by 1/|W′|, so
+the gap between tiles is the same number of mm everywhere and the outline is one clean closed curve per tile. Tiles
+cannot shrink without limit, so each sample finds its tile's true centre by Newton's method on W(z) − W(z₀), using
+logs of ratios so it never crosses a branch cut, and tiles are dropped by their measured size at that centre. Every
+sample in a tile gets the same answer, so a tile leaves whole and nothing is cut to a sliver. Poles can carry a
+solid cap with clearance kept round it; bands get a cap sized automatically to where they are wide enough. Clipped
+edge tiles must keep their centre well inside the outline, or a "Whole tiles only" edge can be chosen instead. The
+|W′| floor keeps the field sane at zeros of W′ (the saddles at the centre of the higher-order maps).
+
+**Verification.** The Node harness ran nine map/pattern combinations, a 300×120 board and 25 random parameter sets
+from the `rand` ranges. All outputs were non-empty and finite, stayed inside the board, and every path closed (the
+sample SVG has 200 closed paths). After fixes the smallest loop in any run is 3.1 mm² or more. Tuning from previews
+and the tiny-loop report:
+
+- Pole spread now scales with board width, so wide boards use their full length.
+- Newton gives up gracefully beside zeros of W′, where tiles are huge and there is nothing to drop.
+- Clipped edge tiles must have their centre inside by 0.18 of a cell, and the clip corner is rounded.
+- Caps under 1 mm are treated as no cap.
+
+The page served with 200s and loaded in headless Chrome with no console errors.
+
+**Params.** Map: `map`, `order`, `spread`, `angle` · Lattice: `divs`, `spiral`, `drift` · Tiles: `pattern`
+(checker / every tile / diamonds / bands), `gap`, `round`, `minTile`, `cap` · Board: `edge`, `margin`, `fieldGain`.
+
+**Presets.** Apollonian checker (defaults) · Log spiral checker · Cassini paving.
+
+**Inspiration.**
+- https://archive.bridgesmathart.org/2023/bridges2023-113.pdf (Bridges 2023: mapping tilings through complex functions such as 1/z and log z)
+- https://www.sqrt.ch/Buch/schachexp (conformal mapping of a checkerboard)
+- https://3d-xplormath.org/j/docs/en/3dxm.gallery.ConformalMaps.ATG.html (Cartesian and polar conformal grids in a gallery of maps)
+- https://rosetta.to/u/3blue1brown/how-and-why-to-take-a-logarithm-of-an-image (taking a logarithm, the twisted Droste / Print Gallery construction)
+- https://users.mai.liu.se/hanlu09/complex/domain_coloring.html (domain colouring and grid views of analytic functions)

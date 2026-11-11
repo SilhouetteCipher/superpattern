@@ -1252,7 +1252,7 @@ edge tiles must keep their centre well inside the outline, or a "Whole tiles onl
 
 **Verification.** The Node harness ran nine map/pattern combinations, a 300×120 board and 25 random parameter sets
 from the `rand` ranges. All outputs were non-empty and finite, stayed inside the board, and every path closed (the
-sample SVG has 200 closed paths). After fixes the smallest loop in any run is 3.1 mm² or more. Tuning from previews
+sample SVG has 200 closed paths). After fixes no loop in any run is under 1.5 mm². Tuning from previews
 and the tiny-loop report:
 
 - Pole spread now scales with board width, so wide boards use their full length.

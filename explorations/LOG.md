@@ -1273,3 +1273,38 @@ The page served with 200s and loaded in headless Chrome with no console errors.
 - https://3d-xplormath.org/j/docs/en/3dxm.gallery.ConformalMaps.ATG.html (Cartesian and polar conformal grids in a gallery of maps)
 - https://rosetta.to/u/3blue1brown/how-and-why-to-take-a-logarithm-of-an-image (taking a logarithm, the twisted Droste / Print Gallery construction)
 - https://users.mai.liu.se/hanlu09/complex/domain_coloring.html (domain colouring and grid views of analytic functions)
+
+## 2026-11-12 — `karesansui` · Karesansui
+
+**Territory:** Japanese dry landscape gardens (karesansui) — the gardener's raking rule for gravel round rock groups
+(a landscape/craft practice, not a tiling, knot, curve, maze, flow field or plate mode).
+
+**Idea.** In a Zen rock garden the stones sit in small groups, the gravel round each group is raked into concentric
+rings that follow the stones' outline like ripples round an island, and beyond the rings the rake is pulled in long
+parallel lines across the whole garden that stop short where they meet the outermost ring. Some gardens rake gentle
+waves instead of straight lines, or let the rings spread until the ripples of neighbouring groups meet.
+
+**How the code realises it.** A board generator returning an implicit field. Rock groups are placed by seeded dart
+throwing (spacing relaxed if the garden is crowded); each group is a main stone plus smaller companion stones leaning
+on it, every stone a circle with a two-harmonic wobble. D, the distance to the nearest group, is a smooth minimum of
+the groups, so the rings of nearby groups fuse into one rounded offset outline instead of crossing. Rings are the
+bands where D lands on firstGap + w/2 + j·pitch, measured in mm by dividing by |∇D| so they keep their width through
+the blends. Raked lines are bands of the rotated, optionally sine-waved coordinate (normalised by its slope, with the
+wave height capped so the steep flanks never pinch the gravel between lines under 0.6 mm), cut back with a fillet
+wherever D is inside the ring zone plus a gap. "Ripples" mode lets the rings run on across the whole garden; "Plain"
+leaves the open gravel smooth. An optional raised edging frame runs round the outline with the raking stopped short
+of it, and field points drop extra stones. Ridge width is clamped to pitch − 0.6 mm so no slit is a hairline.
+
+**Params.** Rocks: seed, rock groups, stones per group, rock size, irregularity, rocks (raised / hidden). Rake: rake
+pitch, ridge width, rings per group, gap to stone, ring merge. Gravel: open gravel (raked lines / ripples / plain),
+line angle, wave height, wavelength, gap to rings. Board: edging frame, margin, outline corner, fillet, points → extra
+rocks.
+
+**Presets.** Raked garden (defaults: three groups, straight lines), Rippling stones (four single stones, ripples fill
+the garden), Wave rake (two three-stone groups, waved lines, edging frame).
+
+**Inspiration.**
+- https://japanesegardens.jp/elements/gravel-patterns/ (raked gravel patterns: straight lines as still water, rings as ripples, waves)
+- https://www.buildajapanesegarden.com/wp-content/uploads/2018/10/How-to..-rake-patterns-in-a-Zen-garden.pdf (how the rings and lines are raked, and where lines stop)
+- https://www.huffingtonpost.com/entry/zen-rock-gardens_us_9158716 (rocks in subgroups, circular raking round each, straight lines beyond)
+- https://superhivemarket.com/products/zenrake-procedural-zen-garden-patterns (ZenRake: procedural raking in Blender, the generative angle)

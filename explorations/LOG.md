@@ -1308,3 +1308,37 @@ the garden), Wave rake (two three-stone groups, waved lines, edging frame).
 - https://www.buildajapanesegarden.com/wp-content/uploads/2018/10/How-to..-rake-patterns-in-a-Zen-garden.pdf (how the rings and lines are raked, and where lines stop)
 - https://www.huffingtonpost.com/entry/zen-rock-gardens_us_9158716 (rocks in subgroups, circular raking round each, straight lines beyond)
 - https://superhivemarket.com/products/zenrake-procedural-zen-garden-patterns (ZenRake: procedural raking in Blender, the generative angle)
+
+---
+
+## 2026-11-13 — `bond` · Brick Bond
+
+**Territory:** Masonry and paving: the bricklayer's bonds. These are placement rules for one rectangle size, so that
+no joint runs straight through the work. It isn't a textile drawdown (Weave), a random tile grid or a cut-line
+puzzle.
+
+**Idea.** Every bond is a lattice: a cell of one to n rectangles repeated by two translation vectors. The wall
+bonds lay courses of stretchers (length L) and headers (L/2). *Running* shifts each course by a fraction of a
+brick (0 gives stack bond). *English* alternates a stretcher course with a header course. *Flemish* alternates
+stretcher and header within a course, and the next course shifts by half a period so every header sits centred
+on the stretcher below. *Garden wall* uses the same rule with three stretchers to each header. The paving bonds
+use L × W pavers. *Basketweave* packs n pavers into a square and gives alternate squares a quarter turn.
+*Herringbone* is a staircase with cell vectors (W, W) and (L + W, W − L), so each paver's end butts against the
+side of the next. *Pinwheel* rings four pavers round a half-size square. The harness checks that every cell
+tiles the plane exactly. The lattice is turned by `angle` (45° gives the classic herringbone floor). Each brick
+is a rounded-rectangle SDF inset by half the joint, found through spatial bins, and clipped to the frame. A cut
+brick is dropped when less than `trim` % of it is left inside the frame, which stops slivers at the edge. Wear
+shrinks bricks at random, and more strongly near field points. Missing bricks leaves gaps. An optional border
+bar frames the work for coasters.
+
+**Params:** bond, brick length, length : width, course offset, angle, pinwheel centre block · joint, corner round,
+wear, missing bricks, field points → wear, seed · outline (rounded rectangle / circle), margin, outline corner,
+border, keep cut bricks ≥ %.
+
+**Presets:** Herringbone floor · Basketweave coaster · Weathered Flemish wall · Pinwheel paving.
+
+**Inspiration:**
+- https://architextures.org/stories/brick-bonds
+- https://emis.univie.ac.at/journals/NNJ/Didactics-Reid.html (Reid, "The Mathematics of Brick Patterns", symmetry groups of brick bonds)
+- https://www.designingbuildings.co.uk/wiki/Types_of_brick_bonding
+- https://www.hgtv.com/gardening/landscaping-and-hardscaping/brick-patterns-for-walkways

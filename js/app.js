@@ -354,6 +354,13 @@
     { name: 'Rippling stones', state: { gen: 'karesansui', params: KS({ sand: 'ripples', groups: 4, perGroup: 1, rockSize: 8, pitch: 5, width: 2.2, merge: 20, seed: 311 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Wave rake', state: { gen: 'karesansui', params: KS({ groups: 2, perGroup: 3, rockSize: 13, rings: 4, wave: 4, waveLen: 60, angle: 12, frame: 4, seed: 808 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const BB = (over) => Object.assign(SP.defaultsFor('bond'), over);
+  BUILTIN.push(
+    { name: 'Herringbone floor', state: { gen: 'bond', params: BB({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Basketweave coaster', state: { gen: 'bond', params: BB({ bond: 'basket', length: 30, ratio: 3, angle: 0, gap: 2, round: 2, shape: 'circle', frame: 4, trim: 30 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Weathered Flemish wall', state: { gen: 'bond', params: BB({ bond: 'flemish', length: 32, ratio: 3, angle: 0, gap: 2.2, round: 1.2, wear: 1, missing: 0.05, frame: 5, outerRound: 2, trim: 0, seed: 41 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Pinwheel paving', state: { gen: 'bond', params: BB({ bond: 'pinwheel', length: 30, ratio: 2, angle: 15, gap: 1.6, round: 2.5, trim: 45 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   const SC = (over) => Object.assign(SP.defaultsFor('scroll'), over);
   BUILTIN.push(
     { name: 'Koru scrolls', state: { gen: 'scroll', params: SC({}), field: { points: [] }, board: { w: 200, h: 200 } } },
@@ -811,7 +818,7 @@
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
     { id: 'scifi', name: 'Sci-Fi', gens: ['panels', 'panellines', 'seams', 'steplines', 'greebles', 'markings', 'conduits', 'hud', 'hexplate', 'readout'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal', 'karesansui'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal', 'karesansui', 'bond'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -864,6 +871,7 @@
     scroll: 'Koru and rinceau scrollwork: magnetic-curve spirals that bud smaller scrolls',
     conformal: 'A tile lattice bent through complex functions: spirals, Apollonian circles, Cassini ovals',
     karesansui: 'Zen rock garden: raked rings round stone groups, lines raked across the gravel',
+    bond: 'Brick bonds and paving: herringbone, basketweave, pinwheel, Flemish and English courses',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

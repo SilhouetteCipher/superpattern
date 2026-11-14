@@ -361,6 +361,12 @@
     { name: 'Weathered Flemish wall', state: { gen: 'bond', params: BB({ bond: 'flemish', length: 32, ratio: 3, angle: 0, gap: 2.2, round: 1.2, wear: 1, missing: 0.05, frame: 5, outerRound: 2, trim: 0, seed: 41 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Pinwheel paving', state: { gen: 'bond', params: BB({ bond: 'pinwheel', length: 30, ratio: 2, angle: 15, gap: 1.6, round: 2.5, trim: 45 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const LJ = (over) => Object.assign(SP.defaultsFor('lissajous'), over);
+  BUILTIN.push(
+    { name: 'Lissajous table', state: { gen: 'lissajous', params: LJ({ layout: 'table', freqA: 1, freqB: 1, cols: 4, rows: 4, width: 1.6, swell: 0.3, margin: 6, fit: 0.84 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Harmonograph spiral', state: { gen: 'lissajous', params: LJ({ freqA: 1, freqB: 1, phase: 70, loops: 6, decay: 0.2, detune: 0.02, width: 2, swell: 0.4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Phase sweep', state: { gen: 'lissajous', params: LJ({ layout: 'sweep', freqA: 1, freqB: 2, phase: 0, cols: 4, rows: 3, width: 1.8, swell: 0.5, margin: 6 }), field: { points: [] }, board: { w: 240, h: 180 } } },
+  );
   const SC = (over) => Object.assign(SP.defaultsFor('scroll'), over);
   BUILTIN.push(
     { name: 'Koru scrolls', state: { gen: 'scroll', params: SC({}), field: { points: [] }, board: { w: 200, h: 200 } } },
@@ -818,7 +824,7 @@
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
     { id: 'scifi', name: 'Sci-Fi', gens: ['panels', 'panellines', 'seams', 'steplines', 'greebles', 'markings', 'conduits', 'hud', 'hexplate', 'readout'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal', 'karesansui', 'bond'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal', 'karesansui', 'bond', 'lissajous'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -872,6 +878,7 @@
     conformal: 'A tile lattice bent through complex functions: spirals, Apollonian circles, Cassini ovals',
     karesansui: 'Zen rock garden: raked rings round stone groups, lines raked across the gravel',
     bond: 'Brick bonds and paving: herringbone, basketweave, pinwheel, Flemish and English courses',
+    lissajous: 'Lissajous figures and damped harmonograph spirals, singly or as a frequency table',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

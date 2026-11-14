@@ -1342,3 +1342,37 @@ border, keep cut bricks ≥ %.
 - https://emis.univie.ac.at/journals/NNJ/Didactics-Reid.html (Reid, "The Mathematics of Brick Patterns", symmetry groups of brick bonds)
 - https://www.designingbuildings.co.uk/wiki/Types_of_brick_bonding
 - https://www.hgtv.com/gardening/landscaping-and-hardscaping/brick-patterns-for-walkways
+
+## 2026-11-14 — `lissajous` · Lissajous
+
+**Territory:** Physics and instruments: oscilloscope Lissajous figures and the pendulum harmonograph. This is the
+figure two perpendicular oscillations trace when they are added together. It isn't a rolling-circle rosette
+(Guilloché), a turtle walk (Spirolateral) or a standing-wave field (Chladni).
+
+**Idea.** A spot moves by x = sin(a·t + δ), y = sin(b·t). With whole-number frequencies the figure closes after
+one period. The ratio a : b sets the lobes across and down, and is reduced first, so 4 : 2 draws the same curve as
+2 : 1. The phase δ morphs the figure from an open arc (δ = 0 with a or b even) to the woven, symmetric figure
+(δ = 90°). Shifting t by π / b turns δ by a·π / b and only flips y, so 180° / b covers every distinct figure; the
+phase sweep uses that span. A *harmonograph* is the same rule with pendulums that lose energy. The amplitude
+decays by e^(−decay) each period and b is detuned slightly, so each pass lands inside and turned from the one
+before, and the figure spirals in. It is drawn for `periods` periods and cut off at 30 % of full size, before the
+centre clogs into a solid knot. Each figure is one tapered stroke, scaled into its cell by its rotated bounding
+box. The band is capped at a third of the gap between neighbouring lobes (≈ π / 2·max(a, b) of the half-size)
+and between harmonograph passes, so gaps stay open. *Swell* thickens the band where the pen slows at the turning
+points, like ink pooling on a plotter. There are four layouts: one large figure, the same figure in every cell,
+a Lissajous table (a steps along each row, b down each column, the classic chart) and a phase sweep (one ratio,
+δ stepping cell by cell). Board generator, so it respects rectangular boards. The harness ran the defaults, 25
+random parameter sets and every preset through the full field → contour → SVG pipeline: all paths are closed,
+with no islands under 2 mm².
+
+**Params:** frequency a, frequency b, phase δ · periods, decay per period, detune b · layout, columns, rows, fill
+cell, rotation, margin · band width, swell at turns, merge, field points → grow.
+
+**Presets:** Lissajous table · Harmonograph spiral · Phase sweep.
+
+**Inspiration:**
+- https://chameleontk.github.io/code-challanges/week2_lissajous_curve_table/index.html (Lissajous curve table)
+- https://barbegenerativediary.com/en/tutorials/lissajous-figures-exploring-patterns-born-of-waves-and-vibrations/
+- https://jmsallan.netlify.app/blog/liisajous-curves (grids over ratio and phase)
+- https://paulbourke.net/geometry/harmonograph
+- https://www.bit-101.com/2017/2022/11/coding-curves-05-harmonographs/

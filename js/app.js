@@ -367,6 +367,12 @@
     { name: 'Harmonograph spiral', state: { gen: 'lissajous', params: LJ({ freqA: 1, freqB: 1, phase: 70, loops: 6, decay: 0.2, detune: 0.02, width: 2, swell: 0.4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Phase sweep', state: { gen: 'lissajous', params: LJ({ layout: 'sweep', freqA: 1, freqB: 2, phase: 0, cols: 4, rows: 3, width: 1.8, swell: 0.5, margin: 6 }), field: { points: [] }, board: { w: 240, h: 180 } } },
   );
+  const AR = (over) => Object.assign(SP.defaultsFor('arctic'), over);
+  BUILTIN.push(
+    { name: 'Cube heap', state: { gen: 'arctic', params: AR({ kind: 'lozenge', size: 12, show: 'drop', gap: 1.4, round: 1, seed: 5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Arctic circle', state: { gen: 'arctic', params: AR({ kind: 'aztec', size: 22, gap: 1, round: 0.6, margin: 5, seed: 8 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Heap contours', state: { gen: 'arctic', params: AR({ kind: 'lozenge', style: 'strands', size: 22, depth: 0.9, width: 1.6, seed: 12 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   const SC = (over) => Object.assign(SP.defaultsFor('scroll'), over);
   BUILTIN.push(
     { name: 'Koru scrolls', state: { gen: 'scroll', params: SC({}), field: { points: [] }, board: { w: 200, h: 200 } } },
@@ -824,7 +830,7 @@
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
     { id: 'scifi', name: 'Sci-Fi', gens: ['panels', 'panellines', 'seams', 'steplines', 'greebles', 'markings', 'conduits', 'hud', 'hexplate', 'readout'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal', 'karesansui', 'bond', 'lissajous'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal', 'karesansui', 'bond', 'lissajous', 'arctic'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -879,6 +885,7 @@
     karesansui: 'Zen rock garden: raked rings round stone groups, lines raked across the gravel',
     bond: 'Brick bonds and paving: herringbone, basketweave, pinwheel, Flemish and English courses',
     lissajous: 'Lissajous figures and damped harmonograph spirals, singly or as a frequency table',
+    arctic: 'Random lozenge and domino tilings that freeze into an arctic circle',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

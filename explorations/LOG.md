@@ -1376,3 +1376,41 @@ cell, rotation, margin · band width, swell at turns, merge, field points → gr
 - https://jmsallan.netlify.app/blog/liisajous-curves (grids over ratio and phase)
 - https://paulbourke.net/geometry/harmonograph
 - https://www.bit-101.com/2017/2022/11/coding-curves-05-harmonographs/
+
+## 2026-11-15 — `arctic` · Arctic
+
+**Territory:** Statistical mechanics and combinatorics: random tilings and the arctic circle theorem (Jockusch,
+Propp and Shor). This is a sampling rule, the Markov chain physicists use for crystals. It isn't a fixed tiling
+(Multigrid, Brick Bond), a growth process (Growth, Venation) or a symmetry construction (Wallpaper).
+
+**Idea.** A lozenge tiling of an a × b × c hexagon is a heap of unit cubes in a box, seen from the corner (a
+plane partition). A domino tiling of the Aztec diamond is its two-tile cousin. Both are sampled with Glauber
+dynamics: pick a random site and try the one local move there. For lozenges that means adding or removing a cube
+(three lozenges rotating round a vertex) when the heap stays monotone. For dominoes it means turning a 2 × 2 pair a
+quarter turn. Run long enough from a frozen start (empty box, all-horizontal dominoes), every tiling becomes
+equally likely. The corners lock into frozen, bricked regions, and only inside the inscribed circle is the tiling
+disordered. *Melt* stops the chain early, so the crystal is caught half-thawed. *Bias* weights the moves (per cube,
+or per vertical domino), squashing the circle into an ellipse or a heap. A third kind fills the whole
+(rectangular) board with dominoes: a uniform random brick texture with no frozen corners. The cube heap is
+projected isometrically. The wall faces come from the height differences between neighbouring columns. Tiles are
+rotated, fitted into the margin box and drawn as one SDF: convex polygons with each edge inset by half the joint
+and corners rounded. Tiles thinner than 0.5 mm inradius are dropped. Tile families can be thinned. *Drop one*
+hides the cube tops (or vertical dominoes) for a strong 3-D read. Lozenges can also be drawn as *strands*:
+non-crossing lattice paths through the two wall families, which are the contour lines h = k + ½ of the heap. They
+are chained, Chaikin-smoothed and capped at a third of the strand spacing, so neighbouring strands never merge.
+Board generator, so it respects rectangular boards. The harness ran the defaults and 25 random parameter sets
+(square and rectangular boards), plus all three presets through the full field → contour → SVG pipeline. Every
+path is closed, with no NaNs.
+
+**Params:** tiling (lozenge hexagon / Aztec diamond / domino rectangle), order, box depth, melt, bias, seed ·
+draw (tiles / strands), show (all / drop one family / one family / alternate classes), joint, corner round,
+strand width, rotate, margin, field points → shrink.
+
+**Presets:** Cube heap · Arctic circle · Heap contours.
+
+**Inspiration:**
+- https://arxiv.org/abs/math/9801068 (Jockusch, Propp, Shor — Random domino tilings and the arctic circle theorem)
+- https://arxiv.org/abs/1310.5844 (Laslier & Toninelli — Lozenge tilings, Glauber dynamics and macroscopic shape)
+- https://arxiv.org/pdf/2207.01444 (mixing time of the lozenge tiling Glauber dynamics)
+- https://math.uni.lu/eml/assets/reports/2022/arctic.pdf (student report on simulating the arctic circle)
+- https://cp4space.hatsya.com/?p=3528 (cp4space — random tilings, shuffling and the arctic circle)

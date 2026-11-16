@@ -1414,3 +1414,54 @@ strand width, rotate, margin, field points → shrink.
 - https://arxiv.org/pdf/2207.01444 (mixing time of the lozenge tiling Glauber dynamics)
 - https://math.uni.lu/eml/assets/reports/2022/arctic.pdf (student report on simulating the arctic circle)
 - https://cp4space.hatsya.com/?p=3528 (cp4space — random tilings, shuffling and the arctic circle)
+
+---
+
+## 2026-11-16 — `bzwaves` · BZ Waves
+
+**Territory:** Chemistry and excitable media: the Belousov–Zhabotinsky reaction, the chemical oscillator whose
+waves form rotating spirals and expanding target rings in a thin dish. This is a wave-propagation rule (phase
+singularities and front annihilation). It isn't a stationary Turing pattern (Turing), a warped stripe field
+(Marble), the nodal lines of a standing wave (Chladni) or a flow field (Streamlines).
+
+**Idea.** In an excitable medium, every pacemaker sends out a wave each period. A *target* source makes
+concentric rings. A *spiral* source is a broken front rotating round a phase singularity, so its crests form an
+m-armed Archimedean spiral of constant pitch λ. Opposite-chirality spirals are born in counter-rotating pairs.
+When two waves meet head-on they annihilate, so the dish splits into domains, one per source. On each boundary,
+both fronts arrive at the same moment, so the crests from the two sides join into the V-shaped collision cusps
+you see in photos of the reaction.
+
+**How the code realises it.** Board generator returning an SDF (`evalFn`), like Chladni. Each source i has a
+wave phase `Φ_i = r_i/λ − s_i·m_i·θ_i/2π + o_i` (s = ±1 chirality, m arms, m = 0 for targets), and crests sit
+where Φ_i is a whole number. Any curve where frac(Φ_i) = frac(Φ_j) is a valid steady collision boundary. The
+code takes Δ_ij = 0, where Δ_ij is Φ_i − Φ_j with each angle measured from the direction to the other source
+(so the branch cuts point away, behind the cores). It is shifted by a whole number of periods to sit near the
+middle, so crests meet *exactly* on the boundary. A point belongs to the source with the smallest max_j Δ_ij,
+and the binding neighbour j defines the boundary distance `ρ = Δ_ij / |∇Δ_ij|` (analytic gradient). Bands are
+`|frac(Φ)| < duty/2`, turned into a pseudo-distance in mm by dividing by `|∇Φ| = √(1/λ² + (m/2πr)²)`. A round
+core (≈ 0.24λ, growing with arm count) covers the pinch at each spiral centre. *Merge* takes
+`min(max(band_i, ρ), max(band_j, −ρ))`, a continuous field, so the fronts fuse. *Seam* insets both domains by
+half a gap, giving cells of spirals separated by grooves. Sources are placed by seeded dart throwing at least
+(m_i + m_j)/2 + 1.2 wavelengths apart, so no branch cut ever reaches a boundary. Front width and gap are clamped
+to ≥ 0.6 mm. The margin outline (rounded rectangle or circle) is a smooth max, so the board's real width and
+height are respected. Field points can become extra spiral cores (chirality from the point's sign) and/or
+thicken the fronts. The harness ran the defaults and 25 random parameter sets (square and 260 × 140 boards),
+plus all three presets through field → contour → SVG. Output was non-empty everywhere, with no NaNs and every
+subpath closed with Z. Known roughness: in *seam* mode, a seam that runs nearly along a band can chop it into a
+dashed row of short pieces, and triple junctions can be untidy.
+
+**Params.** Sources: `kind` (spirals and targets / spirals / counter-rotating pairs / targets), `count`, `arms`,
+`seed` · Waves: `wavelength` (mm), `width` (front width × λ), `core` (× λ), `collide` (merge / seam), `seam`
+(mm), `fillet` · Board: `frame` (rounded rectangle / circle), `margin`, `edgeRound` · Field points:
+`fieldCores`, `fieldThick`.
+
+**Presets.** BZ waves (five mixed sources, fused cusps) · Spiral pairs (two counter-rotating pairs whose
+double spirals merge into one front) · Target rings (six pacemakers in a circular plate).
+
+**Inspiration.**
+- https://neurophysics.ucsd.edu/courses/physics_173_273/bz_paper.PDF (the BZ reaction as a pattern-forming chemical oscillator)
+- https://physics.aps.org/articles/v12/148 (Physics: designer BZ wave sources and their interacting wave patterns)
+- https://woosterdigital.org/BZ-history/items/show/205 (Müller & Plesser: the rotating chemical spiral as an Archimedean spiral)
+- https://link.aps.org/accepted/10.1103/PhysRevE.83.056213 (spiral fronts of constant pitch; the tip as a phase singularity)
+- https://arxiv.org/pdf/2111.13434 (counter-rotating spiral pairs and their annihilation)
+- https://www.raster.art/artwork/belousov-zhabotinsky-scroll-by-jonathan-mccabe/about (BZ as generative art: Jonathan McCabe)

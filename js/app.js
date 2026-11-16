@@ -373,6 +373,12 @@
     { name: 'Arctic circle', state: { gen: 'arctic', params: AR({ kind: 'aztec', size: 22, gap: 1, round: 0.6, margin: 5, seed: 8 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Heap contours', state: { gen: 'arctic', params: AR({ kind: 'lozenge', style: 'strands', size: 22, depth: 0.9, width: 1.6, seed: 12 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const BZ = (over) => Object.assign(SP.defaultsFor('bzwaves'), over);
+  BUILTIN.push(
+    { name: 'BZ waves', state: { gen: 'bzwaves', params: BZ({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Spiral pairs', state: { gen: 'bzwaves', params: BZ({ kind: 'pairs', count: 2, wavelength: 11, width: 0.45, seed: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Target rings', state: { gen: 'bzwaves', params: BZ({ kind: 'targets', count: 6, wavelength: 8, width: 0.42, frame: 'circle', seed: 4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   const SC = (over) => Object.assign(SP.defaultsFor('scroll'), over);
   BUILTIN.push(
     { name: 'Koru scrolls', state: { gen: 'scroll', params: SC({}), field: { points: [] }, board: { w: 200, h: 200 } } },
@@ -830,7 +836,7 @@
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
     { id: 'scifi', name: 'Sci-Fi', gens: ['panels', 'panellines', 'seams', 'steplines', 'greebles', 'markings', 'conduits', 'hud', 'hexplate', 'readout'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal', 'karesansui', 'bond', 'lissajous', 'arctic'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal', 'karesansui', 'bond', 'lissajous', 'arctic', 'bzwaves'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -886,6 +892,7 @@
     bond: 'Brick bonds and paving: herringbone, basketweave, pinwheel, Flemish and English courses',
     lissajous: 'Lissajous figures and damped harmonograph spirals, singly or as a frequency table',
     arctic: 'Random lozenge and domino tilings that freeze into an arctic circle',
+    bzwaves: 'Belousov–Zhabotinsky spiral and target waves that fuse where they collide',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

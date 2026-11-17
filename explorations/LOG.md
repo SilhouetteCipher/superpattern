@@ -1465,3 +1465,58 @@ double spirals merge into one front) · Target rings (six pacemakers in a circul
 - https://link.aps.org/accepted/10.1103/PhysRevE.83.056213 (spiral fronts of constant pitch; the tip as a phase singularity)
 - https://arxiv.org/pdf/2111.13434 (counter-rotating spiral pairs and their annihilation)
 - https://www.raster.art/artwork/belousov-zhabotinsky-scroll-by-jonathan-mccabe/about (BZ as generative art: Jonathan McCabe)
+
+## 2026-11-17 — `kagome` · Kagome
+
+**Territory:** Basketry and textile structure: the Japanese *kagome* / *mutsume-ami* ("six-eyed weave"), the
+triaxial interlace of bamboo baskets, cane chair seats and sieves. It is a three-direction weave with hexagonal
+holes. It isn't a two-direction loom draft (Weave), a lattice of joinery bars (Kumiko), a knot diagram
+(Knotwork, Knots) or a strapwork star pattern (Hankin).
+
+**Idea.** Three families of straight strips run at 60° to each other. With the families offset so that no three
+strips meet at a point, the crossings form the trihexagonal (kagome) net: hexagonal holes, each ringed by six
+triangles. The weave rule is a single line: family k always passes *over* family k + 1 (mod 3). Along any strip
+the crossings alternate between the other two families, so every strip goes over, under, over, under. That is
+the classic self-bracing triaxial interlace, and it is why each triangle shows a little pinwheel.
+
+**How the code realises it.** Board generator, built like Weave. Family k lies on the lines
+`n_k·(x − c) = (i + o_k)·pitch` with unit normals 120° apart. Since n₀ + n₁ + n₂ = 0, three lines are concurrent
+only when the offsets sum to an integer. Shifting one family by *triangle split* (0.5 = true kagome with equal
+triangles, smaller = lopsided triangles) pulls each triple point apart into an up and a down triangle. A strip of
+family k dives under family k + 2 exactly at its crossings with that family, which are evenly spaced
+(2·pitch/√3) and solved in closed form. So each strip is cut into pieces running from one under-crossing to the
+next, and each piece carries the strip over one family-(k+1) crossing in its middle. Each tip stops at
+`(r_over + gap + r_tip) / (sin 60° · (1 − strain))` along the strip. That is the distance at which the round
+tip clears the edge of the strip it dives under by `gap`, measured across the 60° crossing, using that strip's
+actual radius at the crossing. The pillow profile ramps the radius at 0.55 mm/mm, slower than the tip moves away
+from the crossing strip (≥ sin 60° · 0.75). As a result, every piece is its own closed island with guaranteed
+clearance.
+
+Strip width is budgeted from both constraints. Parallel strips must stay `gap` apart, and the tip cut must leave
+more than half of each piece visible, so the weave still reads as over/under. *Omit strips* (seeded) removes
+whole strips. This opens bigger, irregular holes, and the pieces that would have dived under a removed strip
+simply join, which gives a "mad weave" look. *Ripple* (two crossed sines) or *Dome* (radial pull-in
+`v·(1 − b|v|²/R²)`) bends the whole weave through one smooth map. Its strain is capped at 0.25 × amount, and
+that strain is paid for up front in every clearance. Pieces are sampled densely, warped, then trimmed against a
+rectangle, circle or flat-topped hexagon frame. The frame is a signed distance; each cut end is moved by
+interpolation onto the point where its disc is tangent to the frame, or to the rim band plus `gap` when *Rim
+band* is on, and stubs shorter than 3 r are dropped. Field points thicken strips, capped at the parallel-strip
+room. The harness ran the defaults, 25 random sets (square and 260 × 140 boards) and the three presets. On
+every run the raw strokes were finite and inside the board, with a measured minimum clearance between different
+pieces of ≥ gap (within sampling) and a minimum half-width ≥ 0.3 mm. Field → contour → SVG gave exactly one
+closed loop per piece (two for the rim), every subpath ending in Z.
+
+**Params.** Lattice: `pitch` (mm), `shift` (triangle split), `angle`, `omit`, `seed` · Strips: `width`
+(× room), `gap` (mm), `pinch` (tip pinch) · Warp: `warp` (flat / ripple / dome), `warpAmt` · Frame: `shape`
+(board / circle / hexagon), `rim`, `margin`, `fillet`, `fieldGain`.
+
+**Presets.** Kagome basket (the plain hexagonal weave filling the board) · Domed sieve (a round woven tray with
+a rim, bulging in the middle) · Mad weave (lopsided triangles, missing strips and a ripple in a hexagon).
+
+**Inspiration.**
+- https://www.mlit.go.jp/tagengo-db/common/001550738.docx (Japanese bamboo weaving glossary: mutsume-ami, strips in three directions with hexagonal openings)
+- https://www.entoten.com/2023/03/27/basket-weave-patterns-kikko-ajiro-and-mutsume/ (kikko, ajiro and mutsume basket weaves)
+- https://archive.bridgesmathart.org/2023/bridges2023-337.pdf (Gailiunas, Bridges 2023: kagome as the rectified triangular/hexagonal tiling)
+- https://me.bme.hu/sites/default/files/page/Baskets.pdf (the geometry of triaxial baskets: the (3.6.3.6) net and defects)
+- https://arxiv.org/pdf/2011.12327 (Baek et al., smooth triaxial weaving with naturally curved ribbons: the warped-weave angle)
+- https://nationalbasketry.org/triaxial-weaving-exploring-the-hexagon-mad-weave/ (triaxial weaving: the hexagon and mad weave)

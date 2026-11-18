@@ -385,6 +385,12 @@
     { name: 'Domed sieve', state: { gen: 'kagome', params: KG({ pitch: 16, gap: 1, shape: 'circle', rim: true, warp: 'dome', warpAmt: 0.7, angle: 15, margin: 4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Mad weave', state: { gen: 'kagome', params: KG({ pitch: 18, gap: 1, shift: 0.4, omit: 0.18, seed: 23, shape: 'hexagon', warp: 'ripple', warpAmt: 0.5, pinch: 0.65 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const KR = (over) => Object.assign(SP.defaultsFor('kirigami'), over);
+  BUILTIN.push(
+    { name: 'Kirigami sheet', state: { gen: 'kirigami', params: KR({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Opening triangles', state: { gen: 'kirigami', params: KR({ lattice: 'triangle', pitch: 16, grade: 'linear', gradeAngle: 0, open: 0.1, openEnd: 0.95, shape: 'circle', rim: 5, round: 1.2 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Flex rings', state: { gen: 'kirigami', params: KR({ pitch: 12, angle: 45, grade: 'rings', waves: 2.2, open: 0.06, openEnd: 0.9, hole: 0.35, kerf: 1, hinge: 1.1, round: 0.8, rim: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   const SC = (over) => Object.assign(SP.defaultsFor('scroll'), over);
   BUILTIN.push(
     { name: 'Koru scrolls', state: { gen: 'scroll', params: SC({}), field: { points: [] }, board: { w: 200, h: 200 } } },
@@ -842,7 +848,7 @@
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
     { id: 'scifi', name: 'Sci-Fi', gens: ['panels', 'panellines', 'seams', 'steplines', 'greebles', 'markings', 'conduits', 'hud', 'hexplate', 'readout'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal', 'karesansui', 'bond', 'lissajous', 'arctic', 'bzwaves', 'kagome'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal', 'karesansui', 'bond', 'lissajous', 'arctic', 'bzwaves', 'kagome', 'kirigami'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -900,6 +906,7 @@
     arctic: 'Random lozenge and domino tilings that freeze into an arctic circle',
     bzwaves: 'Belousov–Zhabotinsky spiral and target waves that fuse where they collide',
     kagome: 'Triaxial basket weave: three strip sets interlaced over and under round hexagonal holes',
+    kirigami: 'Auxetic cut sheets: hinged squares or triangles that turn open into graded holes',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };

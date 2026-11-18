@@ -1520,3 +1520,52 @@ a rim, bulging in the middle) · Mad weave (lopsided triangles, missing strips a
 - https://me.bme.hu/sites/default/files/page/Baskets.pdf (the geometry of triaxial baskets: the (3.6.3.6) net and defects)
 - https://arxiv.org/pdf/2011.12327 (Baek et al., smooth triaxial weaving with naturally curved ribbons: the warped-weave angle)
 - https://nationalbasketry.org/triaxial-weaving-exploring-the-hexagon-mad-weave/ (triaxial weaving: the hexagon and mad weave)
+
+---
+
+## 2026-11-18 — `kirigami` · Kirigami
+
+**Territory:** Mechanical metamaterials and laser-cut flexures: the rotating-unit auxetic cut patterns of kirigami
+(Grima & Evans' rotating squares and triangles; Rafsanjani & Bertoldi's laser-cut perforated sheets). This is a
+*mechanism* rule, not a tiling, packing, weave or lattice of bars. One hinge angle sets the shape of every cut, and
+grading it across the sheet is how "programmable" kirigami gets different stretch in different places.
+
+**Idea.** Slit a sheet so that it falls apart into rigid units (squares on a square lattice, or triangles on a
+honeycomb of centres), still joined corner to corner by small hinges. Pull it and every unit turns, neighbours in
+opposite senses, and the slits open into diamond (or star / hexagon) holes. One angle β describes the mechanism:
+the angle between a unit's hinge corner and the line to the neighbour it is hinged to. β = 180°/n is the closed
+sheet, where units sit edge to edge and the slits are just the cut. β = 0 is fully open, where units touch only at
+their tips (for triangles, this is the kagome net).
+
+**How the code realises it.** Board generator (SDF `evalFn`, like Brick Bond). Unit centres sit on a fixed lattice
+of pitch P, on sublattices with sign σ = ±1 (a chequerboard for squares; the two honeycomb sublattices for
+triangles). A unit's hinge corner for the neighbour in direction φ sits at angle φ − σβ. Its circumradius is
+P / (2 cos β), so the corners of two hinged units meet exactly half-way between their centres. Each corner is used
+by exactly one neighbour, and the alternating turns fall out of the sign. The opening u = 1 − β·n/180° is graded per
+unit: uniform, linear (along *grade angle*, scaled to the frame's extent in that direction), radial, concentric
+rings, or seeded smooth noise (four plane waves), plus field points. Units therefore shrink and turn as their holes
+open. Each unit is the regular polygon shrunk by half the cut width plus the corner round, then rounded (exact
+polygon SDF − r). Each hinge is a capsule joining the two rounded corners' centres, smooth-unioned, so the sheet
+stays one connected piece. An optional centre hole is punched only where it leaves a ≥ 0.8 mm wall. Units are
+clipped to a rounded-rectangle or circle outline. When there is a rim, they run into it and fuse; without one,
+units keeping too little of themselves inside the frame are dropped. The harness ran the defaults, 25 random sets
+(200², 300 × 150 and 150 × 260 boards) and all three presets through field → contour → SVG. Every run gave finite
+output and non-empty geometry, and every subpath ended in Z. Loop counts matched the holes expected from the
+lattice: about one hole per square unit, one per two triangles, plus one per punched centre.
+
+**Params.** Lattice: `lattice` (rotating squares / rotating triangles), `pitch` (mm), `angle` · Opening: `open`,
+`openEnd`, `grade` (uniform / linear / radial / rings / noise), `gradeAngle`, `waves`, `seed`, `fieldGain` ·
+Cuts: `kerf` (cut width, mm), `hinge` (hinge width, mm), `round`, `hole` · Frame: `shape`, `margin`,
+`outerRound`, `rim`.
+
+**Presets.** Kirigami sheet (rotating squares in a rimmed square, closed slits in the middle opening to diamonds at
+the edge) · Opening triangles (rotating triangles in a circle, opening from three-armed slits to kagome holes left to
+right) · Flex rings (45° squares with punched centres, opening and closing in concentric rings).
+
+**Inspiration.**
+- https://arxiv.org/pdf/1612.05988 (Rafsanjani & Pasini, bistable auxetic metamaterials from rotating units with laser-cut perforations)
+- https://fabacademy.org/2018/labs/fablabulb/FAB14_workshop_bistable.html (parametric SVG generator for laser-cut rotating square / triangle units: unit length, hinge gap, cut size)
+- https://arxiv.org/pdf/2206.00153 (planar kirigami as generalized continua: the rotating-squares mechanism and its slit opening angle as a field)
+- https://segaviv.github.io/papers/hinged_kirigami/hinged_kirigami.pdf (hinged kirigami: computational design of rotating-unit cut patterns)
+- https://materialdistrict.com/article/cutting-patterns-give-kirigami-materials-new-mechanical-properties/ (cut patterns giving kirigami sheets new mechanical properties)
+- https://pubmed.ncbi.nlm.nih.gov/35160560/ (rotating squares laser-slit into an auxetic compound fabric: open area vs. cell size)

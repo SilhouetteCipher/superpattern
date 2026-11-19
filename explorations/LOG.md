@@ -1569,3 +1569,52 @@ right) · Flex rings (45° squares with punched centres, opening and closing in 
 - https://segaviv.github.io/papers/hinged_kirigami/hinged_kirigami.pdf (hinged kirigami: computational design of rotating-unit cut patterns)
 - https://materialdistrict.com/article/cutting-patterns-give-kirigami-materials-new-mechanical-properties/ (cut patterns giving kirigami sheets new mechanical properties)
 - https://pubmed.ncbi.nlm.nih.gov/35160560/ (rotating squares laser-slit into an auxetic compound fabric: open area vs. cell size)
+
+---
+
+## 2026-11-19 — `reptile` · Rep-Tiles
+
+**Territory:** Recreational mathematics / aperiodic order: rep-tiles and substitution tilings (Golomb's
+self-replicating shapes; Conway and Radin's pinwheel). This is a dissection rule, not a lattice, a multigrid
+or a stochastic crack grammar.
+
+**Idea.** A rep-tile can be cut into smaller copies of itself. Cut every piece again and again and you get a
+substitution tiling. Five tiles are built in: Conway's **pinwheel** triangle (legs 1:2 → 5 copies at 1/√5,
+each turned by the irrational arctan ½, so the pieces end up in infinitely many orientations), the **chair**
+L-tromino (4 half-size copies), the **sphinx** hexiamond (4 copies), the **30-60-90** triangle (3 copies at
+1/√3) and the **right isosceles** triangle (2 copies at 1/√2). The branches don't all stop at the same
+depth. Each piece splits only while it is larger than a target size. That target can shrink toward the
+centre, sweep across the board (doubling or halving per unit) or tighten round field points, and a seeded
+chance keeps some pieces whole a level early. Scales mix the way they do in Hobbs-style recursive
+subdivision, but every piece keeps the rep-tile's shape and the T-junctions follow the substitution rule.
+
+**How the code realises it.** Each prototile is a canonical polygon plus its children, listed as vertex lists
+in the same vertex order. That order carries orientation and mirroring, and each child's affine map is
+recovered from its first three vertices. The sphinx dissection was found by an exhaustive exact-cover search
+over half-size sphinxes on the triangular lattice; there is exactly one. The pinwheel uses the altitude cut
+plus a midpoint split of the larger remainder. The largest inscribed circle of each prototile is sampled once.
+It places the first supertile over the board (that circle scaled to the board's half-diagonal, rotated by
+`rotate`) and sets the smallest piece that can still hold a cell after the groove eats in. A breadth-first
+queue applies the child maps and culls pieces off the board. Rendering follows the Ice Ray field rule: half
+the groove width minus the distance to the nearest edge, soft-min across the two nearest edge *lines*.
+Collinear edges share an id, so a big piece's side and the small pieces along it don't double up, and only
+real corners get rounded. Each edge's groove can widen with its piece size (`hier`). The result is clipped by
+a rounded-square or circular window with an optional frame bar. It is drawn as rounded cells, or inverted as
+a lattice of bars.
+
+**Params.** Tile: `tile` (pinwheel / chair / sphinx / kite (30-60-90) / halves), `rotate`, `shape`,
+`margin`, `frame` · Subdivide: `cell` (target piece size mm), `centre`, `sweep`, `keep`, `seed` · Finish:
+`draw` (pieces / lattice), `gap` (groove mm), `hier` (wider grooves round big pieces), `round`,
+`fieldGain`.
+
+**Presets.** Pinwheel (default: pinwheel triangles, finer toward the centre) · Chair fractal (L-trominoes
+nesting into a dense core, wider grooves round the big chairs) · Kite lattice (30-60-90 triangles drawn as a
+framed bar lattice, with star-like hubs where the triangles meet).
+
+**Inspiration.**
+- https://chaimgoodmanstrauss.com/?p=1586 (Goodman-Strauss, The Pinwheel Tiling)
+- https://arxiv.org/abs/math/9712263 (Sadun, Some Generalizations of the Pinwheel Tiling)
+- https://tilings.math.uni-bielefeld.de/glossary (Tilings Encyclopedia: substitution rules, chair, sphinx)
+- https://demonstrations.wolfram.com/RecursiveExercisesIVRepTiles/ (recursive rep-tile dissections)
+- https://ox.github.io/2020/11/02/subdiv-1.html (recursive subdivision for pen plotting, with a depth cap)
+- https://tylerxhobbs.com/essays/2018/executing-generative-art-with-a-plotter (Hobbs on plotter subdivision work)

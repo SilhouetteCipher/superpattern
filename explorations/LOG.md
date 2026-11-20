@@ -1618,3 +1618,52 @@ framed bar lattice, with star-like hubs where the triangles meet).
 - https://demonstrations.wolfram.com/RecursiveExercisesIVRepTiles/ (recursive rep-tile dissections)
 - https://ox.github.io/2020/11/02/subdiv-1.html (recursive subdivision for pen plotting, with a depth cap)
 - https://tylerxhobbs.com/essays/2018/executing-generative-art-with-a-plotter (Hobbs on plotter subdivision work)
+
+---
+
+## 2026-11-20 — `logcabin` · Log Cabin
+
+**Territory:** Textile tradition: American patchwork, the Log Cabin quilt block and its named settings. The
+first quilting entry in the log. It is a block-and-setting rule, not a brick bond, a Truchet tile set or a
+subdivision.
+
+**Idea.** A Log Cabin block starts from a centre square ("the hearth"). Each round adds one strip ("log") to
+every side, so the block spirals outward. Logs on two adjacent sides are light and on the other two dark, so
+the block splits on its diagonal into a light and a dark triangle of nested L's. The quilt's design comes
+from how the blocks are turned. **Barn Raising** gives concentric diamonds. **Straight Furrow** gives diagonal
+stripes. **Streak of Lightning** gives zigzags. **Diamonds** turns every 2 × 2 group's dark corners inward.
+**Windmill** turns the four blocks of a group a quarter turn each. **Light & dark** turns every block the same
+way. Two well-known variants are built in. Curvy log cabin cuts the dark logs wider than the light ones, so the
+centre drifts toward the light corner and the straight bands read as curves. Courthouse Steps puts light logs
+on top and bottom and dark logs left and right.
+
+**How the code realises it.** It is a board generator returning a signed-distance `evalFn`, like Brick Bond.
+Blocks of side S fill the board's real width and height: the column count is set and rows follow from the
+aspect, with optional sashing between blocks and an optional border bar hugging the quilt. Each block is built
+in a local frame with its dark corner at bottom-left. Rounds append top/right (light, width w(1 − curve)) and
+bottom/left (dark, width w(1 + curve)), then the block is recentred. `darkCorner(setting, i, j)` picks the
+dark corner per block. Barn raising uses the diamond ring ⌊|u|⌋ + ⌊|v|⌋ and the quadrant. Furrow uses the
+parity of i − j. Lightning mirrors odd columns of the furrow rule. Diamonds and windmill index into the 2 × 2
+group. The local frame is mirrored onto that corner; courthouse blocks transpose instead. Each log is an
+axis-aligned rounded box inset by half the seam. A round's two dark logs can be joined into one L, made as its
+bounding box minus a rounded notch grown by the seam. That gives a filleted inside corner rather than a soft-min
+bulge. Only dark logs and the centre (square, circle or none) are raised by default. Light logs can be
+raised too, or raised and slimmer so the halves still read. A seeded `shuffle` turns some blocks at random,
+and field points add to `curve` locally. Logs thinner than 0.6 mm after the seam are dropped.
+
+**Params.** Quilt: setting, block (log cabin / courthouse steps), blocks across, rounds, centre size, random
+turns, seed · Logs: curve (dark : light width), field points → curve, seam, corner round, join dark pairs,
+light logs (off / raised / slimmer), centre shape · Frame: margin, sashing, border.
+
+**Presets.** Barn raising (default: 6 × 6 blocks, four rounds, concentric diamonds of dark L's) · Curvy furrows
+(straight furrow with dark logs 40 % wider, circular hearths, border bar) · Courthouse windmill (courthouse
+steps blocks with slimmer raised light logs, windmill-turned, sashing between blocks).
+
+**Inspiration.**
+- https://en.wikipedia.org/wiki/Log_Cabin_(quilt_block) (the block, its centre square and the named settings)
+- https://internationalquiltmuseum.org/node/759 (International Quilt Museum, Design Dynamics of Log Cabin Quilts: settings and transparency)
+- https://www.internationalquiltmuseum.org/node/578 (Log Cabin, Barn Raising setting)
+- https://www.museum.state.il.us/muslink/art/htmls/ks_piece_logcourt.html (Courthouse Steps block)
+- https://www.asg.org/log-cabin-quilt-whats-in-a-block/ (American Sewing Guild: light/dark halves and settings)
+- https://www.quiltingboard.com/8453599-post3.html (curvy log cabin: dark logs wider than light ones)
+- https://makezine.com/2014/06/18/libs-elliots-quilts-designed-by-code (Libs Elliott: quilts designed with code)

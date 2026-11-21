@@ -1667,3 +1667,54 @@ steps blocks with slimmer raised light logs, windmill-turned, sashing between bl
 - https://www.asg.org/log-cabin-quilt-whats-in-a-block/ (American Sewing Guild: light/dark halves and settings)
 - https://www.quiltingboard.com/8453599-post3.html (curvy log cabin: dark logs wider than light ones)
 - https://makezine.com/2014/06/18/libs-elliots-quilts-designed-by-code (Libs Elliott: quilts designed with code)
+
+---
+
+## 2026-11-21 — `whirls` · Whirls
+
+**Territory:** Recreational mathematics and op-art geometry: pursuit curves ("four bugs") drawn as nested-polygon
+whirls, and Dániel Erdély's spidron. The first pursuit / spidron entry in the log. It is a nesting rule inside
+each tile, not a substitution tiling (Rep-Tiles), a polygon ring (Polygon Ring) or a subdivision.
+
+**Idea.** Put a bug on every corner of a polygon and let each crawl a fraction t of the way toward its neighbour.
+The new corners make a smaller polygon, turned a little. Repeating this nests polygon inside polygon, and the
+corners trace logarithmic spirals into the centre. Every step leaves a ring of corner triangles. Tile the board
+with squares, triangles or hexagons, flip the spin on alternate tiles, and you get the classic checkerboard of
+left- and right-handed whirls whose spirals run on across the tile edges. The spidron rule comes from Erdély's
+doodle: inside a hexagon, join every corner to the after-next one. The hexagram leaves a hexagon turned 30° and
+scaled 1/√3, ringed by equilateral and 30-30-120 triangles. Repeating that inward gives six spiral arms of
+alternating triangles, and spidron hexagons tile the plane.
+
+**How the code realises it.** It is a board generator returning a signed-distance `evalFn`, like Hitomezashi and
+Ice Ray. `makeTiles` covers the plate's real width and height, rotated, with squares (checkerboard parity),
+triangles (up/down parity) or flat-top hexagons (a three-colouring, so two classes flip). It can also inscribe one
+big triangle, square, pentagon, hexagon or octagon. Per tile, the whirl rule places the inner corners at t along
+each edge (1 − t for flipped tiles). The spidron rule turns the tile about its centroid by π/n plus a skew, scales
+it by a ratio (clamped so the corners stay inside), and joins each inner corner to the two outer corners it sits
+between. For a hexagon at ratio 1/√3 this is Erdély's construction exactly. Before a ring is accepted, every
+triangle it creates is measured. If the smallest inradius cannot hold a ≥ 0.6 mm hole between half-strokes
+(lines) or a ~2 mm cell inside the half-gap (cells), recursion stops for that tile. So there are no hairline
+slivers at the centres. What is left is the core polygon: open, or a solid boss. Depth can also fall off with
+distance from the board centre. All edges go into a bucket grid padded by the largest possible reach, so the
+field is an exact, 1-Lipschitz distance to the edge set. A polynomial smooth-min between edges rounds every
+corner, clamped at 0. Two draw modes: a lattice of strokes with an optional frame, or every triangle as its own
+inset cell. In cells mode the plate edge counts as an edge too, so cut cells are inset rather than left as
+slivers. Field points widen the strokes or gaps.
+
+**Params.** Tiling: tiles (squares, triangles, hexagons, one big 3/4/5/6/8-gon), tile size, rotate · Rule: rule
+(pursuit whirl / spidron), creep fraction, inner scale, skew, alternate spin per tile, max depth, depth falloff to
+edge · Draw: draw (lattice / cells), line width or cell gap, corner rounding, core (open / solid boss), frame width
+· Board: margin, outline corner, edge fillet, points → widen.
+
+**Presets.** Pursuit squares (default: 50 mm squares, t = 0.18, alternating spin, about seven nested squares per
+tile) · Spidron honeycomb (40 mm hexagons, Erdély's 1/√3 ratio, same hand everywhere) · Hexagon vortex (one big
+hexagon, t = 0.08, about 20 rings with a solid boss, six spiral arms) · Triangle whirl cells (60 mm triangles,
+t = 0.22, every triangle a raised rounded cell).
+
+**Inspiration.**
+- https://archive.bridgesmathart.org/2015/bridges2015-175.html (Bridges 2015, "Fun with Whirls": nested polygons approximating pursuit curves, base polygon and spacing variations)
+- https://www.sciencenews.org/article/art-pursuit (Science News, "Art of Pursuit": John Sharp's four-bug whirls and variations)
+- https://pypi.org/project/whirls/1.0/ (whirls tessellation: joining points a fraction along each edge, logarithmic-spiral corners)
+- https://en.wikipedia.org/wiki/Spidron (spidron: alternating equilateral and 30-30-120 triangles; hexagonal spidrons tile the plane)
+- https://demonstrations.wolfram.com/TilingWithSpidrons/ (Wolfram Demonstrations, Tiling with Spidrons)
+- https://www.sciencebuddies.org/science-fair-projects/project_ideas/Math_p043.shtml (spidron construction: join alternate hexagon corners, repeat inward)

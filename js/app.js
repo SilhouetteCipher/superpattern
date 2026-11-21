@@ -403,6 +403,13 @@
     { name: 'Curvy furrows', state: { gen: 'logcabin', params: LC({ setting: 'furrow', cols: 5, rounds: 4, curve: 0.4, centre: 0.16, gap: 1.3, round: 0.8, core: 'circle', border: 3 }), field: { points: [] }, board: { w: 200, h: 200 } } },
     { name: 'Courthouse windmill', state: { gen: 'logcabin', params: LC({ setting: 'windmill', block: 'courthouse', cols: 4, rounds: 3, centre: 0.24, light: 'thin', gap: 1.4, round: 1, sashing: 2.5 }), field: { points: [] }, board: { w: 200, h: 200 } } },
   );
+  const WH = (over) => Object.assign(SP.defaultsFor('whirls'), over);
+  BUILTIN.push(
+    { name: 'Pursuit squares', state: { gen: 'whirls', params: WH({}), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Spidron honeycomb', state: { gen: 'whirls', params: WH({ tiling: 'hex', rule: 'spidron', size: 40, alt: false, width: 1.4 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Hexagon vortex', state: { gen: 'whirls', params: WH({ tiling: 'n6', frac: 0.08, depth: 60, width: 1.4, core: 'solid' }), field: { points: [] }, board: { w: 200, h: 200 } } },
+    { name: 'Triangle whirl cells', state: { gen: 'whirls', params: WH({ tiling: 'triangle', frac: 0.22, size: 60, draw: 'cells', width: 1.4, round: 1.6 }), field: { points: [] }, board: { w: 200, h: 200 } } },
+  );
   const SC = (over) => Object.assign(SP.defaultsFor('scroll'), over);
   BUILTIN.push(
     { name: 'Koru scrolls', state: { gen: 'scroll', params: SC({}), field: { points: [] }, board: { w: 200, h: 200 } } },
@@ -860,7 +867,7 @@
     { id: 'grids', name: 'Grids', gens: ['dotgrid', 'halftone', 'tilegrid', 'shapetiles', 'quadgrid', 'capsules', 'dashgrid', 'glyphs'] },
     { id: 'lines', name: 'Lines', gens: ['truchet', 'paths', 'opart', 'hatch'] },
     { id: 'scifi', name: 'Sci-Fi', gens: ['panels', 'panellines', 'seams', 'steplines', 'greebles', 'markings', 'conduits', 'hud', 'hexplate', 'readout'] },
-    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal', 'karesansui', 'bond', 'lissajous', 'arctic', 'bzwaves', 'kagome', 'kirigami', 'reptile', 'logcabin'] },
+    { id: 'explorations', name: 'Explorations', gens: ['knotwork', 'hankin', 'spacefill', 'maze', 'streamlines', 'multigrid', 'guilloche', 'chladni', 'hitomezashi', 'hyperbolic', 'phyllotaxis', 'weave', 'seigaiha', 'growth', 'packing', 'meander', 'tracery', 'jigsaw', 'venation', 'automaton', 'iceray', 'spirolateral', 'wallpaper', 'gears', 'kumiko', 'circuit', 'chainmail', 'scroll', 'conformal', 'karesansui', 'bond', 'lissajous', 'arctic', 'bzwaves', 'kagome', 'kirigami', 'reptile', 'logcabin', 'whirls'] },
     { id: 'tiling', name: 'Tiling' },
     { id: 'board', name: 'Board' },
     { id: 'saved', name: 'Saved' },
@@ -921,6 +928,7 @@
     kirigami: 'Auxetic cut sheets: hinged squares or triangles that turn open into graded holes',
     reptile: 'Pinwheel, chair and sphinx rep-tiles split into ever-smaller copies of themselves',
     logcabin: 'Log cabin quilt blocks: nested dark L\'s set as barn raising, furrows, lightning and windmills',
+    whirls: 'Pursuit whirls and spidrons: polygons nested inside turning polygons, tile by tile',
   };
   const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
